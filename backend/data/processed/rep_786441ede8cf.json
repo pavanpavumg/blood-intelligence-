@@ -1,0 +1,18 @@
+{
+  "schema_version": "2.0",
+  "report": {
+    "report_id": "rep_786441ede8cf",
+    "report_date": "26-03-2026",
+    "lab_name": null
+  },
+  "patient": {
+    "patient_id": "KCG-202600034148",
+    "name": "Mr PAVAN M G",
+    "age": 21,
+    "gender": "Male"
+  },
+  "tests": [],
+  "warnings": [
+    "No laboratory test rows could be confidently extracted from document lines."
+  ]
+}

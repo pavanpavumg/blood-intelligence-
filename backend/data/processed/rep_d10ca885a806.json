@@ -1,0 +1,71 @@
+{
+  "schema_version": "2.1",
+  "report": {
+    "report_id": "rep_d10ca885a806",
+    "report_date": "2026-03-11T16:47:00",
+    "lab_name": "CENTROMED LABS PVT. LTD"
+  },
+  "patient": {
+    "patient_id": "3185546",
+    "name": "Mr. SUNIL KUMAR",
+    "age": 40,
+    "gender": "Male"
+  },
+  "tests": [
+    {
+      "test_name": "* ANTI THYROPEROXIDASE",
+      "raw_test_name": "* ANTI THYROPEROXIDASE",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 0.47,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": null,
+        "high": 50.0,
+        "raw": "IU/mL Less than 50 : Negative"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "test_name": "* Thyroid Stimulating Hormone.(TSH)",
+      "raw_test_name": "* Thyroid Stimulating Hormone.(TSH)",
+      "canonical_test_name": "Thyroid Stimulating Hormone",
+      "test_id": "TSH",
+      "loinc_code": "11580-8",
+      "value": 13.59,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": 0.35,
+        "high": 5.1,
+        "raw": "µIU/mL 0.35 – 5.1"
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "* FREE T4",
+      "raw_test_name": "* FREE T4",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 1.1,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": 0.5,
+        "high": 1.4,
+        "raw": "ng/dL 0.5 - 1.4"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "REVIEW_REQUIRED"
+    }
+  ],
+  "warnings": []
+}

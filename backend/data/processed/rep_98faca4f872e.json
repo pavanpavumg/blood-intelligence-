@@ -1,0 +1,109 @@
+{
+  "schema_version": "2.0",
+  "report": {
+    "report_id": "rep_98faca4f872e",
+    "report_date": "26-03-2026",
+    "lab_name": null
+  },
+  "patient": {
+    "patient_id": "KCG-202600034148",
+    "name": "Mr PAVAN M G",
+    "age": 21,
+    "gender": "Male"
+  },
+  "tests": [
+    {
+      "raw_test_name": "Mobile No",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 6360270028.0,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": null,
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "raw_test_name": "Final Report",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 26.0,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": 3.0,
+        "high": 2026.0,
+        "raw": "-03-2026 02:43 PM"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "raw_test_name": "less than",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 0.5,
+      "raw_unit": "ng/mL",
+      "normalized_unit": "ng/mL",
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "ng/mL"
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "raw_test_name": "Mobile No",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 6360270028.0,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": null,
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "raw_test_name": "Final Report",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 26.0,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": 3.0,
+        "high": 2026.0,
+        "raw": "-03-2026 02:43 PM"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "raw_test_name": "Dr. GANESH B D",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 1.0,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": null,
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    }
+  ],
+  "warnings": [
+    "Unparsed reference range format: 'ng/mL'"
+  ]
+}

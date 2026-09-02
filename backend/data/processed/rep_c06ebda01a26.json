@@ -1,0 +1,69 @@
+{
+  "schema_version": "2.1",
+  "report": {
+    "report_id": "rep_c06ebda01a26",
+    "report_date": "2026-03-11T16:47:00",
+    "lab_name": null
+  },
+  "patient": {
+    "patient_id": "3185546",
+    "name": "Mr. SUNIL KUMAR",
+    "age": 40,
+    "gender": "Male"
+  },
+  "tests": [
+    {
+      "test_name": "* ANTI THYROPEROXIDASE",
+      "raw_test_name": "* ANTI THYROPEROXIDASE",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 0.47,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": null,
+        "high": 50.0,
+        "raw": "IU/mL Less than 50 : Negative"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "test_name": "ANTIBODIES(ATPO) More than",
+      "raw_test_name": "ANTIBODIES(ATPO) More than",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 50.0,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": ": Positive"
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "test_name": "Dr Faeeza Begum MD, KMC.No",
+      "raw_test_name": "Dr Faeeza Begum MD, KMC.No",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 103490.0,
+      "raw_unit": "um",
+      "normalized_unit": "um",
+      "reference_range": null,
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    }
+  ],
+  "warnings": [
+    "Unparsed reference range format: ': Positive'"
+  ]
+}

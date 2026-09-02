@@ -1,0 +1,18 @@
+{
+  "schema_version": "2.0",
+  "report": {
+    "report_id": "rep_4f513fccc091",
+    "report_date": null,
+    "lab_name": null
+  },
+  "patient": {
+    "patient_id": null,
+    "name": null,
+    "age": null,
+    "gender": null
+  },
+  "tests": [],
+  "warnings": [
+    "No laboratory test rows could be confidently extracted from document lines."
+  ]
+}

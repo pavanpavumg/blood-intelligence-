@@ -1,0 +1,70 @@
+{
+  "schema_version": "2.1",
+  "report": {
+    "report_id": "rep_38f3027fc38d",
+    "report_date": "2026-02-03T18:11:00",
+    "lab_name": null
+  },
+  "patient": {
+    "patient_id": "2950084",
+    "name": "Mrs. BHARATHI K JOSHI",
+    "age": 63,
+    "gender": "Female"
+  },
+  "tests": [
+    {
+      "test_name": "* C-REACTIVE PROTIEN(CRP)",
+      "raw_test_name": "* C-REACTIVE PROTIEN(CRP)",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 3.69,
+      "raw_unit": "g/L",
+      "normalized_unit": "g/L",
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "mg/L Up to 6.0"
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "test_name": "detoxification of substances released from damaged tissue. As such, CRP is considered to be one of the most sensitive indicators of inflammation. In response to an inflammatory stimulus, a rise in CRP may be detected with",
+      "raw_test_name": "detoxification of substances released from damaged tissue. As such, CRP is considered to be one of the most sensitive indicators of inflammation. In response to an inflammatory stimulus, a rise in CRP may be detected with",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 6.0,
+      "raw_unit": "fl",
+      "normalized_unit": "fL",
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "hours. CRP is sensitive, though considered to be"
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "test_name": "Dr Faeeza Begum MD, KMC.No",
+      "raw_test_name": "Dr Faeeza Begum MD, KMC.No",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 103490.0,
+      "raw_unit": "um",
+      "normalized_unit": "um",
+      "reference_range": null,
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    }
+  ],
+  "warnings": [
+    "Unparsed reference range format: 'mg/L Up to 6.0'",
+    "Unparsed reference range format: 'hours. CRP is sensitive, though considered to be'"
+  ]
+}

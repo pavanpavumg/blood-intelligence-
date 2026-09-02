@@ -1,0 +1,361 @@
+{
+  "schema_version": "2.1",
+  "report": {
+    "report_id": "rep_942e8da572fd",
+    "report_date": "2026-03-26",
+    "lab_name": null
+  },
+  "patient": {
+    "patient_id": "KCG-202600034148",
+    "name": "Mr PAVAN M G",
+    "age": 21,
+    "gender": "Male"
+  },
+  "tests": [
+    {
+      "test_name": "WBC",
+      "raw_test_name": "WBC",
+      "canonical_test_name": "White Blood Cell Count",
+      "test_id": "WBC",
+      "loinc_code": "6690-2",
+      "value": 5.79,
+      "raw_unit": "10(3)/mm3",
+      "normalized_unit": "10(3)/mm3",
+      "reference_range": {
+        "low": 4.0,
+        "high": 10.0,
+        "raw": "10^3 4 - 10 10(3)/mm3"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "RBC Count (Electrical",
+      "raw_test_name": "RBC Count (Electrical",
+      "canonical_test_name": "Red Blood Cell Count",
+      "test_id": "RBC",
+      "loinc_code": "789-8",
+      "value": 4.41,
+      "raw_unit": "milln/ul",
+      "normalized_unit": "millions/cumm",
+      "reference_range": {
+        "low": 3.8,
+        "high": 6.5,
+        "raw": "milln/ul 3.8 - 6.5 10^6/L"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "HGB (Hemoglobin)",
+      "raw_test_name": "HGB (Hemoglobin)",
+      "canonical_test_name": "Hemoglobin",
+      "test_id": "HEMOGLOBIN",
+      "loinc_code": "718-7",
+      "value": 15.9,
+      "raw_unit": "g/dL",
+      "normalized_unit": "g/dL",
+      "reference_range": {
+        "low": 11.5,
+        "high": 17.0,
+        "raw": "g/dL 11.5 - 17"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "HCT",
+      "raw_test_name": "HCT",
+      "canonical_test_name": "Hematocrit",
+      "test_id": "HCT",
+      "loinc_code": "4544-3",
+      "value": 43.3,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": 37.0,
+        "high": 54.0,
+        "raw": "% 37 - 54"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Mean Corpuscular Vol(MCV)",
+      "raw_test_name": "Mean Corpuscular Vol(MCV)",
+      "canonical_test_name": "Mean Corpuscular Volume",
+      "test_id": "MCV",
+      "loinc_code": "787-2",
+      "value": 98.2,
+      "raw_unit": "um",
+      "normalized_unit": "um",
+      "reference_range": {
+        "low": 80.0,
+        "high": 100.0,
+        "raw": "um 80 - 100 um"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Mean Corpuscular Hb.(MCH)",
+      "raw_test_name": "Mean Corpuscular Hb.(MCH)",
+      "canonical_test_name": "Mean Corpuscular Hemoglobin",
+      "test_id": "MCH",
+      "loinc_code": "785-6",
+      "value": 36.1,
+      "raw_unit": "pg",
+      "normalized_unit": "pg",
+      "reference_range": {
+        "low": 27.0,
+        "high": 32.0,
+        "raw": "pg 27 - 32 pg"
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Mean Corp.Hb.Con. (MCHC)",
+      "raw_test_name": "Mean Corp.Hb.Con. (MCHC)",
+      "canonical_test_name": "Mean Corpuscular Hemoglobin Concentration",
+      "test_id": "MCHC",
+      "loinc_code": "786-4",
+      "value": 36.7,
+      "raw_unit": "g/dL",
+      "normalized_unit": "g/dL",
+      "reference_range": {
+        "low": 32.0,
+        "high": 36.0,
+        "raw": "g/dL 32 - 36"
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "PLATELET COUNT (Electrical",
+      "raw_test_name": "PLATELET COUNT (Electrical",
+      "canonical_test_name": "Platelet Count",
+      "test_id": "PLATELETS",
+      "loinc_code": "777-3",
+      "value": 221.0,
+      "raw_unit": "10^3",
+      "normalized_unit": "10^3",
+      "reference_range": {
+        "low": 150.0,
+        "high": 500.0,
+        "raw": "10^3 150 - 500"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "RDW-SD",
+      "raw_test_name": "RDW-SD",
+      "canonical_test_name": "Red Cell Distribution Width SD",
+      "test_id": "RDW_SD",
+      "loinc_code": "21000-5",
+      "value": 46.6,
+      "raw_unit": "fL",
+      "normalized_unit": "fL",
+      "reference_range": {
+        "low": 40.0,
+        "high": 55.0,
+        "raw": "fL 40.0 - 55.0"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "RDW-CV",
+      "raw_test_name": "RDW-CV",
+      "canonical_test_name": "Red Cell Distribution Width CV",
+      "test_id": "RDW_CV",
+      "loinc_code": "788-0",
+      "value": 12.8,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": 11.0,
+        "high": 15.0,
+        "raw": "% 11.0 - 15.0"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "MPV",
+      "raw_test_name": "MPV",
+      "canonical_test_name": "Mean Platelet Volume",
+      "test_id": "MPV",
+      "loinc_code": "32623-1",
+      "value": 9.9,
+      "raw_unit": "fl",
+      "normalized_unit": "fL",
+      "reference_range": {
+        "low": 6.0,
+        "high": 11.0,
+        "raw": "fl 6 - 11.0"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "P-LCR",
+      "raw_test_name": "P-LCR",
+      "canonical_test_name": "Platelet Large Cell Ratio",
+      "test_id": "P_LCR",
+      "loinc_code": "55864-3",
+      "value": 23.4,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": 15.0,
+        "high": 35.0,
+        "raw": "% 15 - 35"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "PCT",
+      "raw_test_name": "PCT",
+      "canonical_test_name": "Plateletcrit",
+      "test_id": "PCT",
+      "loinc_code": "32623-1",
+      "value": 0.22,
+      "raw_unit": "ng/mL",
+      "normalized_unit": "ng/mL",
+      "reference_range": {
+        "low": null,
+        "high": 0.5,
+        "raw": "ng/mL less than 0.5 ng/mL"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Neutrophils",
+      "raw_test_name": "Neutrophils",
+      "canonical_test_name": "Neutrophils Percentage",
+      "test_id": "NEUTROPHILS",
+      "loinc_code": "770-8",
+      "value": 57.0,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": 40.0,
+        "high": 80.0,
+        "raw": "% 40-80"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Lymphocytes",
+      "raw_test_name": "Lymphocytes",
+      "canonical_test_name": "Lymphocytes Percentage",
+      "test_id": "LYMPHOCYTES",
+      "loinc_code": "736-9",
+      "value": 28.0,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": 20.0,
+        "high": 40.0,
+        "raw": "% 20-40"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Eosinophils",
+      "raw_test_name": "Eosinophils",
+      "canonical_test_name": "Eosinophils Percentage",
+      "test_id": "EOSINOPHILS",
+      "loinc_code": "713-8",
+      "value": 7.8,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": 1.0,
+        "high": 6.0,
+        "raw": "% 1-6"
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Basophils",
+      "raw_test_name": "Basophils",
+      "canonical_test_name": "Basophils Percentage",
+      "test_id": "BASOPHILS",
+      "loinc_code": "706-2",
+      "value": 0.5,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": null,
+        "high": 1.0,
+        "raw": "% <1%"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "IG",
+      "raw_test_name": "IG",
+      "canonical_test_name": "Immature Granulocytes Percentage",
+      "test_id": "IG",
+      "loinc_code": "53115-2",
+      "value": 0.5,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "% %"
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Monocytes",
+      "raw_test_name": "Monocytes",
+      "canonical_test_name": "Monocytes Percentage",
+      "test_id": "MONOCYTES",
+      "loinc_code": "5905-5",
+      "value": 6.7,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": 2.0,
+        "high": 10.0,
+        "raw": "% 2-10%"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    }
+  ],
+  "warnings": [
+    "Unparsed reference range format: '% %'"
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "schema_version": "1.0",
+  "report": {
+    "report_id": "rep_46d58dfdaa90",
+    "report_date": "2026-08-24",
+    "lab_name": "Quest Diagnostics"
+  },
+  "patient": {
+    "patient_id": "P-98765",
+    "name": "John Doe",
+    "age": 45,
+    "gender": "Male"
+  },
+  "tests": [
+    {
+      "raw_test_name": "Fasting Blood Glucose",
+      "canonical_test_name": null,
+      "loinc_code": null,
+      "value": 95.0,
+      "unit": "mg/dL",
+      "reference_range": {
+        "low": 70.0,
+        "high": 100.0,
+        "raw": "mg/dL 70 - 100"
+      },
+      "raw_value": "95 mg/dL",
+      "status": null,
+      "flag": null
+    },
+    {
+      "raw_test_name": "Hemoglobin A1c",
+      "canonical_test_name": null,
+      "loinc_code": null,
+      "value": 5.8,
+      "unit": "%",
+      "reference_range": {
+        "low": 4.0,
+        "high": 5.6,
+        "raw": "% 4.0 - 5.6"
+      },
+      "raw_value": "5.8 %",
+      "status": null,
+      "flag": null
+    },
+    {
+      "raw_test_name": "Thyroid Stimulating Hormone",
+      "canonical_test_name": null,
+      "loinc_code": null,
+      "value": 2.45,
+      "unit": "uIU/mL",
+      "reference_range": {
+        "low": 0.45,
+        "high": 4.5,
+        "raw": "uIU/mL 0.45 - 4.5"
+      },
+      "raw_value": "2.45 uIU/mL",
+      "status": null,
+      "flag": null
+    },
+    {
+      "raw_test_name": "Total Cholesterol",
+      "canonical_test_name": null,
+      "loinc_code": null,
+      "value": 185.0,
+      "unit": "mg/dL",
+      "reference_range": {
+        "low": null,
+        "high": 200.0,
+        "raw": "mg/dL < 200"
+      },
+      "raw_value": "185 mg/dL",
+      "status": null,
+      "flag": null
+    },
+    {
+      "raw_test_name": "HDL Cholesterol",
+      "canonical_test_name": null,
+      "loinc_code": null,
+      "value": 48.0,
+      "unit": "mg/dL",
+      "reference_range": {
+        "low": 40.0,
+        "high": null,
+        "raw": "mg/dL > 40"
+      },
+      "raw_value": "48 mg/dL",
+      "status": null,
+      "flag": null
+    },
+    {
+      "raw_test_name": "Triglycerides",
+      "canonical_test_name": null,
+      "loinc_code": null,
+      "value": 135.0,
+      "unit": "mg/dL",
+      "reference_range": {
+        "low": null,
+        "high": 150.0,
+        "raw": "mg/dL < 150"
+      },
+      "raw_value": "135 mg/dL",
+      "status": null,
+      "flag": null
+    }
+  ],
+  "warnings": []
+}

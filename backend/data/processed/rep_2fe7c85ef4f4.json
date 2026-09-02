@@ -1,0 +1,312 @@
+{
+  "schema_version": "2.0",
+  "report": {
+    "report_id": "rep_2fe7c85ef4f4",
+    "report_date": null,
+    "lab_name": null
+  },
+  "patient": {
+    "patient_id": "3185546",
+    "name": "Mr. SUNIL KUMAR",
+    "age": 40,
+    "gender": null
+  },
+  "tests": [
+    {
+      "raw_test_name": "Name : Mr. SUNIL KUMAR Age/Gender",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 40.0,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "Years / Male Vial ID : 3185546"
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "raw_test_name": "Ref.By : Self Collected On",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 11.0,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": null,
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "raw_test_name": "Req No. : BNG2625527 Registered On",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 11.0,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": null,
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "raw_test_name": "Sample Type : Serum Reported On",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 11.0,
+      "raw_unit": "um",
+      "normalized_unit": "um",
+      "reference_range": null,
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "raw_test_name": "* ANTI THYROPEROXIDASE",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 0.47,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": null,
+        "high": 50.0,
+        "raw": "IU/mL Less than 50 : Negative"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "raw_test_name": "ANTIBODIES(ATPO) More than",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 50.0,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": ": Positive"
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "raw_test_name": "Name : Mr. SUNIL KUMAR Age/Gender",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 40.0,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "Years / Male Vial ID : 3185546"
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "raw_test_name": "Ref.By : Self Collected On",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 11.0,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": null,
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "raw_test_name": "Req No. : BNG2625527 Registered On",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 11.0,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": null,
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "raw_test_name": "Sample Type : Serum Reported On",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 11.0,
+      "raw_unit": "um",
+      "normalized_unit": "um",
+      "reference_range": null,
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "raw_test_name": "* Thyroid Stimulating Hormone.(TSH)",
+      "canonical_test_name": "Thyroid Stimulating Hormone",
+      "test_id": "TSH",
+      "loinc_code": "11580-8",
+      "value": 13.59,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": 0.35,
+        "high": 5.1,
+        "raw": "µIU/mL 0.35 – 5.1"
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "raw_test_name": "INTERPRETATION: Thyroid-stimulating hormone (TSH, thyrotropin) is a glycoprotein having a molecular weight of approximately",
+      "canonical_test_name": "Thyroid Stimulating Hormone",
+      "test_id": "TSH",
+      "loinc_code": "11580-8",
+      "value": 30000.0,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "daltons and consisting of two"
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "raw_test_name": "molecular weight of approximately",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 30000.0,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "daltons and consisting of two subunits. The -subunit carries the TSH-specific immunological and"
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "raw_test_name": "molecular weight of approximately",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 30000.0,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "daltons and consisting of two subunits. The -subunit carries the TSH-specific immunological and"
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "raw_test_name": "Name : Mr. SUNIL KUMAR Age/Gender",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 40.0,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "Years / Male Vial ID : 3185546"
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "raw_test_name": "Ref.By : Self Collected On",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 11.0,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": null,
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "raw_test_name": "Req No. : BNG2625527 Registered On",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 11.0,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": null,
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "raw_test_name": "Sample Type : Serum Reported On",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 11.0,
+      "raw_unit": "um",
+      "normalized_unit": "um",
+      "reference_range": null,
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "raw_test_name": "* FREE T4",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 1.1,
+      "raw_unit": "g/dL",
+      "normalized_unit": "g/dL",
+      "reference_range": {
+        "low": 0.5,
+        "high": 1.4,
+        "raw": "ng/dL 0.5 - 1.4"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "REVIEW_REQUIRED"
+    }
+  ],
+  "warnings": [
+    "Unparsed reference range format: 'Years / Male Vial ID : 3185546'",
+    "Unparsed reference range format: ': Positive'",
+    "Unparsed reference range format: 'Years / Male Vial ID : 3185546'",
+    "Unparsed reference range format: 'daltons and consisting of two'",
+    "Unparsed reference range format: 'daltons and consisting of two subunits. The -subunit carries the TSH-specific immunological and'",
+    "Unparsed reference range format: 'daltons and consisting of two subunits. The -subunit carries the TSH-specific immunological and'",
+    "Unparsed reference range format: 'Years / Male Vial ID : 3185546'"
+  ]
+}
