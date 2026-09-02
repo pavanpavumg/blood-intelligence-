@@ -246,8 +246,8 @@ class ParserService:
         cls, text: str
     ) -> Tuple[Optional[ReferenceRange], Optional[str]]:
         """
-        Parses reference ranges into numeric low, high, and raw string format.
-        Supports range '70-100', less-than '<200', greater-than '>40', 'Up to 6.0', and gender-specific ranges.
+        Parses reference ranges into numeric low, high, raw string, range type, operator, and demographic/pregnancy groups.
+        Supports TWO_SIDED, UPPER_ONLY, LOWER_ONLY, DEMOGRAPHIC, PREGNANCY, and CATEGORICAL ranges.
         Rejects narrative interpretation text, metadata, and timestamps.
         """
         if not text or not text.strip():
@@ -270,7 +270,7 @@ class ParserService:
             return None, None
         raw_lower = raw.lower()
 
-        # Reject interpretation / narrative strings
+        # Reject interpretation / narrative / doctor / category label strings
         if any(
             k in raw_lower
             for k in [
@@ -292,20 +292,31 @@ class ParserService:
                 "risk factors",
                 "detected with",
                 "hours",
+                "kmc.no",
+                "pathology",
+                "doctor",
             ]
         ):
             return None, None
 
         if cls.TIMESTAMP_PATTERN.search(raw) and not any(
             symbol in raw_lower
-            for symbol in ["<", ">", "ref", "normal", "interval", "up to"]
+            for symbol in ["<", ">", "ref", "normal", "interval", "up to", "upto"]
         ):
             if re.search(r"\d{2}:\d{2}|\b20\d{2}\b", raw):
                 return None, None
 
+        # Pregnancy range check (e.g. "1st trimester: 0.05 - 4.73")
+        if "trimester" in raw_lower or "pregnancy" in raw_lower:
+            return ReferenceRange(low=None, high=None, raw=raw, type="PREGNANCY"), None
+
         # Gender-specific range check (e.g. "Male:3.6 -8.2 Female:2.3 - 6.1")
         if "male" in raw_lower or "female" in raw_lower:
-            return ReferenceRange(low=None, high=None, raw=raw), None
+            return ReferenceRange(low=None, high=None, raw=raw, type="DEMOGRAPHIC"), None
+
+        # Categorical range check (e.g. Desirable >59, Optimal 40-59, Non-diabetic 4.8-5.9)
+        if any(cat in raw_lower for cat in ["desirable", "optimal", "borderline", "non-diabetic", "pre-diabetic", "diabetic", "insufficiency", "deficiency", "sufficiency"]):
+            return ReferenceRange(low=None, high=None, raw=raw, type="CATEGORICAL"), None
 
         # Range format: 12.0 - 15.0, 4000-11000, 02 - 06, 70 - 100
         range_match = re.search(r"(\d+(?:\.\d+)?)\s*[\-\–\—]\s*(\d+(?:\.\d+)?)", raw)
@@ -315,20 +326,21 @@ class ParserService:
                 high = float(range_match.group(2))
                 if 1990 <= low <= 2099 and 1990 <= high <= 2099:
                     return None, None
-                return ReferenceRange(low=low, high=high, raw=raw), None
+                return ReferenceRange(low=low, high=high, raw=raw, type="TWO_SIDED"), None
             except ValueError:
                 pass
 
         # Up to / Less than format: "Up to 6.0", "< 200", "<= 5.7", "less than 6"
         lt_match = re.search(
-            r"(?:up\s+to|less\s+than(?:\s+or\s+equal\s+to)?|<=?)\s*(\d+(?:\.\d+)?)",
+            r"(?:up\s+to|upto|less\s+than(?:\s+or\s+equal\s+to)?|<=?)\s*(\d+(?:\.\d+)?)",
             raw,
             re.IGNORECASE,
         )
         if lt_match:
             try:
                 high = float(lt_match.group(1))
-                return ReferenceRange(low=None, high=high, raw=raw), None
+                op = "<=" if ("up to" in raw_lower or "upto" in raw_lower or "<=" in raw_lower or "or equal" in raw_lower) else "<"
+                return ReferenceRange(low=None, high=high, raw=raw, type="UPPER_ONLY", operator=op), None
             except ValueError:
                 pass
 
@@ -341,7 +353,8 @@ class ParserService:
         if gt_match:
             try:
                 low = float(gt_match.group(1))
-                return ReferenceRange(low=low, high=None, raw=raw), None
+                op = ">=" if (">=" in raw_lower or "or equal" in raw_lower) else ">"
+                return ReferenceRange(low=low, high=None, raw=raw, type="LOWER_ONLY", operator=op), None
             except ValueError:
                 pass
 
@@ -355,24 +368,44 @@ class ParserService:
         cls, line: str
     ) -> Tuple[Optional[LabTestResult], Optional[str]]:
         """
-        Extracts test name, raw value, numerical value, unit, and reference range from a text line.
-        Supports unit-less tests (e.g. BUN/CREATININE RATIO 11.26).
+        Extracts test name, measurement method, raw value, numerical value, unit, and reference range from a text line.
+        Supports method separation (e.g. RBC Count (Electrical Impedence)).
+        Filter false positives (narrative text, doctor details, category labels).
         """
         if not line or len(line.strip()) < 2:
             return None, None
 
         clean_line = line.strip()
+        clean_lower = clean_line.lower()
 
-        # Handle method prefix before analyte on the same line (e.g., "Method:Electrical Impedence * RBC Count ..." or "Peroxidase) * UREA ...")
+        # Reject narrative lines / doctor signatures / license numbers / standalone category labels from becoming tests
+        if any(
+            narr in clean_lower
+            for narr in [
+                "may be detected with",
+                "detected with 6 hours",
+                "dr faeeza",
+                "begum md",
+                "kmc.no",
+                "md pathology",
+                "end of the report",
+                "interpretation & clinical comments",
+            ]
+        ) or clean_lower.startswith(("non-diabetic:", "pre-diabetic:", "diabetic:", "desirable:", "near optimal:")):
+            return None, f"Skipped narrative / doctor / category label line: '{clean_line}'"
+
+        # Separate method prefix before analyte line
+        extracted_method = None
         method_prefix_match = re.match(
-            r"^(?:method|technique|procedure)\s*:\s*[A-Za-z0-9\s\-\.\&\,\(\)]+\s+(\*?\s*[A-Za-z].*)$",
+            r"^(?:method|technique|procedure)\s*:\s*([A-Za-z0-9\s\-\.\&\,\(\)]+?)\s+(\*?\s*[A-Za-z].*)$",
             clean_line,
             re.IGNORECASE,
         )
         if method_prefix_match:
-            clean_line = method_prefix_match.group(1).strip()
+            extracted_method = method_prefix_match.group(1).strip()
+            clean_line = method_prefix_match.group(2).strip()
 
-        # Handle continuation method prefix (e.g. "Peroxidase) * UREA 20.0 mg/dL")
+        # Continuation method prefix (e.g. "Peroxidase) * UREA 20.0 mg/dL")
         continuation_prefix_match = re.match(
             r"^[A-Za-z0-9\s\,\-]+\)\s*(\*?\s*[A-Za-z].*)$",
             clean_line,
@@ -380,13 +413,13 @@ class ParserService:
         if continuation_prefix_match:
             clean_line = continuation_prefix_match.group(1).strip()
 
-        # Skip standalone method lines (e.g. "Method:Colorimetric", "Method:Enzymatic Method (sarcosine oxidase,", "Peroxidase)")
+        # Skip standalone method lines
         if re.match(
             r"^(?:method|technique|procedure)\s*:", clean_line, re.IGNORECASE
         ) or clean_line.startswith("Peroxidase)"):
             return None, None
 
-        # Find unit using boundary matching to avoid substring truncation (e.g. mg/L vs g/L)
+        # Find unit using boundary matching
         unit = None
         for u in cls.COMMON_UNITS:
             pattern = r"(?:^|\s|\b)" + re.escape(u) + r"(?:\b|\s|$)"
@@ -394,19 +427,24 @@ class ParserService:
                 unit = u
                 break
 
-        # Match numbers (integers or floats)
+        # Match numbers, ignoring leading numbers in test names (e.g. 25-hydroxy, 1,25-dihydroxy, 1,25-oh)
         num_matches = list(re.finditer(r"\b\d+(?:\.\d+)?\b", clean_line))
         if not num_matches:
             return None, "Line does not contain a numeric lab value."
 
         val_match = num_matches[0]
+        for m in num_matches:
+            after_text = clean_line[m.end():m.end()+12].lower()
+            if after_text.startswith(("-hydroxy", "-oh", "-d", ",25-", "-d3")):
+                continue
+            val_match = m
+            break
         try:
             numeric_val = float(val_match.group(0))
         except ValueError:
             return None, f"Failed to parse float value from '{val_match.group(0)}'."
 
-        # Postal code / Visit ID / Phone / Account number guard:
-        # Numbers >= 100,000 without a measurement unit are metadata (e.g. postal code, visit ID, phone, KMC no), not lab measurements.
+        # Guard against postal code / phone / KMC number
         if numeric_val >= 100000 and not unit:
             return (
                 None,
@@ -415,6 +453,17 @@ class ParserService:
 
         raw_test_name = clean_line[: val_match.start()].strip(" :-_\t")
         clean_name_lower = raw_test_name.lower().strip()
+
+        # Method extraction from raw_test_name (e.g. "RBC Count (Electrical Impedence)" -> raw_test_name="RBC Count", method="Electrical Impedence")
+        method_in_name = re.search(
+            r"^(.*?)\s*\((electrical\s+imped[ae]nce|calculated|hplc|clia|eclia|spectrophotometry|immunoturbidimetry|ion\s+selective\s+electrode|ise|dry\s+chemistry|uricase[\-\s]peroxidase|hexokinase|enzymatic|colorimetric|direct\s+measure)\)$",
+            raw_test_name,
+            re.IGNORECASE,
+        )
+        if method_in_name:
+            raw_test_name = method_in_name.group(1).strip()
+            if not extracted_method:
+                extracted_method = method_in_name.group(2).strip()
 
         # Check against invalid test name list
         if clean_name_lower in cls.INVALID_TEST_NAMES or any(
@@ -429,6 +478,7 @@ class ParserService:
                 "reported on",
                 "interpretation",
                 "kmc.no",
+                "6 hours",
             ]
         ):
             return None, f"Skipped invalid test name candidate: '{raw_test_name}'"
@@ -438,7 +488,7 @@ class ParserService:
 
         # Check if unit-less test is valid
         if not unit:
-            catalog_item, _ = TestMappingService.match_test(raw_test_name)
+            catalog_item, _ = TestMappingService.match_test(raw_test_name, unit=unit)
             if not catalog_item and not raw_test_name.startswith("*"):
                 return (
                     None,
@@ -446,7 +496,6 @@ class ParserService:
                 )
 
         remaining = clean_line[val_match.end() :].strip()
-        # If remaining line starts with qualitatively reported words like "Normal", strip it
         remaining = re.sub(
             r"^(?:normal|high|low|abnormal|trace|negative|positive)\b\s*",
             "",
@@ -456,7 +505,6 @@ class ParserService:
 
         raw_val_str = f"{val_match.group(0)} {unit}" if unit else val_match.group(0)
 
-        # Parse reference range if remaining string has text
         ref_range_obj = None
         warning = None
         if remaining:
@@ -474,6 +522,7 @@ class ParserService:
             raw_value=raw_val_str,
             status=None,
             flag=None,
+            method=extracted_method,
         )
 
         return lab_result, warning

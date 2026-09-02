@@ -1,0 +1,975 @@
+{
+  "schema_version": "2.1",
+  "report": {
+    "report_id": "rep_7c082571477b",
+    "report_date": "2026-07-15T17:24:00",
+    "lab_name": null
+  },
+  "patient": {
+    "patient_id": "KAD393.00000001",
+    "name": "Mrs.CHANDRA",
+    "age": 61,
+    "gender": "Female"
+  },
+  "tests": [
+    {
+      "test_name": "Glycosylated Haemoglobin HbA1c",
+      "raw_test_name": "Glycosylated Haemoglobin HbA1c",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 6.2,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": null,
+        "high": 5.6,
+        "raw": "Normal: < 5.6 HPLC"
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "test_name": "Vitamin - B12",
+      "raw_test_name": "Vitamin - B12",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 190.0,
+      "raw_unit": "pg/mL",
+      "normalized_unit": "pg/mL",
+      "reference_range": {
+        "low": 293.0,
+        "high": 1210.0,
+        "raw": "pg/mL <1 year: 293 - 1210 ECLIA"
+      },
+      "status": "LOW",
+      "flag": "RED_FLAG",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "test_name": "Others Nil % Microscopy Page",
+      "raw_test_name": "Others Nil % Microscopy Page",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 4.0,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "of 12"
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "test_name": "Haemoglobin",
+      "raw_test_name": "Haemoglobin",
+      "canonical_test_name": "Hemoglobin",
+      "test_id": "HEMOGLOBIN",
+      "loinc_code": "718-7",
+      "value": 12.8,
+      "raw_unit": "g/dL",
+      "normalized_unit": "g/dL",
+      "reference_range": {
+        "low": 12.0,
+        "high": 15.0,
+        "raw": "12.0 - 15.0"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "RBC Count",
+      "raw_test_name": "RBC Count",
+      "canonical_test_name": "Red Blood Cell Count",
+      "test_id": "RBC",
+      "loinc_code": "789-8",
+      "value": 4.92,
+      "raw_unit": "Millions/cumm",
+      "normalized_unit": "millions/cumm",
+      "reference_range": {
+        "low": 3.8,
+        "high": 4.8,
+        "raw": "3.8 - 4.8"
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Total WBC Count",
+      "raw_test_name": "Total WBC Count",
+      "canonical_test_name": "White Blood Cell Count",
+      "test_id": "WBC",
+      "loinc_code": "6690-2",
+      "value": 7750.0,
+      "raw_unit": "Cells/cumm",
+      "normalized_unit": "cells/cumm",
+      "reference_range": {
+        "low": 4000.0,
+        "high": 10000.0,
+        "raw": "4000 - 10000"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Platelet Count",
+      "raw_test_name": "Platelet Count",
+      "canonical_test_name": "Platelet Count",
+      "test_id": "PLATELETS",
+      "loinc_code": "777-3",
+      "value": 171.0,
+      "raw_unit": "10ˆ3/µL",
+      "normalized_unit": "10^3/uL",
+      "reference_range": {
+        "low": 150.0,
+        "high": 450.0,
+        "raw": "10ˆ3/µL 150 - 450"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Packed Cell Volume (PCV)",
+      "raw_test_name": "Packed Cell Volume (PCV)",
+      "canonical_test_name": "Hematocrit",
+      "test_id": "HCT",
+      "loinc_code": "4544-3",
+      "value": 39.4,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": 36.0,
+        "high": 46.0,
+        "raw": "36 - 46"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Mean Corpuscular Volume (MCV)",
+      "raw_test_name": "Mean Corpuscular Volume (MCV)",
+      "canonical_test_name": "Mean Corpuscular Volume",
+      "test_id": "MCV",
+      "loinc_code": "787-2",
+      "value": 80.0,
+      "raw_unit": "fL",
+      "normalized_unit": "fL",
+      "reference_range": {
+        "low": 83.0,
+        "high": 101.0,
+        "raw": "fL 83 - 101"
+      },
+      "status": "LOW",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Mean Corpuscular Hb. (MCH)",
+      "raw_test_name": "Mean Corpuscular Hb. (MCH)",
+      "canonical_test_name": "Mean Corpuscular Hemoglobin",
+      "test_id": "MCH",
+      "loinc_code": "785-6",
+      "value": 26.0,
+      "raw_unit": "pg",
+      "normalized_unit": "pg",
+      "reference_range": {
+        "low": 27.0,
+        "high": 32.0,
+        "raw": "pg 27 - 32"
+      },
+      "status": "LOW",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "MCHC",
+      "raw_test_name": "MCHC",
+      "canonical_test_name": "Mean Corpuscular Hemoglobin Concentration",
+      "test_id": "MCHC",
+      "loinc_code": "786-4",
+      "value": 32.5,
+      "raw_unit": "g/dL",
+      "normalized_unit": "g/dL",
+      "reference_range": {
+        "low": 31.5,
+        "high": 34.5,
+        "raw": "31.5 - 34.5"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "RDW CV",
+      "raw_test_name": "RDW CV",
+      "canonical_test_name": "Red Cell Distribution Width CV",
+      "test_id": "RDW_CV",
+      "loinc_code": "788-0",
+      "value": 15.8,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": 11.6,
+        "high": 14.0,
+        "raw": "11.6 - 14.0"
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "RDW SD",
+      "raw_test_name": "RDW SD",
+      "canonical_test_name": "Red Cell Distribution Width SD",
+      "test_id": "RDW_SD",
+      "loinc_code": "21000-5",
+      "value": 44.4,
+      "raw_unit": "fL",
+      "normalized_unit": "fL",
+      "reference_range": {
+        "low": 29.0,
+        "high": 46.0,
+        "raw": "fL 29 - 46"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "PDW",
+      "raw_test_name": "PDW",
+      "canonical_test_name": "Platelet Distribution Width",
+      "test_id": "PDW",
+      "loinc_code": null,
+      "value": 16.6,
+      "raw_unit": "fL",
+      "normalized_unit": "fL",
+      "reference_range": {
+        "low": 11.0,
+        "high": 22.0,
+        "raw": "fL 11 - 22"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "MPV",
+      "raw_test_name": "MPV",
+      "canonical_test_name": "Mean Platelet Volume",
+      "test_id": "MPV",
+      "loinc_code": "32623-1",
+      "value": 8.7,
+      "raw_unit": "fL",
+      "normalized_unit": "fL",
+      "reference_range": {
+        "low": 7.0,
+        "high": 11.0,
+        "raw": "fL 7 - 11"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Neutrophils",
+      "raw_test_name": "Neutrophils",
+      "canonical_test_name": "Neutrophils Percentage",
+      "test_id": "NEUTROPHILS",
+      "loinc_code": "770-8",
+      "value": 63.2,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": 45.0,
+        "high": 75.0,
+        "raw": "45 - 75"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Lymphocytes",
+      "raw_test_name": "Lymphocytes",
+      "canonical_test_name": "Lymphocytes Percentage",
+      "test_id": "LYMPHOCYTES",
+      "loinc_code": "736-9",
+      "value": 21.7,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": 20.0,
+        "high": 40.0,
+        "raw": "20 - 40"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Eosinophils",
+      "raw_test_name": "Eosinophils",
+      "canonical_test_name": "Eosinophils Percentage",
+      "test_id": "EOSINOPHILS",
+      "loinc_code": "713-8",
+      "value": 8.7,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": 1.0,
+        "high": 6.0,
+        "raw": "1 - 6"
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Monocytes",
+      "raw_test_name": "Monocytes",
+      "canonical_test_name": "Monocytes Percentage",
+      "test_id": "MONOCYTES",
+      "loinc_code": "5905-5",
+      "value": 5.9,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": 2.0,
+        "high": 10.0,
+        "raw": "2 - 10"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Basophils",
+      "raw_test_name": "Basophils",
+      "canonical_test_name": "Basophils Percentage",
+      "test_id": "BASOPHILS",
+      "loinc_code": "706-2",
+      "value": 0.5,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": 0.0,
+        "high": 2.0,
+        "raw": "0 - 2"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Reference: Bates I. Reference Ranges and Normal Values. In: Bain BJ, Bates I, Laffan MA, Lewis SM, editor. Dacie and Lewis Practical Haematology, 12th ed. China: Elsevier publishers;",
+      "raw_test_name": "Reference: Bates I. Reference Ranges and Normal Values. In: Bain BJ, Bates I, Laffan MA, Lewis SM, editor. Dacie and Lewis Practical Haematology, 12th ed. China: Elsevier publishers;",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 2017.0,
+      "raw_unit": "pg",
+      "normalized_unit": "pg",
+      "reference_range": {
+        "low": 8.0,
+        "high": 17.0,
+        "raw": ".pg. 8-17."
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "test_name": "LIPID PROFILE , SERUM Total Cholesterol",
+      "raw_test_name": "LIPID PROFILE , SERUM Total Cholesterol",
+      "canonical_test_name": "Total Cholesterol",
+      "test_id": "CHOLESTEROL_TOTAL",
+      "loinc_code": "2093-3",
+      "value": 225.0,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": null,
+        "high": 200.0,
+        "raw": "Desirable : < 200 Cholesterol Oxidase"
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "HDL Cholesterol",
+      "raw_test_name": "HDL Cholesterol",
+      "canonical_test_name": "HDL Cholesterol",
+      "test_id": "HDL",
+      "loinc_code": "2085-9",
+      "value": 45.9,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": null,
+        "high": 40.0,
+        "raw": "Low: < 40, High: > 60"
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "colorimetric Total Triglycerides",
+      "raw_test_name": "colorimetric Total Triglycerides",
+      "canonical_test_name": "Triglycerides",
+      "test_id": "TRIGLYCERIDES",
+      "loinc_code": "2571-8",
+      "value": 91.3,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "Desirable Level : 150 GPO-POD"
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "VLDL Cholesterol",
+      "raw_test_name": "VLDL Cholesterol",
+      "canonical_test_name": "Total Cholesterol",
+      "test_id": "CHOLESTEROL_TOTAL",
+      "loinc_code": "2093-3",
+      "value": 18.26,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "≤ 30"
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "LDL Cholesterol",
+      "raw_test_name": "LDL Cholesterol",
+      "canonical_test_name": "LDL Cholesterol",
+      "test_id": "LDL",
+      "loinc_code": "2089-1",
+      "value": 160.84,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": null,
+        "high": 100.0,
+        "raw": "Optimal: < 100 Calculation"
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Non - HDL Cholesterol",
+      "raw_test_name": "Non - HDL Cholesterol",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 179.1,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "≤ 130"
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "test_name": "Chol / HDL Ratio",
+      "raw_test_name": "Chol / HDL Ratio",
+      "canonical_test_name": "HDL Cholesterol",
+      "test_id": "HDL",
+      "loinc_code": "2085-9",
+      "value": 4.9,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": 3.3,
+        "high": 4.4,
+        "raw": "Risk: 3.3 - 4.4"
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "TGL / HDL Ratio",
+      "raw_test_name": "TGL / HDL Ratio",
+      "canonical_test_name": "HDL Cholesterol",
+      "test_id": "HDL",
+      "loinc_code": "2085-9",
+      "value": 2.0,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": null,
+        "high": 2.5,
+        "raw": "Optimal: < 2.5"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Total Bilirubin",
+      "raw_test_name": "Total Bilirubin",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 0.83,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": null,
+        "high": 1.2,
+        "raw": "< 1.2 Diazo"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "test_name": "Direct Bilirubin",
+      "raw_test_name": "Direct Bilirubin",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 0.46,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": 0.0,
+        "high": 0.3,
+        "raw": "0 - 0.3 Diazo"
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "test_name": "Indirect Bilirubin",
+      "raw_test_name": "Indirect Bilirubin",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 0.37,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": 0.3,
+        "high": 1.0,
+        "raw": "0.3 - 1.0"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "test_name": "SGOT / AST",
+      "raw_test_name": "SGOT / AST",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 18.7,
+      "raw_unit": "U/L",
+      "normalized_unit": "U/L",
+      "reference_range": {
+        "low": null,
+        "high": 40.0,
+        "raw": "U/L < 40.0 IFCC with pyridoxal"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "test_name": "activation SGPT / ALT",
+      "raw_test_name": "activation SGPT / ALT",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 12.7,
+      "raw_unit": "U/L",
+      "normalized_unit": "U/L",
+      "reference_range": {
+        "low": null,
+        "high": 42.0,
+        "raw": "U/L < 42.0 IFCC"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "test_name": "Alkaline Phosphatase",
+      "raw_test_name": "Alkaline Phosphatase",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 102.0,
+      "raw_unit": "U/L",
+      "normalized_unit": "U/L",
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "U/L 35 ‑ 104 IFCC, PNPP AMP"
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "test_name": "Buffer Total Protein",
+      "raw_test_name": "Buffer Total Protein",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 7.61,
+      "raw_unit": "g/dL",
+      "normalized_unit": "g/dL",
+      "reference_range": {
+        "low": 6.6,
+        "high": 8.7,
+        "raw": "6.6 - 8.7 Biuret"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "test_name": "Albumin",
+      "raw_test_name": "Albumin",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 4.18,
+      "raw_unit": "g/dL",
+      "normalized_unit": "g/dL",
+      "reference_range": {
+        "low": 3.5,
+        "high": 5.2,
+        "raw": "3.5 - 5.2 Bromocresol green"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "test_name": "Globulin",
+      "raw_test_name": "Globulin",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 3.43,
+      "raw_unit": "g/dL",
+      "normalized_unit": "g/dL",
+      "reference_range": {
+        "low": 2.5,
+        "high": 4.5,
+        "raw": "2.5 - 4.5"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "test_name": "Gamma Glutamyl Transferase (GGT)",
+      "raw_test_name": "Gamma Glutamyl Transferase (GGT)",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 41.6,
+      "raw_unit": "U/L",
+      "normalized_unit": "U/L",
+      "reference_range": {
+        "low": 8.0,
+        "high": 61.0,
+        "raw": "U/L Men: 8 - 61"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "test_name": "Thyroid Stimulating Hormone (TSH)",
+      "raw_test_name": "Thyroid Stimulating Hormone (TSH)",
+      "canonical_test_name": "Thyroid Stimulating Hormone",
+      "test_id": "TSH",
+      "loinc_code": "11580-8",
+      "value": 5.05,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": 0.27,
+        "high": 4.2,
+        "raw": "μIU/mL 0.27 - 4.2 ECLIA"
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Urea",
+      "raw_test_name": "Urea",
+      "canonical_test_name": "Serum Urea",
+      "test_id": "UREA",
+      "loinc_code": "3091-6",
+      "value": 20.8,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": 16.6,
+        "high": 48.5,
+        "raw": "16.6 - 48.5"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Creatinine",
+      "raw_test_name": "Creatinine",
+      "canonical_test_name": "Serum Creatinine",
+      "test_id": "CREATININE",
+      "loinc_code": "2160-0",
+      "value": 0.84,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": 0.5,
+        "high": 0.9,
+        "raw": "Females: 0.50 - 0.90"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "BUN",
+      "raw_test_name": "BUN",
+      "canonical_test_name": "Urea Nitrogen (BUN)",
+      "test_id": "BUN",
+      "loinc_code": "3094-0",
+      "value": 9.72,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": 7.0,
+        "high": 18.0,
+        "raw": "7 - 18"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "BUN/Cr Ratio",
+      "raw_test_name": "BUN/Cr Ratio",
+      "canonical_test_name": "BUN/Creatinine Ratio",
+      "test_id": "BUN_CREATININE_RATIO",
+      "loinc_code": "3097-3",
+      "value": 11.56,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": null,
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Uric Acid",
+      "raw_test_name": "Uric Acid",
+      "canonical_test_name": "Uric Acid",
+      "test_id": "URIC_ACID",
+      "loinc_code": "3084-1",
+      "value": 4.57,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "Male: 3.4 - 7.0"
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Sodium",
+      "raw_test_name": "Sodium",
+      "canonical_test_name": "Serum Sodium",
+      "test_id": "SODIUM",
+      "loinc_code": "2951-2",
+      "value": 140.4,
+      "raw_unit": "mmol/L",
+      "normalized_unit": "mmol/L",
+      "reference_range": {
+        "low": 135.0,
+        "high": 150.0,
+        "raw": "135 - 150"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Potassium",
+      "raw_test_name": "Potassium",
+      "canonical_test_name": "Serum Potassium",
+      "test_id": "POTASSIUM",
+      "loinc_code": "2823-3",
+      "value": 4.55,
+      "raw_unit": "mmol/L",
+      "normalized_unit": "mmol/L",
+      "reference_range": {
+        "low": 3.5,
+        "high": 5.0,
+        "raw": "3.5 - 5.0"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Chloride",
+      "raw_test_name": "Chloride",
+      "canonical_test_name": "Serum Chloride",
+      "test_id": "CHLORIDE",
+      "loinc_code": "2075-0",
+      "value": 101.5,
+      "raw_unit": "mmol/L",
+      "normalized_unit": "mmol/L",
+      "reference_range": {
+        "low": 94.0,
+        "high": 110.0,
+        "raw": "94 - 110"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "Calcium",
+      "raw_test_name": "Calcium",
+      "canonical_test_name": "Calcium",
+      "test_id": "CALCIUM",
+      "loinc_code": "17861-6",
+      "value": 9.02,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": 8.6,
+        "high": 10.0,
+        "raw": "8.6 - 10.0"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED"
+    },
+    {
+      "test_name": "TIBC",
+      "raw_test_name": "TIBC",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 292.0,
+      "raw_unit": "ug/dL",
+      "normalized_unit": "ug/dL",
+      "reference_range": {
+        "low": 250.0,
+        "high": 450.0,
+        "raw": "ug/dL 250-450 Ferene-S"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "test_name": "Transferrin Saturation%",
+      "raw_test_name": "Transferrin Saturation%",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 13.01,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": 12.0,
+        "high": 50.0,
+        "raw": "12 - 50 Calculation"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "test_name": "Transferrin",
+      "raw_test_name": "Transferrin",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 234.0,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": 200.0,
+        "high": 360.0,
+        "raw": "200 - 360 Calculation"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "REVIEW_REQUIRED"
+    },
+    {
+      "test_name": "GLUCOSE - RANDOM , NAF PLASMA Random Glucose",
+      "raw_test_name": "GLUCOSE - RANDOM , NAF PLASMA Random Glucose",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 91.3,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": 70.0,
+        "high": 140.0,
+        "raw": "70-140 Hexokinase"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "REVIEW_REQUIRED"
+    }
+  ],
+  "warnings": [
+    "Discrepancy in Reported On timestamp across report pages (Conflicting: '2026-07-15T18:01:00, 2026-07-15T18:24:00, 2026-07-15T17:13:00, 2026-07-15T16:43:00, 2026-07-15T17:10:00, 2026-07-15T16:48:00, 2026-07-15T17:28:00', Majority/Resolved: '2026-07-15T17:24:00').",
+    "Unparsed reference range format: 'of 12'",
+    "Unparsed reference range format: 'Desirable Level : 150 GPO-POD'",
+    "Unparsed reference range format: '≤ 30 Calculated'",
+    "Unparsed reference range format: '≤ 130 Calculated'",
+    "Unparsed reference range format: 'U/L 35 ‑ 104 IFCC, PNPP AMP'",
+    "Unparsed reference range format: 'Calculated'"
+  ]
+}

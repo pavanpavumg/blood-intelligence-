@@ -25,12 +25,23 @@ class ClassificationService:
         if value is None:
             return "UNKNOWN", "REVIEW_REQUIRED"
 
+        # Handle Categorical Reference Ranges
+        if ref_range and ref_range.selected_category:
+            cat = ref_range.selected_category
+            if cat in ["OPTIMAL", "NEAR_OPTIMAL", "NON_DIABETIC", "SUFFICIENCY", "INSUFFICIENCY", "DESIRABLE"]:
+                return "NORMAL", "NONE"
+            elif cat in ["BORDERLINE_HIGH", "HIGH", "VERY_HIGH", "PRE_DIABETIC", "DIABETIC", "TOXICITY"]:
+                return "HIGH", "RED_FLAG"
+            elif cat in ["DEFICIENCY", "UNDESIRABLE"]:
+                return "LOW", "RED_FLAG"
+
         # If reference range is missing or empty -> UNKNOWN / REVIEW_REQUIRED
         if not ref_range or (ref_range.low is None and ref_range.high is None):
             return "UNKNOWN", "REVIEW_REQUIRED"
 
         low = ref_range.low
         high = ref_range.high
+        op = ref_range.operator or ""
 
         # 1. Two-sided Range (both low and high present)
         if low is not None and high is not None:
@@ -41,18 +52,30 @@ class ClassificationService:
             else:
                 return "NORMAL", "NONE"
 
-        # 2. Upper-bound only range (e.g. < 5.7, <= 100)
+        # 2. Upper-bound only range (e.g. < 200, <= 6.0, Up to 6.0)
         if high is not None and low is None:
-            if value > high:
-                return "HIGH", "RED_FLAG"
+            if op == "<=":
+                if value <= high:
+                    return "NORMAL", "NONE"
+                else:
+                    return "HIGH", "RED_FLAG"
             else:
-                return "NORMAL", "NONE"
+                if value > high:
+                    return "HIGH", "RED_FLAG"
+                else:
+                    return "NORMAL", "NONE"
 
         # 3. Lower-bound only range (e.g. > 40, >= 10)
         if low is not None and high is None:
-            if value < low:
-                return "LOW", "RED_FLAG"
+            if op == ">=":
+                if value < low:
+                    return "LOW", "RED_FLAG"
+                else:
+                    return "NORMAL", "NONE"
             else:
-                return "NORMAL", "NONE"
+                if value <= low:
+                    return "LOW", "RED_FLAG"
+                else:
+                    return "NORMAL", "NONE"
 
-        return "UNKNOWN", "REVIEW_REQUIRED"
+        return "UNKNOWN", "NONE"
