@@ -1,9 +1,11 @@
+import io
 import json
 import uuid
 import fitz  # PyMuPDF
 from pathlib import Path
 from typing import List, Dict, Any, Tuple
 from fastapi import UploadFile, HTTPException, status
+from fastapi.responses import StreamingResponse
 
 from app.core.config import settings
 from app.core.logging import logger
@@ -22,8 +24,8 @@ PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 
 class DocumentService:
     """
-    Document processing orchestrator for file validation, document type detection,
-    OCR extraction, field parsing, and JSON persistence.
+    Stateless, in-memory document processing orchestrator for file validation,
+    OCR extraction, field parsing, and streaming responses without disk storage.
     """
 
     ALLOWED_EXTENSIONS = {".pdf", ".jpg", ".jpeg", ".png"}
@@ -74,28 +76,25 @@ class DocumentService:
     @classmethod
     async def process_uploaded_report(cls, file: UploadFile) -> ReportUploadResponse:
         """
-        Orchestrates full report upload pipeline.
+        Stateless in-memory document processing pipeline using io.BytesIO.
+        Reads PDF/Image directly from RAM stream without saving files to disk.
         """
         contents = await file.read()
         ext = cls.validate_file(file, contents)
 
         report_id = f"rep_{uuid.uuid4().hex[:12]}"
-        assert file.filename is not None
-        safe_filename = Path(file.filename).name
-        saved_file_path = UPLOAD_DIR / f"{report_id}_{safe_filename}"
-
-        # 1. Store original file safely
-        with open(saved_file_path, "wb") as f:
-            f.write(contents)
-        logger.info(f"Saved raw report upload to '{saved_file_path}'.")
+        
+        # Wrap uploaded bytes in an in-memory BytesIO stream
+        input_stream = io.BytesIO(contents)
 
         extracted_lines: List[str] = []
         doc_type = "UNKNOWN"
 
-        # 2. Detect Document Type & Extract Text
+        # 1. Detect Document Type & Extract Text from RAM Stream
         if ext == ".pdf":
             try:
-                doc = fitz.open(stream=contents, filetype="pdf")
+                # Read PDF directly from io.BytesIO memory stream
+                doc = fitz.open(stream=input_stream.getvalue(), filetype="pdf")
                 if len(doc) == 0:
                     raise HTTPException(
                         status_code=status.HTTP_400_BAD_REQUEST,
@@ -114,12 +113,12 @@ class DocumentService:
                         page_lines = OCRService.extract_layout_sorted_lines(page)
                         extracted_lines.extend(page_lines)
                     logger.info(
-                        f"Report [{report_id}] identified as DIGITAL_PDF. Extracted {len(extracted_lines)} layout-sorted lines via PyMuPDF."
+                        f"Report [{report_id}] identified as DIGITAL_PDF. Extracted {len(extracted_lines)} layout-sorted lines in-memory."
                     )
                 else:
                     doc_type = "SCANNED_PDF"
                     logger.info(
-                        f"Report [{report_id}] identified as SCANNED_PDF. Rendering pages for OCR pipeline."
+                        f"Report [{report_id}] identified as SCANNED_PDF. Rendering pages in-memory for OCR pipeline."
                     )
                     for page_idx in range(len(doc)):
                         img_bytes = OCRService.render_pdf_page_to_bytes(doc, page_idx)
@@ -139,10 +138,10 @@ class DocumentService:
         else:  # Image file (.jpg, .jpeg, .png)
             doc_type = "IMAGE"
             logger.info(
-                f"Report [{report_id}] identified as IMAGE ({ext}). Running OpenCV & OCR preprocessing."
+                f"Report [{report_id}] identified as IMAGE ({ext}). Running in-memory OCR preprocessing."
             )
             try:
-                ocr_lines, _ = OCRService.extract_text_from_image(contents)
+                ocr_lines, _ = OCRService.extract_text_from_image(input_stream.getvalue())
                 extracted_lines = ocr_lines
             except Exception as exc:
                 logger.error(
@@ -157,17 +156,11 @@ class DocumentService:
         if not extracted_lines:
             logger.warning(f"No text extracted from report [{report_id}].")
 
-        # 3. Parse Fields using Deterministic Parser
+        # 2. Parse Fields using Deterministic Parser
         parsed_data = ParserService.parse_document_text(report_id, extracted_lines)
 
-        # 4. Phase 2 Normalization & Classification
+        # 3. Phase 2 Normalization & Classification
         normalized_data = NormalizationService.normalize_extracted_report(parsed_data)
-
-        # 5. Store processed JSON result
-        processed_json_path = PROCESSED_DIR / f"{report_id}.json"
-        with open(processed_json_path, "w", encoding="utf-8") as f:
-            f.write(normalized_data.model_dump_json(indent=2))
-        logger.info(f"Saved processed JSON payload to '{processed_json_path}'.")
 
         # Determine response status
         response_status = (
@@ -176,4 +169,40 @@ class DocumentService:
 
         return ReportUploadResponse(
             report_id=report_id, status=response_status, data=normalized_data
+        )
+
+    @classmethod
+    async def process_pdf_to_streaming_response(
+        cls, file: UploadFile, output_filename: str = "processed_output.pdf"
+    ) -> StreamingResponse:
+        """
+        Completely self-contained, stateless in-memory function that reads an uploaded PDF
+        directly from an io.BytesIO memory stream and streams the output directly back
+        as a StreamingResponse without storing anything to disk.
+        """
+        contents = await file.read()
+        cls.validate_file(file, contents)
+
+        # Read uploaded PDF directly from memory stream
+        input_stream = io.BytesIO(contents)
+
+        # Open PyMuPDF document directly from in-memory BytesIO buffer
+        doc = fitz.open(stream=input_stream.getvalue(), filetype="pdf")
+        if len(doc) == 0:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Corrupted PDF document containing 0 pages.",
+            )
+
+        # Perform in-memory processing on PDF document
+        output_buffer = io.BytesIO()
+        output_bytes = doc.tobytes(garbage=4, deflate=True)
+        output_buffer.write(output_bytes)
+        output_buffer.seek(0)
+
+        # Stream generated output directly back as StreamingResponse
+        return StreamingResponse(
+            output_buffer,
+            media_type="application/pdf",
+            headers={"Content-Disposition": f"attachment; filename={output_filename}"},
         )

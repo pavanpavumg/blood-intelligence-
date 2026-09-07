@@ -1,0 +1,1050 @@
+{
+  "schema_version": "2.1",
+  "report": {
+    "report_id": "rep_0ecb98ba892c",
+    "report_date": "2026-05-28T17:09:00",
+    "lab_name": "CENTROMED LABS PVT. LTD"
+  },
+  "patient": {
+    "patient_id": "3139055",
+    "name": "Mr. PRAVEEN",
+    "age": 30,
+    "gender": "Male"
+  },
+  "tests": [
+    {
+      "test_name": "* SERUM CREATININE",
+      "raw_test_name": "* SERUM CREATININE",
+      "loinc_code": "2160-0",
+      "value": 1.08,
+      "raw_unit": "mg/dL",
+      "reference_range": {
+        "low": 0.6,
+        "high": 1.4,
+        "raw": "0.6 - 1.4"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* SERUM CREATININE",
+        "raw_value": "1.08 mg/dL"
+      }
+    },
+    {
+      "test_name": "* UREA",
+      "raw_test_name": "* UREA",
+      "loinc_code": "3091-6",
+      "value": 28.49,
+      "raw_unit": "mg/dL",
+      "reference_range": {
+        "low": 16.8,
+        "high": 43.2,
+        "raw": "16.8-43.2"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* UREA",
+        "raw_value": "28.49 mg/dL"
+      }
+    },
+    {
+      "test_name": "* UREA NITROGEN (BUN)",
+      "raw_test_name": "* UREA NITROGEN (BUN)",
+      "loinc_code": "3094-0",
+      "value": 13.31,
+      "raw_unit": "mg/dL",
+      "reference_range": {
+        "low": 8.0,
+        "high": 23.0,
+        "raw": "8 - 23"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* UREA NITROGEN (BUN)",
+        "raw_value": "13.31 mg/dL"
+      }
+    },
+    {
+      "test_name": "* BUN/CREATININE RATIO",
+      "raw_test_name": "* BUN/CREATININE RATIO",
+      "loinc_code": "3097-3",
+      "value": 12.33,
+      "raw_unit": null,
+      "reference_range": null,
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "source_trace": {
+        "raw_test_name": "* BUN/CREATININE RATIO",
+        "raw_value": "12.33"
+      }
+    },
+    {
+      "test_name": "* URIC ACID",
+      "raw_test_name": "* URIC ACID",
+      "loinc_code": "3084-1",
+      "value": 5.63,
+      "raw_unit": "mg/dL",
+      "reference_range": {
+        "low": 3.6,
+        "high": 8.2,
+        "raw": "Male:3.6 -8.2 Female:2.3 - 6.1"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* URIC ACID",
+        "raw_value": "5.63 mg/dL"
+      }
+    },
+    {
+      "test_name": "* SODIUM",
+      "raw_test_name": "* SODIUM",
+      "loinc_code": "2951-2",
+      "value": 140.0,
+      "raw_unit": "mmol/L",
+      "reference_range": {
+        "low": 136.0,
+        "high": 145.0,
+        "raw": "136-145"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* SODIUM",
+        "raw_value": "140 mmol/L"
+      }
+    },
+    {
+      "test_name": "* POTASSIUM",
+      "raw_test_name": "* POTASSIUM",
+      "loinc_code": "2823-3",
+      "value": 3.89,
+      "raw_unit": "mmol/L",
+      "reference_range": {
+        "low": 3.5,
+        "high": 5.5,
+        "raw": "3.5 - 5.5"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* POTASSIUM",
+        "raw_value": "3.89 mmol/L"
+      }
+    },
+    {
+      "test_name": "* CHLORIDE",
+      "raw_test_name": "* CHLORIDE",
+      "loinc_code": "2075-0",
+      "value": 101.0,
+      "raw_unit": "mmol/L",
+      "reference_range": {
+        "low": 95.0,
+        "high": 105.0,
+        "raw": "95-105"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* CHLORIDE",
+        "raw_value": "101 mmol/L"
+      }
+    },
+    {
+      "test_name": "* TOTAL BILIRUBIN",
+      "raw_test_name": "* TOTAL BILIRUBIN",
+      "loinc_code": "1975-2",
+      "value": 0.7,
+      "raw_unit": "mg/dL",
+      "reference_range": {
+        "low": 0.3,
+        "high": 1.2,
+        "raw": "0.3 - 1.2"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* TOTAL BILIRUBIN",
+        "raw_value": "0.70 mg/dL"
+      }
+    },
+    {
+      "test_name": "* DIRECT BILIRUBIN",
+      "raw_test_name": "* DIRECT BILIRUBIN",
+      "loinc_code": "1968-7",
+      "value": 0.18,
+      "raw_unit": "mg/dL",
+      "reference_range": {
+        "low": 0.0,
+        "high": 0.2,
+        "raw": "0.0 - 0.2"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* DIRECT BILIRUBIN",
+        "raw_value": "0.18 mg/dL"
+      }
+    },
+    {
+      "test_name": "* INDIRECT BILIRUBIN",
+      "raw_test_name": "* INDIRECT BILIRUBIN",
+      "loinc_code": "1971-1",
+      "value": 0.52,
+      "raw_unit": "mg/dL",
+      "reference_range": {
+        "low": 0.2,
+        "high": 0.8,
+        "raw": "0.2 - 0.8"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* INDIRECT BILIRUBIN",
+        "raw_value": "0.52 mg/dL"
+      }
+    },
+    {
+      "test_name": "* SGOT / AST",
+      "raw_test_name": "* SGOT / AST",
+      "loinc_code": "1920-8",
+      "value": 32.7,
+      "raw_unit": "IU/L",
+      "reference_range": {
+        "low": null,
+        "high": 35.0,
+        "raw": "IU/L Upto 35"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* SGOT / AST",
+        "raw_value": "32.7 IU/L"
+      }
+    },
+    {
+      "test_name": "* SGPT / ALT",
+      "raw_test_name": "* SGPT / ALT",
+      "loinc_code": "1742-6",
+      "value": 47.8,
+      "raw_unit": "IU/L",
+      "reference_range": {
+        "low": null,
+        "high": 45.0,
+        "raw": "IU/L Upto 45"
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "source_trace": {
+        "raw_test_name": "* SGPT / ALT",
+        "raw_value": "47.8 IU/L"
+      }
+    },
+    {
+      "test_name": "* Alkaline Phosphatase(ALP)",
+      "raw_test_name": "* Alkaline Phosphatase(ALP)",
+      "loinc_code": "6768-6",
+      "value": 86.7,
+      "raw_unit": "U/L",
+      "reference_range": {
+        "low": 30.0,
+        "high": 120.0,
+        "raw": "U/L 30-120"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* Alkaline Phosphatase(ALP)",
+        "raw_value": "86.7 U/L"
+      }
+    },
+    {
+      "test_name": "* PROTEIN-TOTAL",
+      "raw_test_name": "* PROTEIN-TOTAL",
+      "loinc_code": null,
+      "value": 7.65,
+      "raw_unit": "g/dL",
+      "reference_range": {
+        "low": 6.0,
+        "high": 8.0,
+        "raw": "6.00 - 8.00"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* PROTEIN-TOTAL",
+        "raw_value": "7.65 g/dL"
+      }
+    },
+    {
+      "test_name": "* ALBUMIN",
+      "raw_test_name": "* ALBUMIN",
+      "loinc_code": "1751-8",
+      "value": 4.33,
+      "raw_unit": "g/dL",
+      "reference_range": {
+        "low": 4.0,
+        "high": 5.5,
+        "raw": "4.0-5.5"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* ALBUMIN",
+        "raw_value": "4.33 g/dL"
+      }
+    },
+    {
+      "test_name": "* GLOBULIN",
+      "raw_test_name": "* GLOBULIN",
+      "loinc_code": "2336-6",
+      "value": 3.32,
+      "raw_unit": "g/dL",
+      "reference_range": {
+        "low": 2.5,
+        "high": 3.5,
+        "raw": "2.5 - 3.5"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* GLOBULIN",
+        "raw_value": "3.32 g/dL"
+      }
+    },
+    {
+      "test_name": "* A/G RATIO",
+      "raw_test_name": "* A/G RATIO",
+      "loinc_code": "1759-1",
+      "value": 1.3,
+      "raw_unit": null,
+      "reference_range": {
+        "low": 1.0,
+        "high": 2.1,
+        "raw": "- 1.0 - 2.1"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* A/G RATIO",
+        "raw_value": "1.30"
+      }
+    },
+    {
+      "test_name": "* GAMMA GLUTAMYL TRANSFERASE",
+      "raw_test_name": "* GAMMA GLUTAMYL TRANSFERASE",
+      "loinc_code": "2324-2",
+      "value": 28.2,
+      "raw_unit": "U/L",
+      "reference_range": {
+        "low": 11.0,
+        "high": 61.0,
+        "raw": "U/L Male :11-61"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* GAMMA GLUTAMYL TRANSFERASE",
+        "raw_value": "28.2 U/L"
+      }
+    },
+    {
+      "test_name": "* TOTAL CHOLESTEROL",
+      "raw_test_name": "* TOTAL CHOLESTEROL",
+      "loinc_code": "2093-3",
+      "value": 200.9,
+      "raw_unit": "mg/dL",
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "Desirable : < 200"
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "source_trace": {
+        "raw_test_name": "* TOTAL CHOLESTEROL",
+        "raw_value": "200.9 mg/dL"
+      }
+    },
+    {
+      "test_name": "* HDL - CHOLESTEROL",
+      "raw_test_name": "* HDL - CHOLESTEROL",
+      "loinc_code": null,
+      "value": 47.2,
+      "raw_unit": "mg/dL",
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "Desirable Level :>59"
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "source_trace": {
+        "raw_test_name": "* HDL - CHOLESTEROL",
+        "raw_value": "47.2 mg/dL"
+      }
+    },
+    {
+      "test_name": "* TRIGLYCERIDES",
+      "raw_test_name": "* TRIGLYCERIDES",
+      "loinc_code": "2571-8",
+      "value": 173.8,
+      "raw_unit": "mg/dL",
+      "reference_range": {
+        "low": null,
+        "high": 203.5,
+        "raw": "<203.5"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* TRIGLYCERIDES",
+        "raw_value": "173.8 mg/dL"
+      }
+    },
+    {
+      "test_name": "* VLDL CHOLESTEROL",
+      "raw_test_name": "* VLDL CHOLESTEROL",
+      "loinc_code": "13457-7",
+      "value": 34.76,
+      "raw_unit": "mg/dL",
+      "reference_range": {
+        "low": null,
+        "high": 30.0,
+        "raw": "< 30"
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "source_trace": {
+        "raw_test_name": "* VLDL CHOLESTEROL",
+        "raw_value": "34.76 mg/dL"
+      }
+    },
+    {
+      "test_name": "* LDL - CHOLESTEROL",
+      "raw_test_name": "* LDL - CHOLESTEROL",
+      "loinc_code": null,
+      "value": 118.94,
+      "raw_unit": "mg/dL",
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "Optimal :<100"
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "source_trace": {
+        "raw_test_name": "* LDL - CHOLESTEROL",
+        "raw_value": "118.94 mg/dL"
+      }
+    },
+    {
+      "test_name": "* CHOL / HDL Ratio.",
+      "raw_test_name": "* CHOL / HDL Ratio.",
+      "loinc_code": "2085-9",
+      "value": 4.26,
+      "raw_unit": null,
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "- -"
+      },
+      "status": "LOW",
+      "flag": "RED_FLAG",
+      "source_trace": {
+        "raw_test_name": "* CHOL / HDL Ratio.",
+        "raw_value": "4.26"
+      }
+    },
+    {
+      "test_name": "* HDL/LDL CHOLESTEROL RATIO",
+      "raw_test_name": "* HDL/LDL CHOLESTEROL RATIO",
+      "loinc_code": null,
+      "value": 0.4,
+      "raw_unit": null,
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "Ratio -"
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "source_trace": {
+        "raw_test_name": "* HDL/LDL CHOLESTEROL RATIO",
+        "raw_value": "0.40"
+      }
+    },
+    {
+      "test_name": "* LDL / HDL RATIO",
+      "raw_test_name": "* LDL / HDL RATIO",
+      "loinc_code": null,
+      "value": 2.52,
+      "raw_unit": null,
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "Ratio Desirable level :0.5 3.0"
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "source_trace": {
+        "raw_test_name": "* LDL / HDL RATIO",
+        "raw_value": "2.52"
+      }
+    },
+    {
+      "test_name": "* IRON",
+      "raw_test_name": "* IRON",
+      "loinc_code": "2498-4",
+      "value": 83.0,
+      "raw_unit": null,
+      "reference_range": {
+        "low": 45.0,
+        "high": 158.0,
+        "raw": "µg/dL Male: 45-158 Female: 37-145"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* IRON",
+        "raw_value": "83"
+      }
+    },
+    {
+      "test_name": "* Total Iron Binding Capacity (TIBC)",
+      "raw_test_name": "* Total Iron Binding Capacity (TIBC)",
+      "loinc_code": null,
+      "value": 334.2,
+      "raw_unit": null,
+      "reference_range": {
+        "low": 240.0,
+        "high": 450.0,
+        "raw": "µg/dL 240 - 450"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* Total Iron Binding Capacity (TIBC)",
+        "raw_value": "334.2"
+      }
+    },
+    {
+      "test_name": "* TRANSFERRIN",
+      "raw_test_name": "* TRANSFERRIN",
+      "loinc_code": "3034-6",
+      "value": 227.35,
+      "raw_unit": null,
+      "reference_range": {
+        "low": 176.0,
+        "high": 280.0,
+        "raw": "ug/dl 176 - 280"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* TRANSFERRIN",
+        "raw_value": "227.35"
+      }
+    },
+    {
+      "test_name": "* TRANSFERRIN SATURATION",
+      "raw_test_name": "* TRANSFERRIN SATURATION",
+      "loinc_code": "2502-3",
+      "value": 24.84,
+      "raw_unit": "%",
+      "reference_range": {
+        "low": 20.0,
+        "high": 50.0,
+        "raw": "20 - 50"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* TRANSFERRIN SATURATION",
+        "raw_value": "24.84 %"
+      }
+    },
+    {
+      "test_name": "* FERRITIN",
+      "raw_test_name": "* FERRITIN",
+      "loinc_code": "2276-4",
+      "value": 96.2,
+      "raw_unit": "ng/mL",
+      "reference_range": {
+        "low": 11.0,
+        "high": 306.8,
+        "raw": "ng/mL 11.0 - 306.8"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* FERRITIN",
+        "raw_value": "96.2 ng/mL"
+      }
+    },
+    {
+      "test_name": "* TOTAL TRIIODOTHYRONINE ( T3 )",
+      "raw_test_name": "* TOTAL TRIIODOTHYRONINE ( T3 )",
+      "loinc_code": "3053-1",
+      "value": 0.93,
+      "raw_unit": "ng/mL",
+      "reference_range": {
+        "low": 0.58,
+        "high": 1.62,
+        "raw": "ng/mL 0.58 - 1.62"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* TOTAL TRIIODOTHYRONINE ( T3 )",
+        "raw_value": "0.93 ng/mL"
+      }
+    },
+    {
+      "test_name": "* TOTAL THYROXINE ( T4 )",
+      "raw_test_name": "* TOTAL THYROXINE ( T4 )",
+      "loinc_code": "3026-7",
+      "value": 7.44,
+      "raw_unit": null,
+      "reference_range": {
+        "low": 5.0,
+        "high": 14.5,
+        "raw": "ug/dl 5.0 - 14.5"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* TOTAL THYROXINE ( T4 )",
+        "raw_value": "7.44"
+      }
+    },
+    {
+      "test_name": "* Thyroid Stimulating Hormone.(TSH)",
+      "raw_test_name": "* Thyroid Stimulating Hormone.(TSH)",
+      "loinc_code": "11580-8",
+      "value": 6.29,
+      "raw_unit": null,
+      "reference_range": {
+        "low": 0.35,
+        "high": 5.1,
+        "raw": "µIU/mL 0.35 – 5.1"
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "source_trace": {
+        "raw_test_name": "* Thyroid Stimulating Hormone.(TSH)",
+        "raw_value": "6.29"
+      }
+    },
+    {
+      "test_name": "* RANDOM BLOOD GLUCOSE",
+      "raw_test_name": "* RANDOM BLOOD GLUCOSE",
+      "loinc_code": null,
+      "value": 75.3,
+      "raw_unit": "mg/dL",
+      "reference_range": {
+        "low": 70.0,
+        "high": 140.0,
+        "raw": "70 - 140"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* RANDOM BLOOD GLUCOSE",
+        "raw_value": "75.3 mg/dL"
+      }
+    },
+    {
+      "test_name": "* 25-OH VITAMIN ( VIT D3 )",
+      "raw_test_name": "* 25-OH VITAMIN ( VIT D3 )",
+      "loinc_code": null,
+      "value": 38.78,
+      "raw_unit": "ng/mL",
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "ng/mL Deficiency: <10"
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "source_trace": {
+        "raw_test_name": "* 25-OH VITAMIN ( VIT D3 )",
+        "raw_value": "38.78 ng/mL"
+      }
+    },
+    {
+      "test_name": "* HAEMOGLOBIN",
+      "raw_test_name": "* HAEMOGLOBIN",
+      "loinc_code": "718-7",
+      "value": 15.1,
+      "raw_unit": "gm%",
+      "reference_range": {
+        "low": 14.0,
+        "high": 17.0,
+        "raw": "gm% 14.0 -17.0"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* HAEMOGLOBIN",
+        "raw_value": "15.1 gm%"
+      }
+    },
+    {
+      "test_name": "* RBC Count",
+      "raw_test_name": "* RBC Count",
+      "loinc_code": "789-8",
+      "value": 5.3,
+      "raw_unit": "millions/cumm",
+      "reference_range": {
+        "low": 4.5,
+        "high": 5.5,
+        "raw": "4.50 - 5.50"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* RBC Count",
+        "raw_value": "5.30 millions/cumm"
+      }
+    },
+    {
+      "test_name": "* WBC Count",
+      "raw_test_name": "* WBC Count",
+      "loinc_code": "6690-2",
+      "value": 8400.0,
+      "raw_unit": "cells/cumm",
+      "reference_range": {
+        "low": 4000.0,
+        "high": 11000.0,
+        "raw": "4000-11000"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* WBC Count",
+        "raw_value": "8400 cells/cumm"
+      }
+    },
+    {
+      "test_name": "* PLATELET COUNT",
+      "raw_test_name": "* PLATELET COUNT",
+      "loinc_code": "777-3",
+      "value": 2.43,
+      "raw_unit": "lakhs/cumm",
+      "reference_range": {
+        "low": 1.5,
+        "high": 4.5,
+        "raw": "lakhs/cumm 1.5 - 4.5"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* PLATELET COUNT",
+        "raw_value": "2.43 lakhs/cumm"
+      }
+    },
+    {
+      "test_name": "* Packed Cell Volume(PCV)",
+      "raw_test_name": "* Packed Cell Volume(PCV)",
+      "loinc_code": "4544-3",
+      "value": 43.9,
+      "raw_unit": "%",
+      "reference_range": {
+        "low": 40.0,
+        "high": 50.0,
+        "raw": "40 - 50"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* Packed Cell Volume(PCV)",
+        "raw_value": "43.9 %"
+      }
+    },
+    {
+      "test_name": "* MCV",
+      "raw_test_name": "* MCV",
+      "loinc_code": "787-2",
+      "value": 83.0,
+      "raw_unit": "fL",
+      "reference_range": {
+        "low": 80.0,
+        "high": 100.0,
+        "raw": "fL 80 - 100"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* MCV",
+        "raw_value": "83 fL"
+      }
+    },
+    {
+      "test_name": "* MCH",
+      "raw_test_name": "* MCH",
+      "loinc_code": "785-6",
+      "value": 28.5,
+      "raw_unit": "pg",
+      "reference_range": {
+        "low": 27.0,
+        "high": 33.0,
+        "raw": "pg 27 - 33"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* MCH",
+        "raw_value": "28.5 pg"
+      }
+    },
+    {
+      "test_name": "* MCHC",
+      "raw_test_name": "* M C H C",
+      "loinc_code": "786-4",
+      "value": 34.0,
+      "raw_unit": "g/dL",
+      "reference_range": {
+        "low": 32.0,
+        "high": 34.0,
+        "raw": "32.0 - 34.0"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* M C H C",
+        "raw_value": "34.0 g/dL"
+      }
+    },
+    {
+      "test_name": "* NEUTROPHILS,,",
+      "raw_test_name": "* NEUTROPHILS,,",
+      "loinc_code": "770-8",
+      "value": 51.0,
+      "raw_unit": "%",
+      "reference_range": {
+        "low": 50.0,
+        "high": 75.0,
+        "raw": "50-75"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* NEUTROPHILS,,",
+        "raw_value": "51 %"
+      }
+    },
+    {
+      "test_name": "* LYMPHOCYTES",
+      "raw_test_name": "* LYMPHOCYTES",
+      "loinc_code": "736-9",
+      "value": 40.0,
+      "raw_unit": "%",
+      "reference_range": {
+        "low": 20.0,
+        "high": 40.0,
+        "raw": "20 - 40"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* LYMPHOCYTES",
+        "raw_value": "40 %"
+      }
+    },
+    {
+      "test_name": "* EOSINOPHILS",
+      "raw_test_name": "* EOSINOPHILS",
+      "loinc_code": "713-8",
+      "value": 4.0,
+      "raw_unit": "%",
+      "reference_range": {
+        "low": 2.0,
+        "high": 6.0,
+        "raw": "02 - 06"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* EOSINOPHILS",
+        "raw_value": "04 %"
+      }
+    },
+    {
+      "test_name": "* MONOCYTES",
+      "raw_test_name": "* MONOCYTES",
+      "loinc_code": "5905-5",
+      "value": 5.0,
+      "raw_unit": "%",
+      "reference_range": {
+        "low": 2.0,
+        "high": 8.0,
+        "raw": "02 - 08"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* MONOCYTES",
+        "raw_value": "05 %"
+      }
+    },
+    {
+      "test_name": "* BASOPHILS",
+      "raw_test_name": "* BASOPHILS",
+      "loinc_code": "706-2",
+      "value": 0.0,
+      "raw_unit": "%",
+      "reference_range": {
+        "low": 0.0,
+        "high": 1.0,
+        "raw": "0 - 1"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* BASOPHILS",
+        "raw_value": "00 %"
+      }
+    },
+    {
+      "test_name": "* Vitamin - B12",
+      "raw_test_name": "* Vitamin - B12",
+      "loinc_code": "2132-9",
+      "value": 433.9,
+      "raw_unit": "pg/mL",
+      "reference_range": {
+        "low": 180.0,
+        "high": 916.0,
+        "raw": "pg/mL 180 - 916"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* Vitamin - B12",
+        "raw_value": "433.9 pg/mL"
+      }
+    },
+    {
+      "test_name": "INTREPRATATION: Vitamin B12 and folate are critical to normal DNA synthesis, which in turn affects erythrocyte maturation.",
+      "raw_test_name": "INTREPRATATION: Vitamin B12 and folate are critical to normal DNA synthesis, which in turn affects erythrocyte maturation.",
+      "loinc_code": "2132-9",
+      "value": 3.0,
+      "raw_unit": null,
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "Vitamin B12 is also necessary for"
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "source_trace": {
+        "raw_test_name": "INTREPRATATION: Vitamin B12 and folate are critical to normal DNA synthesis, which in turn affects erythrocyte maturation.",
+        "raw_value": "3"
+      }
+    },
+    {
+      "test_name": "* GLYCOSYLATED HAEMOGLOBIN",
+      "raw_test_name": "* GLYCOSYLATED HAEMOGLOBIN",
+      "loinc_code": "718-7",
+      "value": 5.95,
+      "raw_unit": "%",
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "Non-diabetic: 4.8 - 5.9 %"
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "source_trace": {
+        "raw_test_name": "* GLYCOSYLATED HAEMOGLOBIN",
+        "raw_value": "5.95 %"
+      }
+    },
+    {
+      "test_name": "(HBA1C) Pre-diabetic",
+      "raw_test_name": "(HBA1C) Pre-diabetic",
+      "loinc_code": "4548-4",
+      "value": 5.9,
+      "raw_unit": "%",
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "- 6.5 %"
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "source_trace": {
+        "raw_test_name": "(HBA1C) Pre-diabetic",
+        "raw_value": "5.9 %"
+      }
+    },
+    {
+      "test_name": "method Diabetic: >=",
+      "raw_test_name": "method Diabetic: >=",
+      "loinc_code": null,
+      "value": 6.5,
+      "raw_unit": "%",
+      "reference_range": null,
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "source_trace": {
+        "raw_test_name": "method Diabetic: >=",
+        "raw_value": "6.5 %"
+      }
+    },
+    {
+      "test_name": "* Approximate mean plasma glucose",
+      "raw_test_name": "* Approximate mean plasma glucose",
+      "loinc_code": "2713-2",
+      "value": 124.07,
+      "raw_unit": null,
+      "reference_range": {
+        "low": null,
+        "high": 111.0,
+        "raw": "<111"
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "source_trace": {
+        "raw_test_name": "* Approximate mean plasma glucose",
+        "raw_value": "124.07"
+      }
+    },
+    {
+      "test_name": "* CALCIUM",
+      "raw_test_name": "* CALCIUM",
+      "loinc_code": "17861-6",
+      "value": 9.48,
+      "raw_unit": "mg/dL",
+      "reference_range": {
+        "low": 8.8,
+        "high": 10.62,
+        "raw": "8.8-10.62"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "source_trace": {
+        "raw_test_name": "* CALCIUM",
+        "raw_value": "9.48 mg/dL"
+      }
+    }
+  ],
+  "warnings": [
+    "Discrepancy in Reported On timestamp across report pages (Conflicting: '2026-05-28T15:12:00, 2026-05-28T16:37:00, 2026-05-28T17:08:00, 2026-05-28T17:10:00', Majority/Resolved: '2026-05-28T17:09:00').",
+    "Discrepancy in Vial ID across report pages (Conflicting: '3139053, 3139054', Majority: '3139055'). Verified patient consistency via Request No 'BNG2657096' and Patient Name 'Mr. PRAVEEN'; resolved Vial ID to majority '3139055'.",
+    "Unparsed reference range format: '- -'",
+    "Unparsed reference range format: 'Ratio -'",
+    "Unparsed reference range format: 'Vitamin B12 is also necessary for'",
+    "Unparsed reference range format: '- 6.5 %'"
+  ],
+  "completeness": {
+    "expected_count": 57,
+    "extracted_count": 57,
+    "missing_tests": [],
+    "unexpected_tests": [],
+    "complete": true
+  },
+  "specimen_summary": null
+}
