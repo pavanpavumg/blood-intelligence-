@@ -83,7 +83,7 @@ class DocumentService:
         ext = cls.validate_file(file, contents)
 
         report_id = f"rep_{uuid.uuid4().hex[:12]}"
-        
+
         # Wrap uploaded bytes in an in-memory BytesIO stream
         input_stream = io.BytesIO(contents)
 
@@ -141,7 +141,9 @@ class DocumentService:
                 f"Report [{report_id}] identified as IMAGE ({ext}). Running in-memory OCR preprocessing."
             )
             try:
-                ocr_lines, _ = OCRService.extract_text_from_image(input_stream.getvalue())
+                ocr_lines, _ = OCRService.extract_text_from_image(
+                    input_stream.getvalue()
+                )
                 extracted_lines = ocr_lines
             except Exception as exc:
                 logger.error(
