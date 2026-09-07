@@ -1,0 +1,2040 @@
+{
+  "schema_version": "2.1",
+  "report": {
+    "report_id": "rep_e3c3a4715644",
+    "report_date": "2026-07-15T17:24:00",
+    "lab_name": null
+  },
+  "patient": {
+    "patient_id": "KAD393.00000001",
+    "name": "Mrs.CHANDRA",
+    "age": 61,
+    "gender": "Female"
+  },
+  "tests": [
+    {
+      "test_name": "Glycosylated Haemoglobin HbA1c",
+      "raw_test_name": "Glycosylated Haemoglobin HbA1c",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 6.2,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": null,
+        "high": 5.6,
+        "raw": "Normal: < 5.6 HPLC",
+        "type": "UPPER_ONLY",
+        "operator": "<",
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "mapping_status": "REVIEW_REQUIRED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [
+        "UNMAPPED_TEST"
+      ],
+      "source_trace": {
+        "raw_test_name": "Glycosylated Haemoglobin HbA1c",
+        "raw_value": "6.2 %"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Approximate Mean Plasma Glucose",
+      "raw_test_name": "Approximate Mean Plasma Glucose",
+      "canonical_test_name": "Approximate Mean Plasma Glucose",
+      "test_id": "MEAN_PLASMA_GLUCOSE",
+      "loinc_code": "2713-2",
+      "value": 131.24,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": 70.0,
+        "high": 126.0,
+        "raw": "70 - 126 mg/dL",
+        "type": null,
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "MISSING",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Approximate Mean Plasma Glucose",
+        "raw_value": "131.24"
+      },
+      "specimen": null,
+      "result_type": "CALCULATED"
+    },
+    {
+      "test_name": "Vitamin - B12",
+      "raw_test_name": "Vitamin - B12",
+      "canonical_test_name": "Vitamin B12",
+      "test_id": "VITAMIN_B12",
+      "loinc_code": "2132-9",
+      "value": 190.0,
+      "raw_unit": "pg/mL",
+      "normalized_unit": "pg/mL",
+      "reference_range": {
+        "low": 293.0,
+        "high": 1210.0,
+        "raw": "pg/mL <1 year: 293 - 1210 ECLIA",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "LOW",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Vitamin - B12",
+        "raw_value": "190 pg/mL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Others Nil % Microscopy Page",
+      "raw_test_name": "Others Nil % Microscopy Page",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 4.0,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "of 12",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [
+        "UNMAPPED_TEST"
+      ],
+      "source_trace": {
+        "raw_test_name": "Others Nil % Microscopy Page",
+        "raw_value": "4 %"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Haemoglobin",
+      "raw_test_name": "Haemoglobin",
+      "canonical_test_name": "Hemoglobin",
+      "test_id": "HEMOGLOBIN",
+      "loinc_code": "718-7",
+      "value": 12.8,
+      "raw_unit": "g/dL",
+      "normalized_unit": "g/dL",
+      "reference_range": {
+        "low": 12.0,
+        "high": 15.0,
+        "raw": "12.0 - 15.0",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Haemoglobin",
+        "raw_value": "12.8 g/dL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "RBC Count",
+      "raw_test_name": "RBC Count",
+      "canonical_test_name": "Red Blood Cell Count",
+      "test_id": "RBC",
+      "loinc_code": "789-8",
+      "value": 4.92,
+      "raw_unit": "Millions/cumm",
+      "normalized_unit": "millions/cumm",
+      "reference_range": {
+        "low": 3.8,
+        "high": 4.8,
+        "raw": "3.8 - 4.8",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "RBC Count",
+        "raw_value": "4.92 Millions/cumm"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Total WBC Count",
+      "raw_test_name": "Total WBC Count",
+      "canonical_test_name": "White Blood Cell Count",
+      "test_id": "WBC",
+      "loinc_code": "6690-2",
+      "value": 7750.0,
+      "raw_unit": "Cells/cumm",
+      "normalized_unit": "cells/cumm",
+      "reference_range": {
+        "low": 4000.0,
+        "high": 10000.0,
+        "raw": "4000 - 10000",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Total WBC Count",
+        "raw_value": "7750 Cells/cumm"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Platelet Count",
+      "raw_test_name": "Platelet Count",
+      "canonical_test_name": "Platelet Count",
+      "test_id": "PLATELETS",
+      "loinc_code": "777-3",
+      "value": 171.0,
+      "raw_unit": "10ˆ3/µL",
+      "normalized_unit": "10^3/uL",
+      "reference_range": {
+        "low": 150.0,
+        "high": 450.0,
+        "raw": "10ˆ3/µL 150 - 450",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Platelet Count",
+        "raw_value": "171 10ˆ3/µL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Packed Cell Volume (PCV)",
+      "raw_test_name": "Packed Cell Volume (PCV)",
+      "canonical_test_name": "Hematocrit",
+      "test_id": "HCT",
+      "loinc_code": "4544-3",
+      "value": 39.4,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": 36.0,
+        "high": 46.0,
+        "raw": "36 - 46",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Packed Cell Volume (PCV)",
+        "raw_value": "39.4 %"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Mean Corpuscular Volume (MCV)",
+      "raw_test_name": "Mean Corpuscular Volume (MCV)",
+      "canonical_test_name": "Mean Corpuscular Volume",
+      "test_id": "MCV",
+      "loinc_code": "787-2",
+      "value": 80.0,
+      "raw_unit": "fL",
+      "normalized_unit": "fL",
+      "reference_range": {
+        "low": 83.0,
+        "high": 101.0,
+        "raw": "fL 83 - 101",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "LOW",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Mean Corpuscular Volume (MCV)",
+        "raw_value": "80.0 fL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Mean Corpuscular Hb. (MCH)",
+      "raw_test_name": "Mean Corpuscular Hb. (MCH)",
+      "canonical_test_name": "Mean Corpuscular Hemoglobin",
+      "test_id": "MCH",
+      "loinc_code": "785-6",
+      "value": 26.0,
+      "raw_unit": "pg",
+      "normalized_unit": "pg",
+      "reference_range": {
+        "low": 27.0,
+        "high": 32.0,
+        "raw": "pg 27 - 32",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "LOW",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Mean Corpuscular Hb. (MCH)",
+        "raw_value": "26.0 pg"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "MCHC",
+      "raw_test_name": "MCHC",
+      "canonical_test_name": "Mean Corpuscular Hemoglobin Concentration",
+      "test_id": "MCHC",
+      "loinc_code": "786-4",
+      "value": 32.5,
+      "raw_unit": "g/dL",
+      "normalized_unit": "g/dL",
+      "reference_range": {
+        "low": 31.5,
+        "high": 34.5,
+        "raw": "31.5 - 34.5",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "MCHC",
+        "raw_value": "32.5 g/dL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "RDW CV",
+      "raw_test_name": "RDW CV",
+      "canonical_test_name": "Red Cell Distribution Width CV",
+      "test_id": "RDW_CV",
+      "loinc_code": "788-0",
+      "value": 15.8,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": 11.6,
+        "high": 14.0,
+        "raw": "11.6 - 14.0",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "RDW CV",
+        "raw_value": "15.8 %"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "RDW SD",
+      "raw_test_name": "RDW SD",
+      "canonical_test_name": "Red Cell Distribution Width SD",
+      "test_id": "RDW_SD",
+      "loinc_code": "21000-5",
+      "value": 44.4,
+      "raw_unit": "fL",
+      "normalized_unit": "fL",
+      "reference_range": {
+        "low": 29.0,
+        "high": 46.0,
+        "raw": "fL 29 - 46",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "RDW SD",
+        "raw_value": "44.4 fL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "PDW",
+      "raw_test_name": "PDW",
+      "canonical_test_name": "Platelet Distribution Width",
+      "test_id": "PDW",
+      "loinc_code": null,
+      "value": 16.6,
+      "raw_unit": "fL",
+      "normalized_unit": "fL",
+      "reference_range": {
+        "low": 11.0,
+        "high": 22.0,
+        "raw": "fL 11 - 22",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "PDW",
+        "raw_value": "16.6 fL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "MPV",
+      "raw_test_name": "MPV",
+      "canonical_test_name": "Mean Platelet Volume",
+      "test_id": "MPV",
+      "loinc_code": "32623-1",
+      "value": 8.7,
+      "raw_unit": "fL",
+      "normalized_unit": "fL",
+      "reference_range": {
+        "low": 7.0,
+        "high": 11.0,
+        "raw": "fL 7 - 11",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "MPV",
+        "raw_value": "8.7 fL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Neutrophils",
+      "raw_test_name": "Neutrophils",
+      "canonical_test_name": "Neutrophils Percentage",
+      "test_id": "NEUTROPHILS",
+      "loinc_code": "770-8",
+      "value": 63.2,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": 45.0,
+        "high": 75.0,
+        "raw": "45 - 75",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Neutrophils",
+        "raw_value": "63.2 %"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Lymphocytes",
+      "raw_test_name": "Lymphocytes",
+      "canonical_test_name": "Lymphocytes Percentage",
+      "test_id": "LYMPHOCYTES",
+      "loinc_code": "736-9",
+      "value": 21.7,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": 20.0,
+        "high": 40.0,
+        "raw": "20 - 40",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Lymphocytes",
+        "raw_value": "21.7 %"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Eosinophils",
+      "raw_test_name": "Eosinophils",
+      "canonical_test_name": "Eosinophils Percentage",
+      "test_id": "EOSINOPHILS",
+      "loinc_code": "713-8",
+      "value": 8.7,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": 1.0,
+        "high": 6.0,
+        "raw": "1 - 6",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Eosinophils",
+        "raw_value": "8.7 %"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Monocytes",
+      "raw_test_name": "Monocytes",
+      "canonical_test_name": "Monocytes Percentage",
+      "test_id": "MONOCYTES",
+      "loinc_code": "5905-5",
+      "value": 5.9,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": 2.0,
+        "high": 10.0,
+        "raw": "2 - 10",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Monocytes",
+        "raw_value": "5.9 %"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Basophils",
+      "raw_test_name": "Basophils",
+      "canonical_test_name": "Basophils Percentage",
+      "test_id": "BASOPHILS",
+      "loinc_code": "706-2",
+      "value": 0.5,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": 0.0,
+        "high": 2.0,
+        "raw": "0 - 2",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Basophils",
+        "raw_value": "0.5 %"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Reference: Bates I. Reference Ranges and Normal Values. In: Bain BJ, Bates I, Laffan MA, Lewis SM, editor. Dacie and Lewis Practical Haematology, 12th ed. China: Elsevier publishers;",
+      "raw_test_name": "Reference: Bates I. Reference Ranges and Normal Values. In: Bain BJ, Bates I, Laffan MA, Lewis SM, editor. Dacie and Lewis Practical Haematology, 12th ed. China: Elsevier publishers;",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 2017.0,
+      "raw_unit": "pg",
+      "normalized_unit": "pg",
+      "reference_range": {
+        "low": 8.0,
+        "high": 17.0,
+        "raw": ".pg. 8-17.",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "mapping_status": "REVIEW_REQUIRED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [
+        "UNMAPPED_TEST"
+      ],
+      "source_trace": {
+        "raw_test_name": "Reference: Bates I. Reference Ranges and Normal Values. In: Bain BJ, Bates I, Laffan MA, Lewis SM, editor. Dacie and Lewis Practical Haematology, 12th ed. China: Elsevier publishers;",
+        "raw_value": "2017 pg"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "LIPID PROFILE , SERUM Total Cholesterol",
+      "raw_test_name": "LIPID PROFILE , SERUM Total Cholesterol",
+      "canonical_test_name": "Total Cholesterol",
+      "test_id": "CHOLESTEROL_TOTAL",
+      "loinc_code": "2093-3",
+      "value": 225.0,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "Desirable : < 200 Cholesterol Oxidase",
+        "type": "CATEGORICAL",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "LIPID PROFILE , SERUM Total Cholesterol",
+        "raw_value": "225.00 mg/dL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "HDL Cholesterol",
+      "raw_test_name": "HDL Cholesterol",
+      "canonical_test_name": "HDL Cholesterol",
+      "test_id": "HDL",
+      "loinc_code": "2085-9",
+      "value": 45.9,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": null,
+        "high": 40.0,
+        "raw": "Low: < 40, High: > 60 Enzymatic",
+        "type": "CATEGORICAL",
+        "operator": null,
+        "selected_group": null,
+        "categories": [
+          {
+            "label": "DESIRABLE",
+            "operator": ">",
+            "value": 59.0
+          },
+          {
+            "label": "OPTIMAL",
+            "low": 40.0,
+            "high": 59.0
+          },
+          {
+            "label": "UNDESIRABLE",
+            "operator": "<",
+            "value": 40.0
+          }
+        ],
+        "selected_category": "OPTIMAL"
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "HDL Cholesterol",
+        "raw_value": "45.90 mg/dL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "colorimetric Total Triglycerides",
+      "raw_test_name": "colorimetric Total Triglycerides",
+      "canonical_test_name": "Triglycerides",
+      "test_id": "TRIGLYCERIDES",
+      "loinc_code": "2571-8",
+      "value": 91.3,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "Desirable Level : 150 GPO-POD",
+        "type": "CATEGORICAL",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "colorimetric Total Triglycerides",
+        "raw_value": "91.30 mg/dL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "VLDL Cholesterol",
+      "raw_test_name": "VLDL Cholesterol",
+      "canonical_test_name": "VLDL Cholesterol",
+      "test_id": "VLDL",
+      "loinc_code": "13457-7",
+      "value": 18.26,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "≤ 30",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "VLDL Cholesterol",
+        "raw_value": "18.26 mg/dL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "LDL Cholesterol",
+      "raw_test_name": "LDL Cholesterol",
+      "canonical_test_name": "LDL Cholesterol",
+      "test_id": "LDL",
+      "loinc_code": "2089-1",
+      "value": 160.84,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "Optimal: < 100 Calculation",
+        "type": "CATEGORICAL",
+        "operator": null,
+        "selected_group": null,
+        "categories": [
+          {
+            "label": "OPTIMAL",
+            "operator": "<",
+            "value": 100.0
+          },
+          {
+            "label": "NEAR_OPTIMAL",
+            "low": 100.0,
+            "high": 129.0
+          },
+          {
+            "label": "BORDERLINE_HIGH",
+            "low": 130.0,
+            "high": 159.0
+          },
+          {
+            "label": "HIGH",
+            "low": 160.0,
+            "high": 189.0
+          },
+          {
+            "label": "VERY_HIGH",
+            "operator": ">",
+            "value": 189.0
+          }
+        ],
+        "selected_category": "HIGH"
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "LDL Cholesterol",
+        "raw_value": "160.84 mg/dL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Non - HDL Cholesterol",
+      "raw_test_name": "Non - HDL Cholesterol",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 179.1,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "≤ 130",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [
+        "UNMAPPED_TEST"
+      ],
+      "source_trace": {
+        "raw_test_name": "Non - HDL Cholesterol",
+        "raw_value": "179.10 mg/dL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Chol / HDL Ratio",
+      "raw_test_name": "Chol / HDL Ratio",
+      "canonical_test_name": "HDL Cholesterol",
+      "test_id": "HDL",
+      "loinc_code": "2085-9",
+      "value": 4.9,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": 3.3,
+        "high": 4.4,
+        "raw": "Risk: 3.3 - 4.4 Calculated",
+        "type": "CATEGORICAL",
+        "operator": null,
+        "selected_group": null,
+        "categories": [
+          {
+            "label": "DESIRABLE",
+            "operator": ">",
+            "value": 59.0
+          },
+          {
+            "label": "OPTIMAL",
+            "low": 40.0,
+            "high": 59.0
+          },
+          {
+            "label": "UNDESIRABLE",
+            "operator": "<",
+            "value": 40.0
+          }
+        ],
+        "selected_category": "UNDESIRABLE"
+      },
+      "status": "LOW",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "MISSING",
+      "review_reasons": [
+        "DUPLICATE_TEST"
+      ],
+      "source_trace": {
+        "raw_test_name": "Chol / HDL Ratio",
+        "raw_value": "4.90"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "TGL / HDL Ratio",
+      "raw_test_name": "TGL / HDL Ratio",
+      "canonical_test_name": "HDL Cholesterol",
+      "test_id": "HDL",
+      "loinc_code": "2085-9",
+      "value": 2.0,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "Optimal: < 2.5 Calculated",
+        "type": "CATEGORICAL",
+        "operator": null,
+        "selected_group": null,
+        "categories": [
+          {
+            "label": "DESIRABLE",
+            "operator": ">",
+            "value": 59.0
+          },
+          {
+            "label": "OPTIMAL",
+            "low": 40.0,
+            "high": 59.0
+          },
+          {
+            "label": "UNDESIRABLE",
+            "operator": "<",
+            "value": 40.0
+          }
+        ],
+        "selected_category": "UNDESIRABLE"
+      },
+      "status": "LOW",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "MISSING",
+      "review_reasons": [
+        "DUPLICATE_TEST"
+      ],
+      "source_trace": {
+        "raw_test_name": "TGL / HDL Ratio",
+        "raw_value": "2.0"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Total Bilirubin",
+      "raw_test_name": "Total Bilirubin",
+      "canonical_test_name": "Total Bilirubin",
+      "test_id": "BILIRUBIN_TOTAL",
+      "loinc_code": "1975-2",
+      "value": 0.83,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": null,
+        "high": 1.2,
+        "raw": "< 1.2 Diazo",
+        "type": "UPPER_ONLY",
+        "operator": "<",
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Total Bilirubin",
+        "raw_value": "0.83 mg/dL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Direct Bilirubin",
+      "raw_test_name": "Direct Bilirubin",
+      "canonical_test_name": "Direct Bilirubin",
+      "test_id": "BILIRUBIN_DIRECT",
+      "loinc_code": "1968-7",
+      "value": 0.46,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": 0.0,
+        "high": 0.3,
+        "raw": "0 - 0.3 Diazo",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Direct Bilirubin",
+        "raw_value": "0.46 mg/dL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Indirect Bilirubin",
+      "raw_test_name": "Indirect Bilirubin",
+      "canonical_test_name": "Indirect Bilirubin",
+      "test_id": "BILIRUBIN_INDIRECT",
+      "loinc_code": "1971-1",
+      "value": 0.37,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": 0.3,
+        "high": 1.0,
+        "raw": "0.3 - 1.0",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Indirect Bilirubin",
+        "raw_value": "0.37 mg/dL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "SGOT / AST",
+      "raw_test_name": "SGOT / AST",
+      "canonical_test_name": "AST (SGOT)",
+      "test_id": "AST",
+      "loinc_code": "1920-8",
+      "value": 18.7,
+      "raw_unit": "U/L",
+      "normalized_unit": "U/L",
+      "reference_range": {
+        "low": null,
+        "high": 40.0,
+        "raw": "U/L < 40.0 IFCC with pyridoxal",
+        "type": "UPPER_ONLY",
+        "operator": "<",
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "SGOT / AST",
+        "raw_value": "18.70 U/L"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "activation SGPT / ALT",
+      "raw_test_name": "activation SGPT / ALT",
+      "canonical_test_name": "ALT (SGPT)",
+      "test_id": "ALT",
+      "loinc_code": "1742-6",
+      "value": 12.7,
+      "raw_unit": "U/L",
+      "normalized_unit": "U/L",
+      "reference_range": {
+        "low": null,
+        "high": 42.0,
+        "raw": "U/L < 42.0 IFCC",
+        "type": "UPPER_ONLY",
+        "operator": "<",
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "activation SGPT / ALT",
+        "raw_value": "12.70 U/L"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Alkaline Phosphatase",
+      "raw_test_name": "Alkaline Phosphatase",
+      "canonical_test_name": "Alkaline Phosphatase",
+      "test_id": "ALP",
+      "loinc_code": "6768-6",
+      "value": 102.0,
+      "raw_unit": "U/L",
+      "normalized_unit": "U/L",
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "U/L 35 ‑ 104 IFCC, PNPP AMP",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Alkaline Phosphatase",
+        "raw_value": "102.00 U/L"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Buffer Total Protein",
+      "raw_test_name": "Buffer Total Protein",
+      "canonical_test_name": "Total Protein",
+      "test_id": "TOTAL_PROTEIN",
+      "loinc_code": "2885-2",
+      "value": 7.61,
+      "raw_unit": "g/dL",
+      "normalized_unit": "g/dL",
+      "reference_range": {
+        "low": 6.6,
+        "high": 8.7,
+        "raw": "6.6 - 8.7 Biuret",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Buffer Total Protein",
+        "raw_value": "7.61 g/dL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Albumin",
+      "raw_test_name": "Albumin",
+      "canonical_test_name": "Albumin",
+      "test_id": "ALBUMIN",
+      "loinc_code": "1751-8",
+      "value": 4.18,
+      "raw_unit": "g/dL",
+      "normalized_unit": "g/dL",
+      "reference_range": {
+        "low": 3.5,
+        "high": 5.2,
+        "raw": "3.5 - 5.2 Bromocresol green",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Albumin",
+        "raw_value": "4.18 g/dL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Globulin",
+      "raw_test_name": "Globulin",
+      "canonical_test_name": "Globulin",
+      "test_id": "GLOBULIN",
+      "loinc_code": "2336-6",
+      "value": 3.43,
+      "raw_unit": "g/dL",
+      "normalized_unit": "g/dL",
+      "reference_range": {
+        "low": 2.5,
+        "high": 4.5,
+        "raw": "2.5 - 4.5",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Globulin",
+        "raw_value": "3.43 g/dL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "A/G Ratio",
+      "raw_test_name": "A/G Ratio",
+      "canonical_test_name": "A/G Ratio",
+      "test_id": "AG_RATIO",
+      "loinc_code": "1759-1",
+      "value": 1.22,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": 1.0,
+        "high": 2.1,
+        "raw": "Ratio 1.0 - 2.1",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "MISSING",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "A/G Ratio",
+        "raw_value": "1.22"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Gamma Glutamyl Transferase (GGT)",
+      "raw_test_name": "Gamma Glutamyl Transferase (GGT)",
+      "canonical_test_name": "Gamma Glutamyl Transferase",
+      "test_id": "GGT",
+      "loinc_code": "2324-2",
+      "value": 41.6,
+      "raw_unit": "U/L",
+      "normalized_unit": "U/L",
+      "reference_range": {
+        "low": 8.0,
+        "high": 61.0,
+        "raw": "U/L Men: 8 - 61",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Gamma Glutamyl Transferase (GGT)",
+        "raw_value": "41.60 U/L"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "THYROID PROFILE (TFT) -I , SERUM Triiodothyronine Total (TT3)",
+      "raw_test_name": "THYROID PROFILE (TFT) -I , SERUM Triiodothyronine Total (TT3)",
+      "canonical_test_name": "Triiodothyronine (T3)",
+      "test_id": "T3",
+      "loinc_code": "3053-1",
+      "value": 106.0,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": 80.0,
+        "high": 200.0,
+        "raw": "ng/dL 80 - 200 ECLIA",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "MISSING",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "THYROID PROFILE (TFT) -I , SERUM Triiodothyronine Total (TT3)",
+        "raw_value": "106.00"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Thyroxine (TT4)",
+      "raw_test_name": "Thyroxine (TT4)",
+      "canonical_test_name": "Thyroxine (T4)",
+      "test_id": "T4",
+      "loinc_code": "3026-7",
+      "value": 6.42,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": 5.1,
+        "high": 14.1,
+        "raw": "μg/dL 5.1-14.1 ECLIA",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "MISSING",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Thyroxine (TT4)",
+        "raw_value": "6.42"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Thyroid Stimulating Hormone (TSH)",
+      "raw_test_name": "Thyroid Stimulating Hormone (TSH)",
+      "canonical_test_name": "Thyroid Stimulating Hormone",
+      "test_id": "TSH",
+      "loinc_code": "11580-8",
+      "value": 5.05,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": 0.27,
+        "high": 4.2,
+        "raw": "μIU/mL 0.27 - 4.2 ECLIA",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "HIGH",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "MISSING",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Thyroid Stimulating Hormone (TSH)",
+        "raw_value": "5.05"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Urea",
+      "raw_test_name": "Urea",
+      "canonical_test_name": "Serum Urea",
+      "test_id": "UREA",
+      "loinc_code": "3091-6",
+      "value": 20.8,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": 16.6,
+        "high": 48.5,
+        "raw": "16.6 - 48.5",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Urea",
+        "raw_value": "20.80 mg/dL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Creatinine",
+      "raw_test_name": "Creatinine",
+      "canonical_test_name": "Serum Creatinine",
+      "test_id": "CREATININE",
+      "loinc_code": "2160-0",
+      "value": 0.84,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": 0.5,
+        "high": 0.9,
+        "raw": "Females: 0.50 - 0.90",
+        "type": "DEMOGRAPHIC",
+        "operator": null,
+        "selected_group": "FEMALE",
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Creatinine",
+        "raw_value": "0.84 mg/dL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "BUN",
+      "raw_test_name": "BUN",
+      "canonical_test_name": "Urea Nitrogen (BUN)",
+      "test_id": "BUN",
+      "loinc_code": "3094-0",
+      "value": 9.72,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": 7.0,
+        "high": 18.0,
+        "raw": "7 - 18",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "BUN",
+        "raw_value": "9.72 mg/dL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "BUN/Cr Ratio",
+      "raw_test_name": "BUN/Cr Ratio",
+      "canonical_test_name": "BUN/Creatinine Ratio",
+      "test_id": "BUN_CREATININE_RATIO",
+      "loinc_code": "3097-3",
+      "value": 11.56,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": null,
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "MISSING",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "BUN/Cr Ratio",
+        "raw_value": "11.56"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Uric Acid",
+      "raw_test_name": "Uric Acid",
+      "canonical_test_name": "Uric Acid",
+      "test_id": "URIC_ACID",
+      "loinc_code": "3084-1",
+      "value": 4.57,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "Male: 3.4 - 7.0",
+        "type": "DEMOGRAPHIC",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "REVIEW_REQUIRED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [
+        "DEMOGRAPHIC_RANGE_UNRESOLVED"
+      ],
+      "source_trace": {
+        "raw_test_name": "Uric Acid",
+        "raw_value": "4.57 mg/dL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Sodium",
+      "raw_test_name": "Sodium",
+      "canonical_test_name": "Serum Sodium",
+      "test_id": "SODIUM",
+      "loinc_code": "2951-2",
+      "value": 140.4,
+      "raw_unit": "mmol/L",
+      "normalized_unit": "mmol/L",
+      "reference_range": {
+        "low": 135.0,
+        "high": 150.0,
+        "raw": "135 - 150",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Sodium",
+        "raw_value": "140.40 mmol/L"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Potassium",
+      "raw_test_name": "Potassium",
+      "canonical_test_name": "Serum Potassium",
+      "test_id": "POTASSIUM",
+      "loinc_code": "2823-3",
+      "value": 4.55,
+      "raw_unit": "mmol/L",
+      "normalized_unit": "mmol/L",
+      "reference_range": {
+        "low": 3.5,
+        "high": 5.0,
+        "raw": "3.5 - 5.0",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Potassium",
+        "raw_value": "4.55 mmol/L"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Chloride",
+      "raw_test_name": "Chloride",
+      "canonical_test_name": "Serum Chloride",
+      "test_id": "CHLORIDE",
+      "loinc_code": "2075-0",
+      "value": 101.5,
+      "raw_unit": "mmol/L",
+      "normalized_unit": "mmol/L",
+      "reference_range": {
+        "low": 94.0,
+        "high": 110.0,
+        "raw": "94 - 110",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Chloride",
+        "raw_value": "101.50 mmol/L"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Calcium",
+      "raw_test_name": "Calcium",
+      "canonical_test_name": "Calcium",
+      "test_id": "CALCIUM",
+      "loinc_code": "17861-6",
+      "value": 9.02,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": 8.6,
+        "high": 10.0,
+        "raw": "8.6 - 10.0",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Calcium",
+        "raw_value": "9.02 mg/dL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "IRON PROFILE",
+      "raw_test_name": "IRON PROFILE",
+      "canonical_test_name": "Serum Iron",
+      "test_id": "IRON",
+      "loinc_code": "2498-4",
+      "value": 2.0,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": 60.0,
+        "high": 170.0,
+        "raw": "60 - 170 ug/dL",
+        "type": null,
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "LOW",
+      "flag": "RED_FLAG",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "MISSING",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "IRON PROFILE",
+        "raw_value": "2"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "TIBC",
+      "raw_test_name": "TIBC",
+      "canonical_test_name": "Total Iron Binding Capacity",
+      "test_id": "TIBC",
+      "loinc_code": "2500-7",
+      "value": 292.0,
+      "raw_unit": "ug/dL",
+      "normalized_unit": "ug/dL",
+      "reference_range": {
+        "low": 250.0,
+        "high": 450.0,
+        "raw": "ug/dL 250-450 Ferene-S",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "TIBC",
+        "raw_value": "292 ug/dL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Iron",
+      "raw_test_name": "Iron",
+      "canonical_test_name": "Serum Iron",
+      "test_id": "IRON",
+      "loinc_code": "2498-4",
+      "value": 38.0,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "µg/dL 37 ‑ 145 FerroZine",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "MISSING",
+      "review_reasons": [
+        "DUPLICATE_TEST"
+      ],
+      "source_trace": {
+        "raw_test_name": "Iron",
+        "raw_value": "38.0"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Transferrin Saturation%",
+      "raw_test_name": "Transferrin Saturation%",
+      "canonical_test_name": null,
+      "test_id": null,
+      "loinc_code": null,
+      "value": 13.01,
+      "raw_unit": "%",
+      "normalized_unit": "%",
+      "reference_range": {
+        "low": 12.0,
+        "high": 50.0,
+        "raw": "12 - 50 Calculation",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "REVIEW_REQUIRED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [
+        "UNMAPPED_TEST"
+      ],
+      "source_trace": {
+        "raw_test_name": "Transferrin Saturation%",
+        "raw_value": "13.01 %"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Transferrin",
+      "raw_test_name": "Transferrin",
+      "canonical_test_name": "Transferrin",
+      "test_id": "TRANSFERRIN",
+      "loinc_code": "3034-6",
+      "value": 234.0,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": 200.0,
+        "high": 360.0,
+        "raw": "200 - 360 Calculation",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "Transferrin",
+        "raw_value": "234 mg/dL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "Unsaturated Iron Binding Capacity (UIBC)",
+      "raw_test_name": "Unsaturated Iron Binding Capacity (UIBC)",
+      "canonical_test_name": "Serum Iron",
+      "test_id": "IRON",
+      "loinc_code": "2498-4",
+      "value": 254.0,
+      "raw_unit": null,
+      "normalized_unit": null,
+      "reference_range": {
+        "low": null,
+        "high": null,
+        "raw": "µg/dL 112 ‑ 347 Ferro Zine",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "UNKNOWN",
+      "flag": "REVIEW_REQUIRED",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "MISSING",
+      "review_reasons": [
+        "DUPLICATE_TEST"
+      ],
+      "source_trace": {
+        "raw_test_name": "Unsaturated Iron Binding Capacity (UIBC)",
+        "raw_value": "254"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    },
+    {
+      "test_name": "GLUCOSE - RANDOM , NAF PLASMA Random Glucose",
+      "raw_test_name": "GLUCOSE - RANDOM , NAF PLASMA Random Glucose",
+      "canonical_test_name": "Random Blood Sugar",
+      "test_id": "GLUCOSE_RANDOM",
+      "loinc_code": "2345-7",
+      "value": 91.3,
+      "raw_unit": "mg/dL",
+      "normalized_unit": "mg/dL",
+      "reference_range": {
+        "low": 70.0,
+        "high": 140.0,
+        "raw": "70-140 Hexokinase",
+        "type": "TWO_SIDED",
+        "operator": null,
+        "selected_group": null,
+        "categories": null,
+        "selected_category": null
+      },
+      "status": "NORMAL",
+      "flag": "NONE",
+      "mapping_status": "MAPPED",
+      "method": null,
+      "unit_validation": "VALID",
+      "review_reasons": [],
+      "source_trace": {
+        "raw_test_name": "GLUCOSE - RANDOM , NAF PLASMA Random Glucose",
+        "raw_value": "91.30 mg/dL"
+      },
+      "specimen": null,
+      "result_type": "DIRECT"
+    }
+  ],
+  "warnings": [
+    "Discrepancy in Reported On timestamp across report pages (Conflicting: '2026-07-15T18:01:00, 2026-07-15T16:48:00, 2026-07-15T17:10:00, 2026-07-15T17:28:00, 2026-07-15T18:24:00, 2026-07-15T17:13:00, 2026-07-15T16:43:00', Majority/Resolved: '2026-07-15T17:24:00').",
+    "Unparsed reference range format: 'Calculated'",
+    "Unparsed reference range format: 'of 12'",
+    "Unparsed reference range format: '≤ 30 Calculated'",
+    "Unparsed reference range format: '≤ 130 Calculated'",
+    "Unparsed reference range format: 'U/L 35 ‑ 104 IFCC, PNPP AMP'",
+    "Unparsed reference range format: 'Calculated'",
+    "Unparsed reference range format: 'µg/dL 37 ‑ 145 FerroZine'",
+    "Unparsed reference range format: 'µg/dL 112 ‑ 347 Ferro Zine'"
+  ],
+  "completeness": {
+    "expected_count": 60,
+    "extracted_count": 60,
+    "missing_tests": [],
+    "unexpected_tests": [],
+    "complete": true
+  },
+  "specimen_summary": null
+}

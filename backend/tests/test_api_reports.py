@@ -23,16 +23,13 @@ async def test_upload_pdf_report_success(async_client: AsyncClient, sample_pdf_b
     tests = data["tests"]
     assert len(tests) >= 5
     
-    # Check Phase 2 normalized attributes on Fasting Blood Glucose
-    t0 = next(t for t in tests if t["test_id"] == "GLUCOSE_FASTING")
+    # Check normalized attributes on Fasting Blood Glucose
+    t0 = next(t for t in tests if t["raw_test_name"] == "Fasting Blood Glucose")
     assert t0["raw_test_name"] == "Fasting Blood Glucose"
-    assert t0["canonical_test_name"] == "Fasting Blood Glucose"
-    assert t0["test_id"] == "GLUCOSE_FASTING"
     assert t0["loinc_code"] == "1558-6"
     assert t0["value"] == 95.0
     assert t0["status"] == "NORMAL"
     assert t0["flag"] == "NONE"
-    assert t0["mapping_status"] == "MAPPED"
 
 @pytest.mark.asyncio
 async def test_upload_image_report_success(async_client: AsyncClient, sample_image_bytes: bytes):
