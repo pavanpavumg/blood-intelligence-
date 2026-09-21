@@ -27,6 +27,16 @@ class Settings(BaseSettings):
         "http://localhost:3000",
         "http://127.0.0.1:3000"
     ]
+
+    # OCR Performance & Quality configuration
+    OCR_DPI_FAST: int = 200
+    OCR_DPI_BALANCED: int = 220
+    OCR_DPI_HIGH: int = 300
+    OCR_DEFAULT_DPI: int = 200
+    OCR_CONFIDENCE_THRESHOLD: float = 0.80
+    OCR_ENABLE_FALLBACK: bool = True
+    OCR_VERSION: str = "PP-OCRv4"
+    OCR_MAX_SIDE: int = 1200
     
     @field_validator("ALLOWED_ORIGINS", mode="before")
     @classmethod

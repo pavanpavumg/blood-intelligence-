@@ -1,0 +1,134 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Tez.Health Brand Colors */
+  --tez-blue: #0066FF;
+  --tez-blue-dark: #0052CC;
+  --tez-blue-light: #3385FF;
+  --tez-blue-50: #EBF3FF;
+  --tez-blue-100: #D6E8FF;
+  --tez-yellow: #FFD700;
+  --tez-yellow-light: #FFE44D;
+  --tez-yellow-dark: #E6C200;
+
+  /* Semantic Colors */
+  --success-green: #10B981;
+  --warning-amber: #F59E0B;
+  --danger-red: #EF4444;
+
+  /* Text Colors */
+  --text-primary: #0F172A;
+  --text-secondary: #64748B;
+  --text-on-blue: #FFFFFF;
+
+  /* Backgrounds */
+  --bg-primary: #0066FF;
+  --bg-secondary: #F8FAFC;
+  --bg-card: #FFFFFF;
+  --border-light: #E2E8F0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  -webkit-tap-highlight-color: transparent;
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-heading {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Tez.Health Custom Utilities */
+@layer utilities {
+  .animate-fadeIn {
+    animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+  }
+
+  /* Tez.Health Blue Background Utility */
+  .bg-tez-blue {
+    background-color: var(--tez-blue);
+  }
+
+  .bg-tez-blue-dark {
+    background-color: var(--tez-blue-dark);
+  }
+
+  .bg-tez-blue-light {
+    background-color: var(--tez-blue-light);
+  }
+
+  .bg-tez-blue-50 {
+    background-color: var(--tez-blue-50);
+  }
+
+  .bg-tez-blue-100 {
+    background-color: var(--tez-blue-100);
+  }
+
+  /* Tez.Health Yellow Accent Utility */
+  .bg-tez-yellow {
+    background-color: var(--tez-yellow);
+  }
+
+  .text-tez-blue {
+    color: var(--tez-blue);
+  }
+
+  .text-tez-yellow {
+    color: var(--tez-yellow);
+  }
+
+  .border-tez-blue {
+    border-color: var(--tez-blue);
+  }
+
+  .border-tez-yellow {
+    border-color: var(--tez-yellow);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--tez-blue);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--tez-blue-dark);
+}

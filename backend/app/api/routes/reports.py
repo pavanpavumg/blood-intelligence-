@@ -4,15 +4,16 @@ from app.services.document_service import DocumentService
 
 router = APIRouter()
 
+
 @router.post(
     "/upload",
     response_model=ReportUploadResponse,
     status_code=status.HTTP_200_OK,
     summary="Upload & Extract Blood Test Report",
-    description="Uploads a blood test report (PDF, PNG, JPG, JPEG) and extracts structured laboratory data without using an LLM."
+    description="Uploads a blood test pdf report",
 )
 async def upload_report(
-    file: UploadFile = File(..., description="Report document file (PDF or Image)")
+    file: UploadFile = File(..., description="Report document file")
 ) -> ReportUploadResponse:
     """
     Handles report upload, document type detection, OCR preprocessing, non-LLM field parsing,

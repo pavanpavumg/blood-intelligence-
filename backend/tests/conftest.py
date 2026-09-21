@@ -1,5 +1,5 @@
 import pytest
-import fitz  # PyMuPDF
+import pymupdf
 import cv2
 import numpy as np
 from typing import AsyncGenerator
@@ -24,7 +24,7 @@ def sample_pdf_bytes() -> bytes:
     """
     Generates a valid digital PDF blood report fixture in memory using PyMuPDF.
     """
-    doc = fitz.open()
+    doc = pymupdf.open()
     page = doc.new_page()
     
     text = (

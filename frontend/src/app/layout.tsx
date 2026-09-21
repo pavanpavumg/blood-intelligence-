@@ -1,8 +1,9 @@
 import React from 'react';
+import './globals.css';
 
 export const metadata = {
-  title: 'Blood Test Intelligence Dashboard',
-  description: 'AI-powered lab report extraction and biomarker analytics platform',
+  title: 'Tez SmartApp - Smart Health Report Viewer',
+  description: 'Interactive patient-friendly health report viewer with organ map, wellness score, and plain language explanations.',
 };
 
 export default function RootLayout({
@@ -12,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body style={{ margin: 0, fontFamily: 'system-ui, -apple-system, sans-serif', backgroundColor: '#0f172a', color: '#f8fafc' }}>
+      <body className="bg-slate-100 text-slate-900 antialiased min-h-screen">
         {children}
       </body>
     </html>

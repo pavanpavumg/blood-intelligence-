@@ -4,7 +4,7 @@ class BiomarkerExtractor:
     """
     Extracts structured biomarker key-value-unit triples from raw OCR text blocks.
     """
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
     def extract_biomarkers(self, raw_text_blocks: List[Dict[str, Any]]) -> List[Dict[str, Any]]:

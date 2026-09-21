@@ -1,5 +1,5 @@
 import pytest
-import fitz
+import pymupdf
 from fastapi import UploadFile, HTTPException
 from io import BytesIO
 
@@ -20,7 +20,7 @@ def test_document_validation():
     assert "Unsupported file" in exc_info.value.detail
 
 def test_pdf_extraction_digital(sample_pdf_bytes: bytes):
-    doc = fitz.open(stream=sample_pdf_bytes, filetype="pdf")
+    doc = pymupdf.open(stream=sample_pdf_bytes, filetype="pdf")
     assert len(doc) == 1
     
     text = doc[0].get_text("text")

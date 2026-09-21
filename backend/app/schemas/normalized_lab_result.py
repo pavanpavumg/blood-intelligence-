@@ -7,7 +7,7 @@ class NormalizedLabTestResult(BaseModel):
     test_name: Optional[str] = Field(default=None, description="Extracted laboratory test name")
     raw_test_name: str = Field(..., description="Raw extracted test name from report")
     canonical_test_name: Optional[str] = Field(default=None, exclude=True, description="Canonical normalized test name")
-    test_id: Optional[str] = Field(default=None, exclude=True, description="Unique test identifier in catalog")
+    test_id: Optional[str] = Field(default=None, description="Unique test identifier in catalog")
     loinc_code: Optional[str] = Field(default=None, description="Standardized LOINC code")
     value: Optional[float] = Field(default=None, description="Parsed numeric laboratory measurement")
     raw_unit: Optional[str] = Field(default=None, description="Raw extracted measurement unit")
@@ -23,11 +23,27 @@ class NormalizedLabTestResult(BaseModel):
     specimen: Optional[Dict[str, Any]] = Field(default=None, exclude=True, description="Specimen page, vial ID, sample type")
     result_type: Optional[str] = Field(default=None, exclude=True, description="DIRECT, CALCULATED, or TEXTUAL")
 
+class ProfileSummary(BaseModel):
+    total_tests: int = Field(default=0, description="Total number of tests in profile")
+    normal: int = Field(default=0, description="Number of tests with status NORMAL")
+    high: int = Field(default=0, description="Number of tests with status HIGH")
+    low: int = Field(default=0, description="Number of tests with status LOW")
+    unknown: int = Field(default=0, description="Number of tests with status UNKNOWN")
+    review_required: int = Field(default=0, description="Number of tests with flag REVIEW_REQUIRED")
+
+class ClinicalProfile(BaseModel):
+    profile_code: str = Field(..., description="Unique profile code e.g. KIDNEY_PROFILE")
+    profile_name: str = Field(..., description="Human-readable profile display name")
+    test_ids: List[str] = Field(default_factory=list, description="Canonical test IDs or names belonging to this profile")
+    summary: ProfileSummary = Field(..., description="Deterministic profile test status summary")
+
 class NormalizedReportData(BaseModel):
     schema_version: str = Field(default="2.1", description="Schema version identifier")
     report: ReportMetadata = Field(..., description="Report metadata")
     patient: PatientInfo = Field(..., description="Patient demographic information")
     tests: List[NormalizedLabTestResult] = Field(default_factory=list, description="Normalized laboratory test results")
+    profiles: Optional[List[ClinicalProfile]] = Field(default=None, description="Clinical profile groupings")
+    unassigned_test_ids: List[str] = Field(default_factory=list, description="Test IDs or raw names not assigned to any profile")
     warnings: List[str] = Field(default_factory=list, description="Extraction and normalization warnings")
     completeness: Optional[Dict[str, Any]] = Field(default=None, description="Completeness validation object")
     specimen_summary: Optional[List[Dict[str, Any]]] = Field(default=None, description="Specimen metadata across pages")

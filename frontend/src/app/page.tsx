@@ -1,617 +1,386 @@
 'use client';
 
-import React, { useState, ChangeEvent, FormEvent, useMemo } from 'react';
+import React, { useState, useMemo, ChangeEvent } from 'react';
+import { HeaderBar } from '../components/HeaderBar';
+import { TabNavigation } from '../components/TabNavigation';
+import { WellnessScoreCard } from '../components/WellnessScoreCard';
+import { BodyMap } from '../components/BodyMap';
+import { DietRecommendationsSection } from '../components/DietRecommendationsSection';
+import { RiskCalculatorSection } from '../components/RiskCalculatorSection';
+import { SmartViewTab } from '../components/SmartViewTab';
+import { LabReportResponse, TestItem } from '../types';
+import {
+  groupTestsIntoProfiles,
+  calculateWellnessScore,
+  calculateRisks,
+  generateDietRecommendations
+} from '../utils/healthCalculators';
+import { Upload, FileText, Sparkles, CheckCircle2, AlertCircle, RefreshCw, FileUp, ShieldCheck, Cpu, Activity, Utensils, HeartPulse } from 'lucide-react';
 
-interface ReferenceRange {
-  low: number | null;
-  high: number | null;
-  raw: string | null;
-}
+// Normalize backend API payload safely into frontend LabReportResponse
+function normalizeBackendResponse(rawJson: any): LabReportResponse {
+  if (!rawJson) {
+    throw new Error('Empty response received from backend API.');
+  }
 
-interface LabTestResult {
-  raw_test_name: string;
-  canonical_test_name: string | null;
-  test_id: string | null;
-  loinc_code: string | null;
-  value: number | null;
-  raw_value?: string | null;
-  raw_unit: string | null;
-  normalized_unit: string | null;
-  reference_range: ReferenceRange | null;
-  status: 'NORMAL' | 'HIGH' | 'LOW' | 'UNKNOWN' | null;
-  flag: 'NONE' | 'RED_FLAG' | 'REVIEW_REQUIRED' | null;
-  mapping_status: 'MAPPED' | 'REVIEW_REQUIRED' | 'UNMAPPED';
-  warnings?: string[];
-}
+  const data = rawJson.data || rawJson || {};
+  const report = data.report || rawJson.report || {};
+  const patient = data.patient || rawJson.patient || {};
+  const rawTests = Array.isArray(data.tests) ? data.tests : Array.isArray(rawJson.tests) ? rawJson.tests : [];
 
-interface PatientInfo {
-  patient_id: string | null;
-  name: string | null;
-  age: number | null;
-  gender: string | null;
-}
+  const normalizedTests: TestItem[] = rawTests.map((t: any) => {
+    const rangeObj = t.reference_range || {};
+    const lowVal = typeof rangeObj.low === 'number' ? rangeObj.low : (parseFloat(rangeObj.low) || null);
+    const highVal = typeof rangeObj.high === 'number' ? rangeObj.high : (parseFloat(rangeObj.high) || null);
+    let rawVal = rangeObj.raw || '';
 
-interface ReportMetadata {
-  report_id: string;
-  report_date: string | null;
-  lab_name: string | null;
-}
-
-interface NormalizedReportData {
-  schema_version: string;
-  report: ReportMetadata;
-  patient: PatientInfo;
-  tests: LabTestResult[];
-  warnings: string[];
-}
-
-interface ReportUploadResponse {
-  report_id: string;
-  status: string;
-  data: NormalizedReportData;
-}
-
-type FilterCategory = 'ALL' | 'ABNORMAL' | 'HIGH' | 'LOW' | 'NORMAL' | 'REVIEW';
-
-export default function Home() {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<ReportUploadResponse | null>(null);
-
-  // Dashboard Controls
-  const [activeFilter, setActiveFilter] = useState<FilterCategory>('ALL');
-  const [searchQuery, setSearchQuery] = useState<string>('');
-
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
-
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setSelectedFile(file);
-      setError(null);
-    }
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setSelectedFile(e.dataTransfer.files[0]);
-      setError(null);
-    }
-  };
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!selectedFile) {
-      setError('Please select a blood test report file (PDF, PNG, JPG, JPEG).');
-      return;
+    if (!rawVal && lowVal !== null && highVal !== null) {
+      rawVal = `${lowVal} - ${highVal}`;
     }
 
-    setLoading(true);
-    setError(null);
+    let val = typeof t.value === 'number' ? t.value : parseFloat(t.raw_value || t.value);
+    if (isNaN(val)) val = 0;
 
-    const formData = new FormData();
-    formData.append('file', selectedFile);
+    return {
+      test_name: t.test_name || t.canonical_test_name || t.raw_test_name || 'Lab Test',
+      raw_test_name: t.raw_test_name || t.test_name || '',
+      loinc_code: t.loinc_code || null,
+      value: val,
+      raw_unit: t.raw_unit || t.normalized_unit || t.unit || null,
+      reference_range: {
+        low: lowVal,
+        high: highVal,
+        raw: rawVal || (typeof rangeObj === 'string' ? rangeObj : '')
+      },
+      status: (t.status || 'NORMAL').toUpperCase() as any,
+      flag: (t.flag || 'NONE').toUpperCase() as any,
+      source_trace: t.source_trace || { raw_test_name: t.raw_test_name || '', raw_value: String(t.value || '') }
+    };
+  });
+
+  return {
+    report_id: rawJson.report_id || report.report_id || data.report_id || `REP-${Date.now()}`,
+    status: rawJson.status || 'VALIDATED',
+    data: {
+      schema_version: data.schema_version || rawJson.schema_version || '2.1',
+      report: {
+        report_id: report.report_id || rawJson.report_id || `REP-${Date.now()}`,
+        report_date: report.report_date || rawJson.report_date || new Date().toISOString(),
+        lab_name: report.lab_name || rawJson.lab_name || 'Diagnostic Laboratory'
+      },
+      patient: {
+        patient_id: patient.patient_id || rawJson.patient_id || 'PAT-UPLOADED',
+        name: patient.name || rawJson.patient_name || 'Patient Report',
+        age: patient.age || 45,
+        gender: patient.gender || 'Male'
+      },
+      tests: normalizedTests,
+      warnings: data.warnings || rawJson.warnings || [],
+      completeness: data.completeness || rawJson.completeness || {
+        expected_count: normalizedTests.length,
+        extracted_count: normalizedTests.length,
+        missing_tests: [],
+        unexpected_tests: [],
+        complete: true
+      }
+    }
+  };
+}
+
+export default function SmartHealthReportApp() {
+  const [activeReport, setActiveReport] = useState<LabReportResponse | null>(null);
+  const [activeTab, setActiveTab] = useState<'overview' | 'smart-view'>('overview');
+  const [selectedProfileName, setSelectedProfileName] = useState<string | null>(null);
+  const [uploading, setUploading] = useState<boolean>(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
+  // Extract tests from active report
+  const tests = useMemo(() => activeReport?.data?.tests || [], [activeReport]);
+  const patient = useMemo(() => activeReport?.data?.patient || { patient_id: '', name: 'Patient', age: 0, gender: 'Male' as const }, [activeReport]);
+  const report = useMemo(() => activeReport?.data?.report || { report_id: '', report_date: new Date().toISOString(), lab_name: 'Lab' }, [activeReport]);
+
+  // Processed Data Computations
+  const profiles = useMemo(() => groupTestsIntoProfiles(tests), [tests]);
+  const wellnessScore = useMemo(() => calculateWellnessScore(tests), [tests]);
+  const risks = useMemo(() => calculateRisks(tests, profiles), [tests, profiles]);
+  const dietRecommendations = useMemo(() => generateDietRecommendations(profiles), [profiles]);
+
+  // Handle PDF Upload to FastAPI Backend API
+  const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    setUploadError(null);
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/reports/upload`, {
-        method: 'POST',
-        body: formData,
-      });
+      const formData = new FormData();
+      formData.append('file', file);
 
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({ detail: `Upload failed with HTTP ${res.status}` }));
-        throw new Error(errorData.detail || `Upload failed with status ${res.status}`);
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+      const endpoints = [
+        `${apiBaseUrl}/api/reports/upload`,
+        `${apiBaseUrl}/api/v1/reports/upload`,
+        `http://127.0.0.1:8000/api/reports/upload`,
+        `http://localhost:8000/api/reports/upload`
+      ];
+
+      let response: Response | null = null;
+      let lastError = '';
+
+      for (const endpoint of endpoints) {
+        try {
+          response = await fetch(endpoint, {
+            method: 'POST',
+            body: formData
+          });
+          if (response.ok) break;
+          lastError = `Endpoint ${endpoint} returned status ${response.status}`;
+        } catch (err: any) {
+          lastError = err.message || 'Network error';
+        }
       }
 
-      const data: ReportUploadResponse = await res.json();
-      setResult(data);
+      if (!response || !response.ok) {
+        throw new Error(lastError || 'Could not connect to FastAPI backend server. Ensure backend server is running on port 8000.');
+      }
+
+      const json = await response.json();
+
+      if (json && (json.data || json.tests)) {
+        const normalized = normalizeBackendResponse(json);
+        setActiveReport(normalized);
+        setActiveTab('overview');
+      } else {
+        throw new Error('Unrecognized JSON payload returned from backend server.');
+      }
     } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred during processing.');
+      console.error('PDF upload error:', err);
+      setUploadError(err.message || 'Failed to parse lab report PDF. Please upload a valid laboratory report document.');
     } finally {
-      setLoading(false);
+      setUploading(false);
     }
   };
 
-  const handleReset = () => {
-    setSelectedFile(null);
-    setResult(null);
-    setError(null);
-    setActiveFilter('ALL');
-    setSearchQuery('');
+  const handleSelectProfileFromOrgan = (profileName: string) => {
+    setSelectedProfileName(profileName);
+    setActiveTab('smart-view');
   };
 
-  const formatFileSize = (bytes: number): string => {
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-  };
+  // State 1: Upload Hero View (When no report is active)
+  if (!activeReport) {
+    return (
+      <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col justify-between selection:bg-blue-500 selection:text-white">
 
-  // Clinical Summary Statistics
-  const stats = useMemo(() => {
-    if (!result?.data?.tests) {
-      return { total: 0, normal: 0, high: 0, low: 0, review: 0 };
-    }
-    const tests = result.data.tests;
-    return {
-      total: tests.length,
-      normal: tests.filter(t => t.status === 'NORMAL').length,
-      high: tests.filter(t => t.status === 'HIGH').length,
-      low: tests.filter(t => t.status === 'LOW').length,
-      review: tests.filter(t => t.status === 'UNKNOWN' || t.mapping_status === 'REVIEW_REQUIRED' || t.flag === 'REVIEW_REQUIRED').length,
-    };
-  }, [result]);
-
-  // Filtered Lab Results for Doctors
-  const filteredTests = useMemo(() => {
-    if (!result?.data?.tests) return [];
-
-    return result.data.tests.filter(test => {
-      const testName = (test.canonical_test_name || test.raw_test_name).toLowerCase();
-      const loinc = (test.loinc_code || '').toLowerCase();
-      const query = searchQuery.toLowerCase().trim();
-
-      const matchesSearch = !query || testName.includes(query) || loinc.includes(query);
-
-      let matchesCategory = true;
-      if (activeFilter === 'ABNORMAL') {
-        matchesCategory = test.status === 'HIGH' || test.status === 'LOW';
-      } else if (activeFilter === 'HIGH') {
-        matchesCategory = test.status === 'HIGH';
-      } else if (activeFilter === 'LOW') {
-        matchesCategory = test.status === 'LOW';
-      } else if (activeFilter === 'NORMAL') {
-        matchesCategory = test.status === 'NORMAL';
-      } else if (activeFilter === 'REVIEW') {
-        matchesCategory = test.status === 'UNKNOWN' || test.mapping_status === 'REVIEW_REQUIRED';
-      }
-
-      return matchesSearch && matchesCategory;
-    });
-  }, [result, activeFilter, searchQuery]);
-
-  const getStatusBadgeStyle = (status: string | null) => {
-    switch (status) {
-      case 'NORMAL':
-        return { backgroundColor: '#064e3b', color: '#34d399', border: '1px solid #059669', icon: '🟢' };
-      case 'HIGH':
-        return { backgroundColor: '#7f1d1d', color: '#f87171', border: '1px solid #dc2626', icon: '🚨' };
-      case 'LOW':
-        return { backgroundColor: '#78350f', color: '#fbbf24', border: '1px solid #d97706', icon: '⚠️' };
-      case 'UNKNOWN':
-      default:
-        return { backgroundColor: '#334155', color: '#cbd5e1', border: '1px solid #64748b', icon: '❓' };
-    }
-  };
-
-  const getFlagBadgeStyle = (flag: string | null) => {
-    switch (flag) {
-      case 'NONE':
-        return { backgroundColor: '#0f172a', color: '#64748b', border: '1px solid #1e293b' };
-      case 'RED_FLAG':
-        return { backgroundColor: '#991b1b', color: '#fef2f2', border: '1px solid #ef4444', fontWeight: 600 };
-      case 'REVIEW_REQUIRED':
-      default:
-        return { backgroundColor: '#854d0e', color: '#fef9c3', border: '1px solid #eab308' };
-    }
-  };
-
-  return (
-    <main style={{ padding: '2.5rem 1.5rem', maxWidth: '1280px', margin: '0 auto', fontFamily: 'system-ui, -apple-system, sans-serif', color: '#f8fafc' }}>
-      {/* Top Header */}
-      <header style={{ marginBottom: '2rem', borderBottom: '1px solid #334155', paddingBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <span style={{ fontSize: '1.8rem' }}>🩸</span>
-            <h1 style={{ fontSize: '2rem', fontWeight: 800, color: '#38bdf8', margin: 0, letterSpacing: '-0.025em' }}>
-              Blood Test Intelligence — Doctor Clinical Dashboard
-            </h1>
-          </div>
-          <p style={{ color: '#94a3b8', fontSize: '0.95rem', marginTop: '0.4rem', marginBottom: 0 }}>
-            Automated Clinical Triaging, High/Low Abnormalities Classifier & Deterministic Extraction
-          </p>
-        </div>
-        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-          <span style={{ padding: '0.4rem 0.8rem', backgroundColor: '#0f172a', borderRadius: '0.5rem', border: '1px solid #1e293b', fontSize: '0.85rem', color: '#38bdf8', fontWeight: 600 }}>
-            Phase 0–2 Engine v2.1
-          </span>
-        </div>
-      </header>
-
-      {/* Upload View */}
-      {!result && (
-        <section style={{ backgroundColor: '#1e293b', borderRadius: '1rem', border: '1px solid #334155', padding: '2.5rem', maxWidth: '750px', margin: '0 auto', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)' }}>
-          <h2 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#f1f5f9', marginTop: 0, marginBottom: '0.5rem' }}>
-            Upload Laboratory Report
-          </h2>
-          <p style={{ color: '#94a3b8', fontSize: '0.95rem', marginBottom: '1.75rem', lineHeight: 1.5 }}>
-            Upload a blood test PDF or scanned image report to instantly analyze High, Low, and Normal clinical biomarkers.
-          </p>
-
-          <form onSubmit={handleSubmit}>
-            <div
-              onDragOver={handleDragOver}
-              onDrop={handleDrop}
-              style={{
-                border: '2px dashed #475569',
-                borderRadius: '0.75rem',
-                padding: '3rem 1.5rem',
-                textAlign: 'center',
-                backgroundColor: '#0f172a',
-                cursor: 'pointer',
-                transition: 'border-color 0.2s',
-                marginBottom: '1.5rem',
-              }}
-              onClick={() => document.getElementById('file-input')?.click()}
-            >
-              <input
-                id="file-input"
-                type="file"
-                accept=".pdf,.png,.jpg,.jpeg"
-                onChange={handleFileChange}
-                style={{ display: 'none' }}
-              />
-              <div style={{ fontSize: '2.75rem', marginBottom: '0.75rem' }}>📄</div>
-              <p style={{ fontSize: '1.05rem', fontWeight: 600, color: '#e2e8f0', margin: '0 0 0.35rem 0' }}>
-                {selectedFile ? selectedFile.name : 'Click to upload or drag & drop laboratory report'}
-              </p>
-              <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>
-                {selectedFile ? `File Size: ${formatFileSize(selectedFile.size)}` : 'Supported Formats: PDF, PNG, JPG, JPEG (Max 20MB)'}
-              </p>
-            </div>
-
-            {error && (
-              <div style={{ backgroundColor: '#450a0a', border: '1px solid #991b1b', color: '#fca5a5', padding: '0.9rem 1.2rem', borderRadius: '0.5rem', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
-                ⚠️ {error}
+        {/* Minimal Header */}
+        <header className="bg-white border-b border-gray-100 py-3.5 px-4 md:px-6 sticky top-0 z-40 shadow-xs">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-primary-blue flex items-center justify-center text-white font-black text-base shadow-md shadow-primary-blue/20">
+                T
               </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading || !selectedFile}
-              style={{
-                width: '100%',
-                padding: '0.9rem 1.5rem',
-                backgroundColor: loading || !selectedFile ? '#334155' : '#0284c7',
-                color: '#ffffff',
-                border: 'none',
-                borderRadius: '0.5rem',
-                fontSize: '1.05rem',
-                fontWeight: 700,
-                cursor: loading || !selectedFile ? 'not-allowed' : 'pointer',
-                transition: 'background-color 0.2s',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                gap: '0.6rem',
-              }}
-            >
-              {loading ? (
-                <>
-                  <span style={{ display: 'inline-block', width: '1.1rem', height: '1.1rem', border: '2px solid #ffffff', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-                  Analyzing Blood Report...
-                </>
-              ) : (
-                '🔬 Process & Analyze Report'
-              )}
-            </button>
-          </form>
-        </section>
-      )}
-
-      {/* Doctor Dashboard View */}
-      {result && (
-        <section style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-          {/* Top Bar Controls */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', backgroundColor: '#1e293b', padding: '1.25rem 1.5rem', borderRadius: '0.75rem', border: '1px solid #334155' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <span style={{ fontSize: '1rem', fontWeight: 600, color: '#f8fafc' }}>Extraction Status:</span>
-              <span style={{ padding: '0.35rem 0.85rem', backgroundColor: result.status.includes('WARNINGS') ? '#78350f' : '#064e3b', color: result.status.includes('WARNINGS') ? '#fde047' : '#34d399', borderRadius: '0.375rem', fontSize: '0.85rem', fontWeight: 700 }}>
-                {result.status}
+              <span className="text-base font-black tracking-tight text-slate-900">
+                Tez <span className="text-primary-blue">SmartApp</span>
               </span>
             </div>
-            <button
-              onClick={handleReset}
-              style={{ padding: '0.65rem 1.25rem', backgroundColor: '#334155', color: '#f8fafc', border: 'none', borderRadius: '0.5rem', fontSize: '0.9rem', fontWeight: 600, cursor: 'pointer', transition: 'background-color 0.2s' }}
-            >
-              ← Upload Another Report
-            </button>
+            <span className="text-xs font-extrabold bg-bg-light-blue text-primary-blue px-3 py-1 rounded-full border border-blue-100">
+              FastAPI Pipeline Connected
+            </span>
           </div>
+        </header>
 
-          {/* Clinical Analytics Cards (Total, Normal, High, Low, Review) */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1.25rem' }}>
-            {/* Total Biomarkers */}
-            <div style={{ backgroundColor: '#0f172a', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid #334155' }}>
-              <div style={{ fontSize: '0.8rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>Total Tests</div>
-              <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#38bdf8', marginTop: '0.3rem' }}>{stats.total}</div>
-              <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.2rem' }}>Extracted Biomarkers</div>
-            </div>
+        {/* Upload Hero Section */}
+        <main className="flex-1 flex flex-col items-center justify-center px-4 md:px-6 py-12 max-w-4xl mx-auto w-full">
 
-            {/* Normal Biomarkers */}
-            <div style={{ backgroundColor: '#064e3b', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid #059669' }}>
-              <div style={{ fontSize: '0.8rem', color: '#a7f3d0', textTransform: 'uppercase', fontWeight: 700 }}>🟢 Normal</div>
-              <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#34d399', marginTop: '0.3rem' }}>{stats.normal}</div>
-              <div style={{ fontSize: '0.75rem', color: '#a7f3d0', opacity: 0.9, marginTop: '0.2rem' }}>Within Reference Range</div>
-            </div>
+          <div className="bg-white rounded-3xl p-6 md:p-10 border border-gray-200 shadow-xl w-full text-center relative overflow-hidden">
 
-            {/* High Biomarkers */}
-            <div style={{ backgroundColor: '#7f1d1d', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid #dc2626' }}>
-              <div style={{ fontSize: '0.8rem', color: '#fca5a5', textTransform: 'uppercase', fontWeight: 700 }}>🚨 High</div>
-              <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#f87171', marginTop: '0.3rem' }}>{stats.high}</div>
-              <div style={{ fontSize: '0.75rem', color: '#fca5a5', opacity: 0.9, marginTop: '0.2rem' }}>Above Upper Limit</div>
-            </div>
+            {/* Background Aura */}
+            <div className="absolute -top-20 -right-20 w-48 h-48 bg-bg-light-blue rounded-full blur-3xl pointer-events-none" />
 
-            {/* Low Biomarkers */}
-            <div style={{ backgroundColor: '#78350f', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid #d97706' }}>
-              <div style={{ fontSize: '0.8rem', color: '#fde047', textTransform: 'uppercase', fontWeight: 700 }}>⚠️ Low</div>
-              <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#fbbf24', marginTop: '0.3rem' }}>{stats.low}</div>
-              <div style={{ fontSize: '0.75rem', color: '#fde047', opacity: 0.9, marginTop: '0.2rem' }}>Below Lower Limit</div>
-            </div>
+            <div className="relative z-10 flex flex-col items-center gap-6">
 
-            {/* Review Required */}
-            <div style={{ backgroundColor: '#1e293b', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid #475569' }}>
-              <div style={{ fontSize: '0.8rem', color: '#cbd5e1', textTransform: 'uppercase', fontWeight: 700 }}>❓ Review Required</div>
-              <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#e2e8f0', marginTop: '0.3rem' }}>{stats.review}</div>
-              <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.2rem' }}>Requires Doctor Inspection</div>
-            </div>
-          </div>
+              {/* Icon */}
+              <div className="w-24 h-24 rounded-3xl bg-bg-light-blue border-2 border-blue-100 text-primary-blue flex items-center justify-center shadow-inner my-2">
+                {uploading ? (
+                  <RefreshCw size={44} className="animate-spin text-primary-blue" />
+                ) : (
+                  <FileUp size={44} className="stroke-[1.75]" />
+                )}
+              </div>
 
-          {/* Clinical Alert Callout (If High or Low detected) */}
-          {(stats.high > 0 || stats.low > 0) && (
-            <div style={{ backgroundColor: '#450a0a', border: '1px solid #991b1b', color: '#fecaca', padding: '1.2rem 1.5rem', borderRadius: '0.75rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <span style={{ fontSize: '1.8rem' }}>🚨</span>
-              <div>
-                <div style={{ fontSize: '1.05rem', fontWeight: 700, color: '#fca5a5' }}>
-                  Clinical Attention Required
+              <div className="max-w-xl">
+                <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">
+                  {uploading ? 'Parsing Lab Report PDF...' : 'Upload Laboratory PDF Report'}
+                </h1>
+                <p className="text-sm text-gray-500 font-medium mt-2 leading-relaxed">
+                  {uploading
+                    ? 'Extracting OCR text, mapping biomarkers, and calculating wellness profiles via FastAPI backend...'
+                    : 'Transform your laboratory blood test PDF into an interactive, patient-friendly Smart Health Dashboard.'}
+                </p>
+              </div>
+
+              {/* Upload Dropzone Button — solid brand-blue pill, tez.health "Book Now" style */}
+              <label className={`w-full max-w-md my-2 py-4 px-6 rounded-full bg-primary-blue hover:bg-blue-600 text-white font-extrabold text-base flex items-center justify-center gap-3 cursor-pointer shadow-xl shadow-primary-blue/25 transition-all transform active:scale-98 ${uploading ? 'opacity-60 cursor-wait pointer-events-none' : ''
+                }`}>
+                <Upload size={20} />
+                <span>{uploading ? 'Processing Extraction...' : 'Select PDF or Image Report'}</span>
+                <input
+                  type="file"
+                  accept=".pdf,image/*"
+                  onChange={handleFileUpload}
+                  disabled={uploading}
+                  className="hidden"
+                />
+              </label>
+
+              {/* Error Display */}
+              {uploadError && (
+                <div className="bg-rose-50 border border-rose-200 text-rose-900 rounded-2xl p-4 text-xs md:text-sm text-left flex items-start gap-3 max-w-md w-full">
+                  <AlertCircle size={18} className="text-rose-600 shrink-0 mt-0.5" />
+                  <span className="font-semibold">{uploadError}</span>
                 </div>
-                <div style={{ fontSize: '0.9rem', color: '#f87171', marginTop: '0.2rem' }}>
-                  Detected <strong>{stats.high} HIGH</strong> and <strong>{stats.low} LOW</strong> abnormal blood biomarkers in this report.
+              )}
+
+              {/* Desktop Features Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-gray-100 w-full text-left">
+                <div className="flex items-center gap-2 text-xs font-bold text-gray-600">
+                  <Cpu size={16} className="text-primary-blue shrink-0" />
+                  <span>Deterministic Parsing</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-bold text-gray-600">
+                  <Activity size={16} className="text-success-green shrink-0" />
+                  <span>Interactive Organ Map</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-bold text-gray-600">
+                  <HeartPulse size={16} className="text-danger-red shrink-0" />
+                  <span>Clinical Risk Meters</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-bold text-gray-600">
+                  <Utensils size={16} className="text-warning-amber shrink-0" />
+                  <span>Diet & Lifestyle Advice</span>
                 </div>
               </div>
-            </div>
-          )}
 
-          {/* Patient Metadata Banner */}
-          <div style={{ backgroundColor: '#1e293b', padding: '1.5rem', borderRadius: '0.75rem', border: '1px solid #334155', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.25rem' }}>
-            <div>
-              <div style={{ fontSize: '0.78rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 600 }}>Report ID</div>
-              <div style={{ fontSize: '1.05rem', fontWeight: 700, color: '#38bdf8', marginTop: '0.2rem' }}>{result.data.report.report_id}</div>
             </div>
-            <div>
-              <div style={{ fontSize: '0.78rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 600 }}>Report Date</div>
-              <div style={{ fontSize: '1.05rem', fontWeight: 600, color: '#f1f5f9', marginTop: '0.2rem' }}>{result.data.report.report_date || 'N/A'}</div>
-            </div>
-            <div>
-              <div style={{ fontSize: '0.78rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 600 }}>Patient Name</div>
-              <div style={{ fontSize: '1.05rem', fontWeight: 700, color: '#f1f5f9', marginTop: '0.2rem' }}>{result.data.patient.name || 'N/A'}</div>
-            </div>
-            <div>
-              <div style={{ fontSize: '0.78rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 600 }}>Age / Gender</div>
-              <div style={{ fontSize: '1.05rem', fontWeight: 600, color: '#f1f5f9', marginTop: '0.2rem' }}>
-                {result.data.patient.age ? `${result.data.patient.age} Y` : 'N/A'} / {result.data.patient.gender || 'N/A'}
-              </div>
-            </div>
-            <div>
-              <div style={{ fontSize: '0.78rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 600 }}>Lab Facility</div>
-              <div style={{ fontSize: '1.05rem', fontWeight: 600, color: '#34d399', marginTop: '0.2rem' }}>{result.data.report.lab_name || 'Standard Pathology Lab'}</div>
-            </div>
+
           </div>
 
-          {/* Warnings Callout */}
-          {result.data.warnings && result.data.warnings.length > 0 && (
-            <div style={{ backgroundColor: '#451a03', border: '1px solid #78350f', color: '#fde047', padding: '1rem 1.25rem', borderRadius: '0.75rem', fontSize: '0.9rem' }}>
-              <div style={{ fontWeight: 700, marginBottom: '0.4rem' }}>⚠️ Processing Warnings:</div>
-              <ul style={{ margin: 0, paddingLeft: '1.25rem' }}>
-                {result.data.warnings.map((w, idx) => (
-                  <li key={idx}>{w}</li>
-                ))}
-              </ul>
-            </div>
-          )}
+        </main>
 
-          {/* Filter & Search Bar */}
-          <div style={{ backgroundColor: '#1e293b', padding: '1.25rem 1.5rem', borderRadius: '0.75rem', border: '1px solid #334155', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-            {/* Filter Buttons */}
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-              <button
-                onClick={() => setActiveFilter('ALL')}
-                style={{
-                  padding: '0.45rem 0.9rem',
-                  borderRadius: '0.5rem',
-                  fontSize: '0.85rem',
-                  fontWeight: 600,
-                  border: 'none',
-                  cursor: 'pointer',
-                  backgroundColor: activeFilter === 'ALL' ? '#0284c7' : '#0f172a',
-                  color: activeFilter === 'ALL' ? '#ffffff' : '#94a3b8',
-                }}
-              >
-                All ({stats.total})
-              </button>
-              <button
-                onClick={() => setActiveFilter('ABNORMAL')}
-                style={{
-                  padding: '0.45rem 0.9rem',
-                  borderRadius: '0.5rem',
-                  fontSize: '0.85rem',
-                  fontWeight: 600,
-                  border: 'none',
-                  cursor: 'pointer',
-                  backgroundColor: activeFilter === 'ABNORMAL' ? '#991b1b' : '#0f172a',
-                  color: activeFilter === 'ABNORMAL' ? '#ffffff' : '#fca5a5',
-                }}
-              >
-                🚨 Abnormalities ({stats.high + stats.low})
-              </button>
-              <button
-                onClick={() => setActiveFilter('HIGH')}
-                style={{
-                  padding: '0.45rem 0.9rem',
-                  borderRadius: '0.5rem',
-                  fontSize: '0.85rem',
-                  fontWeight: 600,
-                  border: 'none',
-                  cursor: 'pointer',
-                  backgroundColor: activeFilter === 'HIGH' ? '#7f1d1d' : '#0f172a',
-                  color: activeFilter === 'HIGH' ? '#ffffff' : '#f87171',
-                }}
-              >
-                High ({stats.high})
-              </button>
-              <button
-                onClick={() => setActiveFilter('LOW')}
-                style={{
-                  padding: '0.45rem 0.9rem',
-                  borderRadius: '0.5rem',
-                  fontSize: '0.85rem',
-                  fontWeight: 600,
-                  border: 'none',
-                  cursor: 'pointer',
-                  backgroundColor: activeFilter === 'LOW' ? '#78350f' : '#0f172a',
-                  color: activeFilter === 'LOW' ? '#ffffff' : '#fbbf24',
-                }}
-              >
-                Low ({stats.low})
-              </button>
-              <button
-                onClick={() => setActiveFilter('NORMAL')}
-                style={{
-                  padding: '0.45rem 0.9rem',
-                  borderRadius: '0.5rem',
-                  fontSize: '0.85rem',
-                  fontWeight: 600,
-                  border: 'none',
-                  cursor: 'pointer',
-                  backgroundColor: activeFilter === 'NORMAL' ? '#064e3b' : '#0f172a',
-                  color: activeFilter === 'NORMAL' ? '#ffffff' : '#34d399',
-                }}
-              >
-                Normal ({stats.normal})
-              </button>
-            </div>
+        {/* Footer */}
+        <footer className="py-4 text-center text-xs text-gray-400 font-medium border-t border-gray-100 bg-white">
+          Powered by Blood Test Intelligence Engine • Confidential & Local Processing
+        </footer>
 
-            {/* Search Input */}
+      </div>
+    );
+  }
+
+  // State 2: Active report extracted from backend -> Desktop Responsive Smart Health Viewer
+  return (
+    <div className="min-h-screen bg-slate-50/80 text-slate-900 font-sans pb-20 selection:bg-blue-500 selection:text-white">
+
+      {/* Fixed Top Header Bar */}
+      <HeaderBar
+        patient={patient}
+        report={report}
+        status={activeReport.status}
+        onUploadNewPdf={() => {
+          // Trigger file input click
+          const input = document.createElement('input');
+          input.type = 'file';
+          input.accept = '.pdf,image/*';
+          input.onchange = (e: any) => handleFileUpload(e);
+          input.click();
+        }}
+      />
+
+      {/* Main Container - Responsive Desktop Layout (max-w-7xl) */}
+      <main className="pt-20 px-4 md:px-6 max-w-7xl mx-auto min-h-screen">
+
+        {/* Upload Status Banner */}
+        <div className="mb-4 bg-white rounded-2xl p-3 px-4 border border-gray-200/80 shadow-2xs flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-success-green animate-pulse shrink-0" />
+            <span className="text-xs md:text-sm font-extrabold text-slate-800">
+              {patient.name} — Report Analyzed ({tests.length} Laboratory Parameters Extracted)
+            </span>
+          </div>
+
+          {/* Re-upload Button for Mobile/Desktop */}
+          <label className="text-xs font-extrabold text-primary-blue bg-bg-light-blue hover:bg-blue-100 px-3.5 py-1.5 rounded-full border border-blue-100 cursor-pointer flex items-center gap-1.5 transition-all shrink-0">
+            <Upload size={13} />
+            <span>Upload New Report</span>
             <input
-              type="text"
-              placeholder="🔍 Search test name or LOINC..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              style={{
-                padding: '0.45rem 0.9rem',
-                backgroundColor: '#0f172a',
-                border: '1px solid #334155',
-                borderRadius: '0.5rem',
-                color: '#f8fafc',
-                fontSize: '0.88rem',
-                width: '240px',
-              }}
+              type="file"
+              accept=".pdf,image/*"
+              onChange={handleFileUpload}
+              disabled={uploading}
+              className="hidden"
+            />
+          </label>
+        </div>
+
+        {/* Sticky Tab Navigation Bar */}
+        <TabNavigation
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          abnormalCount={wellnessScore.abnormal}
+        />
+
+        {/* TAB CONTENT: OVERVIEW TAB (DESKTOP TWO-COLUMN GRID) */}
+        {activeTab === 'overview' && (
+          <div className="animate-fadeIn my-4">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+              {/* Left Column (Sticky Sidebar on Desktop: Wellness Score + Organ Map) */}
+              <div className="lg:col-span-5 flex flex-col gap-6 lg:sticky lg:top-36">
+                {/* 3.1 Wellness Score Card */}
+                <WellnessScoreCard scoreData={wellnessScore} />
+
+                {/* 3.2 Interactive Body Map / Organ Diagram */}
+                <BodyMap
+                  profiles={profiles}
+                  onSelectProfile={handleSelectProfileFromOrgan}
+                />
+              </div>
+
+              {/* Right Column (Clinical Risk Assessment + Diet & Lifestyle Guidance) */}
+              <div className="lg:col-span-7 flex flex-col gap-6">
+                {/* 3.4 Clinical Risk Calculator Section */}
+                <RiskCalculatorSection
+                  risks={risks}
+                  onSelectProfile={handleSelectProfileFromOrgan}
+                />
+
+                {/* 3.3 Diet Recommendations Section */}
+                <DietRecommendationsSection recommendations={dietRecommendations} />
+              </div>
+
+            </div>
+          </div>
+        )}
+
+        {/* TAB CONTENT: SMART VIEW TAB (FULL WIDTH DESKTOP TABLE & RANGE BARS) */}
+        {activeTab === 'smart-view' && (
+          <div className="animate-fadeIn my-4">
+            <SmartViewTab
+              profiles={profiles}
+              selectedProfileName={selectedProfileName}
             />
           </div>
+        )}
 
-          {/* Biomarkers Table */}
-          <div style={{ backgroundColor: '#1e293b', borderRadius: '0.75rem', border: '1px solid #334155', overflow: 'hidden' }}>
-            <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid #334155', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: '#f1f5f9' }}>
-                Laboratory Results ({filteredTests.length})
-              </h3>
-            </div>
+      </main>
 
-            {filteredTests.length === 0 ? (
-              <div style={{ padding: '3rem', textAlign: 'center', color: '#94a3b8' }}>
-                No lab tests match the selected filter or search criteria.
-              </div>
-            ) : (
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.92rem' }}>
-                  <thead>
-                    <tr style={{ backgroundColor: '#0f172a', color: '#94a3b8', borderBottom: '1px solid #334155' }}>
-                      <th style={{ padding: '0.9rem 1.25rem' }}>Biomarker Test Name</th>
-                      <th style={{ padding: '0.9rem 1.25rem' }}>Result Value</th>
-                      <th style={{ padding: '0.9rem 1.25rem' }}>Unit</th>
-                      <th style={{ padding: '0.9rem 1.25rem' }}>Reference Range</th>
-                      <th style={{ padding: '0.9rem 1.25rem' }}>Clinical Status</th>
-                      <th style={{ padding: '0.9rem 1.25rem' }}>Risk Flag</th>
-                      <th style={{ padding: '0.9rem 1.25rem' }}>LOINC</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredTests.map((test, index) => {
-                      const displayTestName = test.canonical_test_name || test.raw_test_name;
-                      const displayValue = test.value !== null ? test.value : test.raw_value || 'N/A';
-                      const displayUnit = test.normalized_unit || test.raw_unit || '-';
-                      const refRange = test.reference_range;
-                      const displayRefRange = refRange?.raw ||
-                        (refRange && refRange.low !== null && refRange.high !== null
-                          ? `${refRange.low} - ${refRange.high}`
-                          : '-');
+      {/* Bottom Sticky Smart Banner */}
+      <footer className="fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-gray-200 py-3 px-4 md:px-6 text-center shadow-md">
+        <div className="max-w-7xl mx-auto flex items-center justify-between text-xs text-gray-500 font-medium">
+          <span className="font-semibold text-slate-700">Tez SmartApp Health Dashboard</span>
+          <span className="font-bold text-primary-blue">Deterministic FastAPI Backend Connected</span>
+        </div>
+      </footer>
 
-                      const statusStyle = getStatusBadgeStyle(test.status);
-                      const flagStyle = getFlagBadgeStyle(test.flag);
-
-                      return (
-                        <tr
-                          key={index}
-                          style={{
-                            borderBottom: index === filteredTests.length - 1 ? 'none' : '1px solid #334155',
-                            backgroundColor: test.status === 'HIGH'
-                              ? 'rgba(127, 29, 29, 0.15)'
-                              : test.status === 'LOW'
-                                ? 'rgba(120, 53, 15, 0.15)'
-                                : index % 2 === 0 ? '#1e293b' : '#0f172a'
-                          }}
-                        >
-                          <td style={{ padding: '0.9rem 1.25rem', fontWeight: 600, color: '#f8fafc' }}>
-                            {displayTestName}
-                            {test.canonical_test_name && test.canonical_test_name !== test.raw_test_name && (
-                              <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 400 }}>Raw OCR: {test.raw_test_name}</div>
-                            )}
-                          </td>
-                          <td style={{ padding: '0.9rem 1.25rem', fontWeight: 800, fontSize: '1rem', color: test.status === 'HIGH' ? '#f87171' : test.status === 'LOW' ? '#fbbf24' : '#38bdf8' }}>
-                            {displayValue}
-                          </td>
-                          <td style={{ padding: '0.9rem 1.25rem', color: '#cbd5e1' }}>
-                            {displayUnit}
-                          </td>
-                          <td style={{ padding: '0.9rem 1.25rem', color: '#cbd5e1', fontWeight: 500 }}>
-                            {displayRefRange}
-                          </td>
-                          <td style={{ padding: '0.9rem 1.25rem' }}>
-                            <span style={{ padding: '0.3rem 0.7rem', borderRadius: '0.375rem', fontSize: '0.82rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.35rem', ...statusStyle }}>
-                              <span>{statusStyle.icon}</span>
-                              <span>{test.status || 'UNKNOWN'}</span>
-                            </span>
-                          </td>
-                          <td style={{ padding: '0.9rem 1.25rem' }}>
-                            <span style={{ padding: '0.25rem 0.65rem', borderRadius: '0.375rem', fontSize: '0.8rem', ...flagStyle }}>
-                              {test.flag || 'REVIEW_REQUIRED'}
-                            </span>
-                          </td>
-                          <td style={{ padding: '0.9rem 1.25rem', fontSize: '0.8rem', color: test.loinc_code ? '#a7f3d0' : '#64748b', fontWeight: 500 }}>
-                            {test.loinc_code ? `LOINC ${test.loinc_code}` : 'Unmapped'}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        </section>
-      )}
-
-      {/* Spinner Animation Keyframe */}
-      <style jsx global>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `}</style>
-    </main>
+    </div>
   );
 }

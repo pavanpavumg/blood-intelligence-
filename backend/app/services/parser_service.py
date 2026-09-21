@@ -1,17 +1,35 @@
 import re
+
 from datetime import datetime
-from typing import List, Dict, Any, Tuple, Optional
-from app.schemas.lab_result import LabTestResult, ReferenceRange
-from app.schemas.report import PatientInfo, ReportMetadata, ExtractedReportData
+from typing import List, Dict, Tuple, Optional
+
+from app.schemas.lab_result import (
+    LabTestResult,
+    ReferenceRange,
+)
+
+from app.schemas.report import (
+    PatientInfo,
+    ReportMetadata,
+    ExtractedReportData,
+)
+
 from app.core.logging import logger
 from app.services.test_mapping_service import TestMappingService
 
 
 class ParserService:
     """
-    Deterministic layout and regex parser for laboratory reports.
-    Extracts metadata, patient demographics, and test rows without using an LLM.
-    Supports multi-page, multi-panel reports and per-section interpretation isolation.
+    Deterministic parser for laboratory reports.
+
+    Main goals:
+    - Parse every laboratory row across multi-page reports.
+    - Do not depend on table headers.
+    - Support OCR text.
+    - Support one-line and multi-line rows.
+    - Preserve raw test names.
+    - Extract value/unit/reference range.
+    - Avoid metadata/narrative false positives.
     """
 
     COMMON_UNITS = [
@@ -30,14 +48,15 @@ class ParserService:
         "cells/cu.mm",
         "10^3/µL",
         "10ˆ3/µL",
-        "103/L",
         "10^3/uL",
-        "10^6/uL",
+        "10ˆ3/uL",
+        "103/L",
         "10(3)/uL",
         "10(3)/mm3",
+        "10^6/uL",
+        "10^6/µL",
         "10^6/L",
-        "10^3",
-        "10^6",
+        "10(6)/uL",
         "/cumm",
         "cumm",
         "cmm",
@@ -47,47 +66,138 @@ class ParserService:
         "mg/dL",
         "mg/L",
         "mmol/L",
+        "umol/L",
+        "mEq/L",
         "uIU/mL",
         "mIU/L",
         "g/dL",
         "g/L",
         "pg/mL",
+        "pg",
         "ng/mL",
         "mcg/dL",
         "ug/dL",
+        "µg/dL",
+        "μg/dL",
         "ug/L",
-        "mEq/L",
+        "µg/L",
+        "μg/L",
         "IU/L",
         "U/L",
-        "%",
-        "fl",
+        "/HPF",
+        "/LPF",
         "fL",
+        "fl",
         "um",
-        "pg",
+        "µm",
+        "μm",
+        "%",
     ]
 
-    INVALID_TEST_NAMES = {
-        "mobile no",
+    # Longest first prevents "g/dL" matching incorrectly
+    # before "mg/dL".
+    COMMON_UNITS = sorted(
+        COMMON_UNITS,
+        key=len,
+        reverse=True,
+    )
+
+    METADATA_PREFIXES = (
+        "name",
+        "patient name",
+        "patient",
+        "uhid",
+        "uhid no",
+        "address",
         "mobile",
+        "mobile no",
         "phone",
-        "phone no",
-        "tel",
+        "telephone",
         "fax",
+        "age",
+        "sex",
+        "gender",
+        "date",
+        "report date",
+        "collection date",
+        "registered date",
+        "registration date",
+        "visit id",
         "final report",
         "report",
+        "sample",
+        "referred by",
+        "ref by",
+        "ref",
+        "ref cust",
+        "ref doctor",
+        "order no",
+        "order id",
+        "order",
+        "request id",
+        "request no",
+        "request",
+        "req no",
+        "hotline",
+        "hospital hotline",
+        "client code",
+        "client name",
+        "client",
+        "lab no",
+        "sample no",
+        "vial id",
+        "barcode",
+        "page",
+        "printed on",
+        "printed",
+        "note",
+        "notes",
+        "doctor",
+        "dr",
+        "pathologist",
+        "signature",
+        "approved by",
+        "checked by",
+        "kmc.no",
+        "kmc no",
+        "kmc",
+        "reg no",
+        "reg.no",
+        "license no",
+        "license",
+    )
+
+    METADATA_REGEX = re.compile(
+        r"\b(?:"
+        r"name|patient\s*name|patient\s*id|uhid|uhid\s*no|visit\s*id|mrn|"
+        r"ref(?:\.|\s+by|\s+cust|\s+doctor)?|referred\s*by|client\s*code|client\s*name|client|"
+        r"barcode|sample|vial\s*id|req\s*no|request\s*no|request\s*id|order\s*no|order\s*id|"
+        r"age|gender|sex|mobile|phone|telephone|fax|address|kmc(?:\.no|\s*no)?|reg(?:\.no|\s*no)?|"
+        r"reported(?:\s*on)?|registered(?:\s*on)?|collected(?:\s*on)?|printed(?:\s*on)?|"
+        r"final\s*report|interim\s*report"
+        r")\s*[:\-]",
+        re.IGNORECASE,
+    )
+
+    INVALID_EXACT_NAMES = {
+        "mobile",
+        "mobile no",
+        "phone",
+        "phone no",
+        "telephone",
+        "fax",
+        "report",
+        "final report",
         "interim report",
         "status",
-        "dr",
-        "dr.",
-        "doctor",
-        "consultant",
-        "ref by",
-        "referred by",
-        "less than",
-        "greater than",
         "date",
         "time",
         "page",
+        "doctor",
+        "dr",
+        "dr.",
+        "consultant",
+        "pathologist",
         "signature",
         "approved by",
         "checked by",
@@ -105,120 +215,290 @@ class ParserService:
         "address",
         "visit id",
         "test name",
+        "test names",
         "observed values",
+        "observed value",
         "units",
+        "unit",
         "biological reference intervals",
-        "reference range",
+        "reference interval",
         "differential count",
-        "complete blood count (cbc)",
         "cbc",
+        "complete blood count",
+        "male",
+        "female",
+        "males",
+        "females",
+        "adults",
+        "children",
+        "infants",
+        "non-diabetic",
+        "pre-diabetic",
+        "diabetic",
+        "desirable",
+        "optimal",
+        "borderline high",
+        "very high",
+        "near optimal",
     }
 
+    INVALID_NAME_FRAGMENTS = (
+        "patient name",
+        "patient id",
+        "patient age",
+        "patient gender",
+        "patient sex",
+        "doctor name",
+        "ref doctor",
+        "referred by",
+        "vial id",
+        "req no",
+        "request no",
+        "collected on",
+        "registered on",
+        "reported on",
+        "booking centre",
+        "booking center",
+        "interpretation",
+        "clinical interpretation",
+        "clinical comments",
+        "comments:",
+        "remarks:",
+        "notes:",
+        "risk level",
+        "cardiovascular risk",
+        "primary prevention",
+        "aha/cdc",
+        "nacb expert",
+        "clinical significance",
+        "kindly correlate",
+        "end of the report",
+        "end of report",
+        "electronically authenticated",
+        "pathologist",
+        "authorized signatory",
+    )
+
+    NARRATIVE_FRAGMENTS = (
+        "may be detected",
+        "detected with 6 hours",
+        "acute phase",
+        "risk factors",
+        "primary prevention settings",
+        "clinical significance",
+        "kindly correlate",
+        "please correlate",
+        "testing is",
+        "this test",
+        "interpretation:",
+        "clinical interpretation:",
+        "cardiovascular risk",
+    )
+
+    HEADER_FRAGMENTS = (
+        "test name",
+        "observed values",
+        "observed value",
+        "investigation",
+        "parameter",
+        "result",
+        "units",
+        "reference range",
+        "biological reference",
+    )
+
+    SECTION_STOP_WORDS = (
+        "interpretation",
+        "clinical interpretation",
+        "comments:",
+        "remarks:",
+        "notes:",
+        "clinical significance",
+        "kindly correlate",
+        "risk level",
+        "end of report",
+        "end of the report",
+    )
+
     TIMESTAMP_PATTERN = re.compile(
-        r"\b\d{1,2}:\d{2}(?:\s*[AP]M)?\b|\b20\d{2}\b", re.IGNORECASE
+        r"""
+        \b
+        \d{1,2}:\d{2}
+        (?:\s*[AP]M)?
+        \b
+        |
+        \b20\d{2}\b
+        """,
+        re.IGNORECASE | re.VERBOSE,
     )
 
     @classmethod
-    def parse_date_to_iso(cls, date_str: str) -> Optional[str]:
-        """
-        Converts various report date strings into ISO format.
-        E.g., '23-Jun-2026 10:55 AM' -> '2026-06-23T10:55:00'
-        '03-Feb-2026 06:11 PM' -> '2026-02-03T18:11:00'
-        """
-        if not date_str or not date_str.strip():
-            return None
+    def _clean_pua(cls, text: str) -> str:
+        if not text:
+            return ""
 
-        clean_str = date_str.strip()
-
-        match = re.search(
-            r"(\d{1,2})[\/\-\s]([A-Za-z]{3}|\d{1,2})[\/\-\s](\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*([AP]M)?)?",
-            clean_str,
-            re.IGNORECASE,
+        return re.sub(
+            r"[\uf000-\uf0ff]",
+            lambda m: chr(ord(m.group(0)) - 0xF000),
+            text,
         )
-        if match:
-            day, month_str, year, hr, mn, sec, ampm = match.groups()
-            try:
-                if month_str.isdigit():
-                    m = int(month_str)
-                else:
-                    m = datetime.strptime(month_str[:3].title(), "%b").month
-
-                d = int(day)
-                y = int(year)
-
-                if hr and mn:
-                    h = int(hr)
-                    mi = int(mn)
-                    s = int(sec) if sec else 0
-                    if ampm:
-                        ampm = ampm.upper()
-                        if ampm == "PM" and h < 12:
-                            h += 12
-                        elif ampm == "AM" and h == 12:
-                            h = 0
-                    return f"{y:04d}-{m:02d}-{d:02d}T{h:02d}:{mi:02d}:{s:02d}"
-                return f"{y:04d}-{m:02d}-{d:02d}"
-            except Exception:
-                pass
-
-        iso_match = re.search(r"(\d{4})[\-\/](\d{1,2})[\-\/](\d{1,2})", clean_str)
-        if iso_match:
-            y, m, d = iso_match.groups()
-            return f"{int(y):04d}-{int(m):02d}-{int(d):02d}"
-
-        return clean_str
 
     @classmethod
-    def extract_lab_name(cls, full_text: str, doc_lines: List[str]) -> Optional[str]:
-        """
-        Extracts laboratory name generically from explicit labels, known brand entities, or document header lines.
-        """
-        text_lower = full_text.lower()
-        if "drlogy" in text_lower:
-            return "Drlogy Pathology Lab"
-        elif "quest diagnostics" in text_lower:
-            return "Quest Diagnostics"
-        elif "labcorp" in text_lower:
-            return "LabCorp"
-        elif (
-            "centromed" in text_lower
-            or "cmlkad" in text_lower
-            or re.search(r"\bcml\b", text_lower)
-        ):
-            return "CENTROMED LABS PVT. LTD"
+    def _normalize_spaces(cls, text: str) -> str:
+        return re.sub(
+            r"\s+",
+            " ",
+            text.strip(),
+        )
 
-        # 1. Look for explicit key-value labels
+    @classmethod
+    def parse_date_to_iso(
+        cls,
+        date_str: str,
+    ) -> Optional[str]:
+
+        if not date_str:
+            return None
+
+        clean = date_str.strip()
+
+        patterns = [
+            (
+                r"(\d{1,2})[-/\s]"
+                r"([A-Za-z]{3}|\d{1,2})[-/\s]"
+                r"(\d{4})"
+                r"(?:\s+(\d{1,2}):(\d{2})"
+                r"(?::(\d{2}))?\s*([AP]M)?)?"
+            ),
+        ]
+
+        for pattern in patterns:
+
+            match = re.search(
+                pattern,
+                clean,
+                re.IGNORECASE,
+            )
+
+            if not match:
+                continue
+
+            day, month, year, hour, minute, second, ampm = match.groups()
+
+            try:
+
+                if month.isdigit():
+                    month_number = int(month)
+                else:
+                    month_number = datetime.strptime(
+                        month[:3].title(),
+                        "%b",
+                    ).month
+
+                day_number = int(day)
+                year_number = int(year)
+
+                if hour and minute:
+
+                    h = int(hour)
+                    m = int(minute)
+                    s = int(second or 0)
+
+                    if ampm:
+                        ampm = ampm.upper()
+
+                        if ampm == "PM" and h != 12:
+                            h += 12
+
+                        if ampm == "AM" and h == 12:
+                            h = 0
+
+                    return (
+                        f"{year_number:04d}-"
+                        f"{month_number:02d}-"
+                        f"{day_number:02d}T"
+                        f"{h:02d}:{m:02d}:{s:02d}"
+                    )
+
+                return f"{year_number:04d}-" f"{month_number:02d}-" f"{day_number:02d}"
+
+            except Exception:
+                continue
+
+        iso = re.search(
+            r"(\d{4})[-/](\d{1,2})[-/](\d{1,2})",
+            clean,
+        )
+
+        if iso:
+            year, month, day = iso.groups()
+
+            return f"{int(year):04d}-" f"{int(month):02d}-" f"{int(day):02d}"
+
+        return None
+
+    @classmethod
+    def extract_lab_name(
+        cls,
+        full_text: str,
+        doc_lines: List[str],
+    ) -> Optional[str]:
+
+        text = full_text.lower()
+
+        known = {
+            "drlogy": "Drlogy Pathology Lab",
+            "quest diagnostics": "Quest Diagnostics",
+            "labcorp": "LabCorp",
+            "centromed": "CENTROMED LABS PVT. LTD",
+        }
+
+        for key, value in known.items():
+
+            if key in text:
+                return value
+
         match = re.search(
-            r"(?:laboratory|lab\s*name|hospital\s*laboratory|diagnostics|labs)\s*:\s*([A-Za-z0-9\.\,\s\&\-\'\(\)]+?)(?=\s*(?:\r?\n|$|vial|patient|page|ref|req))",
+            r"(?:laboratory|lab\s*name|"
+            r"hospital\s*laboratory|diagnostics|labs)"
+            r"\s*:\s*"
+            r"([A-Za-z0-9.,&'()\- ]+)",
             full_text,
             re.IGNORECASE,
         )
+
         if match:
+
             candidate = match.group(1).strip()
-            if (
-                candidate
-                and len(candidate) >= 3
-                and not any(
-                    k in candidate.lower()
-                    for k in ["patient", "doctor", "report", "result"]
+
+            if len(candidate) >= 3 and not any(
+                bad in candidate.lower()
+                for bad in (
+                    "patient",
+                    "doctor",
+                    "report",
+                    "result",
                 )
             ):
                 return candidate
 
-        # 2. Look for header lines matching laboratory entity names (top 15 lines)
-        header_lines = doc_lines[:15] if doc_lines else []
-        for line in header_lines:
+        for line in doc_lines[:15]:
+
             clean = line.strip()
+
             if re.search(
-                r"\b(?:labs|laboratory|diagnostics|pathology)\b", clean, re.IGNORECASE
+                r"\b(labs?|laboratory|diagnostics|pathology)\b",
+                clean,
+                re.IGNORECASE,
             ):
-                clean_lower = clean.lower()
-                if not any(
-                    k in clean_lower
-                    for k in [
+
+                lower = clean.lower()
+
+                if any(
+                    bad in lower
+                    for bad in (
                         "report",
                         "department",
-                        "section",
                         "patient",
                         "doctor",
                         "page",
@@ -226,673 +506,1359 @@ class ParserService:
                         "test",
                         "sample",
                         "vial",
-                        "collected",
-                        "reported",
-                        "interpretation",
-                        "end of",
-                        "range",
-                        "unit",
-                        "value",
-                    ]
+                    )
                 ):
-                    clean = re.sub(r"^[\*\-\d\.\s]+", "", clean).strip()
-                    if len(clean) >= 3:
-                        return clean
+                    continue
+
+                clean = re.sub(
+                    r"^[*\-\d.\s]+",
+                    "",
+                    clean,
+                ).strip()
+
+                if len(clean) >= 3:
+                    return clean
 
         return None
 
     @classmethod
     def parse_reference_range(
-        cls, text: str
-    ) -> Tuple[Optional[ReferenceRange], Optional[str]]:
-        """
-        Parses reference ranges into numeric low, high, raw string, range type, operator, and demographic/pregnancy groups.
-        Supports TWO_SIDED, UPPER_ONLY, LOWER_ONLY, DEMOGRAPHIC, PREGNANCY, and CATEGORICAL ranges.
-        Rejects narrative interpretation text, metadata, and timestamps.
-        """
-        if not text or not text.strip():
+        cls,
+        text: str,
+    ) -> Tuple[
+        Optional[ReferenceRange],
+        Optional[str],
+    ]:
+
+        if not text:
             return None, None
 
-        raw = text.strip()
-        # Remove Method text (e.g. Method:Uricase-Peroxidase) and leading unit prefixes
+        # Remove dates and timestamps such as:
+        # 26-03-2026, 26/03/2026, 2026-03-26, 14:30:00
+        text = re.sub(
+            r"\b\d{1,4}[-/]\d{1,2}[-/]\d{1,4}(?:\s+\d{1,2}:\d{2}(?::\d{2})?)?\b",
+            " ",
+            text,
+        )
+        text = re.sub(r"\b\d{1,2}:\d{2}(?::\d{2})?\b", " ", text)
+
+        text = re.sub(r"\s+", " ", text).strip()
+
+        if not text:
+            return None, None
+
+        raw = cls._normalize_spaces(text)
+
+        # Remove method text
         raw = re.sub(
-            r"\bMethod\s*:\s*.*?(?=(?:\b(?:Male|Female)\b|\d+|\s*$))",
+            r"\bmethod\s*:\s*" r".*?" r"(?=(?:male|female|" r"up\s*to|" r"<|>|" r"\d))",
             "",
             raw,
             flags=re.IGNORECASE,
-        ).strip()
-        raw = re.sub(r"\bMethod\s*:\s*[^\s]+", "", raw, flags=re.IGNORECASE).strip()
-        raw = re.sub(
-            r"^(?:mg/dL|g/dL|mmol/L|mg/L|uIU/mL|%)\s*", "", raw, flags=re.IGNORECASE
-        ).strip()
-        raw = re.sub(r"\s+", " ", raw).strip()
+        )
+
+        raw = cls._normalize_spaces(raw)
+
         if not raw:
             return None, None
-        raw_lower = raw.lower()
 
-        # Reject interpretation / narrative / doctor / category label strings
+        lower = raw.lower()
+
+        # Obvious narrative
         if any(
-            k in raw_lower
-            for k in [
-                "years",
+            term in lower
+            for term in (
+                "patient",
+                "doctor",
+                "pathology",
+                "kmc.no",
+                "reported on",
+                "registered on",
+                "collected on",
                 "vial",
                 "req no",
                 "sample",
-                "registered",
-                "reported",
-                "acute phase",
-                "sensitive",
-                "indicator",
-                "inflammation",
-                "protein",
-                "activation",
-                "kidney disease",
-                "symptoms",
-                "testing is",
+                "clinical significance",
                 "risk factors",
-                "detected with",
-                "hours",
-                "kmc.no",
-                "pathology",
-                "doctor",
-            ]
+                "testing is",
+            )
         ):
             return None, None
 
-        if cls.TIMESTAMP_PATTERN.search(raw) and not any(
-            symbol in raw_lower
-            for symbol in ["<", ">", "ref", "normal", "interval", "up to", "upto"]
-        ):
-            if re.search(r"\d{2}:\d{2}|\b20\d{2}\b", raw):
-                return None, None
+        # Demographic
+        if "male:" in lower or "female:" in lower:
+            return (
+                ReferenceRange(
+                    low=None,
+                    high=None,
+                    raw=raw,
+                    type="DEMOGRAPHIC",
+                ),
+                None,
+            )
 
-        # Pregnancy range check (e.g. "1st trimester: 0.05 - 4.73")
-        if "trimester" in raw_lower or "pregnancy" in raw_lower:
-            return ReferenceRange(low=None, high=None, raw=raw, type="PREGNANCY"), None
+        # Pregnancy
+        if "trimester" in lower or "pregnancy" in lower:
+            return (
+                ReferenceRange(
+                    low=None,
+                    high=None,
+                    raw=raw,
+                    type="PREGNANCY",
+                ),
+                None,
+            )
 
-        # Gender-specific range check (e.g. "Male:3.6 -8.2 Female:2.3 - 6.1")
-        if "male" in raw_lower or "female" in raw_lower:
-            return ReferenceRange(low=None, high=None, raw=raw, type="DEMOGRAPHIC"), None
+        # Categorical
+        categorical_words = (
+            "desirable",
+            "optimal",
+            "near optimal",
+            "borderline",
+            "non-diabetic",
+            "pre-diabetic",
+            "diabetic",
+            "insufficiency",
+            "deficiency",
+            "sufficiency",
+        )
 
-        # Categorical range check (e.g. Desirable >59, Optimal 40-59, Non-diabetic 4.8-5.9)
-        if any(cat in raw_lower for cat in ["desirable", "optimal", "borderline", "non-diabetic", "pre-diabetic", "diabetic", "insufficiency", "deficiency", "sufficiency"]):
-            return ReferenceRange(low=None, high=None, raw=raw, type="CATEGORICAL"), None
+        if any(word in lower for word in categorical_words):
+            return (
+                ReferenceRange(
+                    low=None,
+                    high=None,
+                    raw=raw,
+                    type="CATEGORICAL",
+                ),
+                None,
+            )
 
-        # Range format: 12.0 - 15.0, 4000-11000, 02 - 06, 70 - 100
-        range_match = re.search(r"(\d+(?:\.\d+)?)\s*[\-\–\—]\s*(\d+(?:\.\d+)?)", raw)
-        if range_match:
-            try:
-                low = float(range_match.group(1))
-                high = float(range_match.group(2))
-                if 1990 <= low <= 2099 and 1990 <= high <= 2099:
-                    return None, None
-                return ReferenceRange(low=low, high=high, raw=raw, type="TWO_SIDED"), None
-            except ValueError:
-                pass
+        # Numeric two-sided range
+        match = re.search(
+            r"(-?\d+(?:\.\d+)?)" r"\s*[-–—]\s*" r"(-?\d+(?:\.\d+)?)",
+            raw,
+        )
 
-        # Up to / Less than format: "Up to 6.0", "< 200", "<= 5.7", "less than 6"
-        lt_match = re.search(
-            r"(?:up\s+to|upto|less\s+than(?:\s+or\s+equal\s+to)?|<=?)\s*(\d+(?:\.\d+)?)",
+        if match:
+
+            low = float(match.group(1))
+            high = float(match.group(2))
+
+            # Avoid treating years as reference ranges
+            if not (1900 <= low <= 2100 and 1900 <= high <= 2100):
+
+                return (
+                    ReferenceRange(
+                        low=low,
+                        high=high,
+                        raw=raw,
+                        type="TWO_SIDED",
+                    ),
+                    None,
+                )
+
+        # Upper-only
+        upper = re.search(
+            r"(?:"
+            r"up\s*to|"
+            r"upto|"
+            r"less\s*than|"
+            r"<="
+            r"|<"
+            r")"
+            r"\s*(\d+(?:\.\d+)?)",
             raw,
             re.IGNORECASE,
         )
-        if lt_match:
-            try:
-                high = float(lt_match.group(1))
-                op = "<=" if ("up to" in raw_lower or "upto" in raw_lower or "<=" in raw_lower or "or equal" in raw_lower) else "<"
-                return ReferenceRange(low=None, high=high, raw=raw, type="UPPER_ONLY", operator=op), None
-            except ValueError:
-                pass
 
-        # Greater than / More than format: "> 40", ">= 10", "greater than 40", "more than 10"
-        gt_match = re.search(
-            r"(?:greater\s+than(?:\s+or\s+equal\s+to)?|more\s+than(?:\s+or\s+equal\s+to)?|>=?)\s*(\d+(?:\.\d+)?)",
+        if upper:
+
+            high = float(upper.group(1))
+
+            operator = (
+                "<=" if ("<=" in lower or "up to" in lower or "upto" in lower) else "<"
+            )
+
+            return (
+                ReferenceRange(
+                    low=None,
+                    high=high,
+                    raw=raw,
+                    type="UPPER_ONLY",
+                    operator=operator,
+                ),
+                None,
+            )
+
+        # Lower-only
+        lower_match = re.search(
+            r"(?:"
+            r"greater\s*than|"
+            r"more\s*than|"
+            r">="
+            r"|>"
+            r")"
+            r"\s*(\d+(?:\.\d+)?)",
             raw,
             re.IGNORECASE,
         )
-        if gt_match:
-            try:
-                low = float(gt_match.group(1))
-                op = ">=" if (">=" in raw_lower or "or equal" in raw_lower) else ">"
-                return ReferenceRange(low=low, high=None, raw=raw, type="LOWER_ONLY", operator=op), None
-            except ValueError:
-                pass
+
+        if lower_match:
+
+            low = float(lower_match.group(1))
+
+            operator = (
+                ">="
+                if (
+                    ">=" in lower
+                    or "greater than or equal" in lower
+                    or "more than or equal" in lower
+                )
+                else ">"
+            )
+
+            return (
+                ReferenceRange(
+                    low=low,
+                    high=None,
+                    raw=raw,
+                    type="LOWER_ONLY",
+                    operator=operator,
+                ),
+                None,
+            )
 
         return (
-            ReferenceRange(low=None, high=None, raw=raw),
-            f"Unparsed reference range format: '{raw}'",
+            ReferenceRange(
+                low=None,
+                high=None,
+                raw=raw,
+            ),
+            f"Unparsed reference range: '{raw}'",
+        )
+
+    @classmethod
+    def _find_unit(
+        cls,
+        text: str,
+    ) -> Tuple[
+        Optional[str],
+        Optional[re.Match],
+    ]:
+
+        for unit in cls.COMMON_UNITS:
+
+            pattern = re.compile(
+                r"(?<!\w)" + re.escape(unit) + r"(?!\w)",
+                re.IGNORECASE,
+            )
+
+            match = pattern.search(text)
+
+            if match:
+                return unit, match
+
+        return None, None
+
+    @classmethod
+    def _remove_test_prefix(
+        cls,
+        name: str,
+    ) -> str:
+
+        name = name.strip()
+
+        # Keep asterisk for test name fidelity
+
+        # Remove bullets
+        name = re.sub(
+            r"^[•▪◦]+\s*",
+            "",
+            name,
+        )
+
+        return name.strip()
+
+    @classmethod
+    def is_metadata_line(cls, line: str) -> bool:
+        """
+        Returns True when a line belongs to patient/report metadata
+        rather than a laboratory test.
+        """
+        if not line:
+            return True
+
+        clean_text = re.sub(r"[^\w\s]", " ", line.strip().lower())
+        normalized = re.sub(r"\s+", " ", clean_text).strip()
+
+        if not normalized:
+            return True
+
+        if re.search(
+            r"(?:address|street|road|cross|layout|nagar|marg|complex|building|floor|station)\b.*\d{6}\b",
+            line,
+            re.IGNORECASE,
+        ):
+            return True
+
+        if re.search(r"\b(?:pin|pincode|zip)\s*[:\-]?\s*\d{6}\b", line, re.IGNORECASE):
+            return True
+
+        if re.search(r"[A-Za-z]\s*[-–,]\s*\d{6}\b", line):
+            return True
+
+        if re.search(
+            r"\b(?:bangalore|karnataka|india|malleswaram|tumkur|pincode)\b",
+            line,
+            re.IGNORECASE,
+        ):
+            return True
+
+        for prefix in cls.METADATA_PREFIXES:
+            clean_prefix = re.sub(
+                r"\s+", " ", re.sub(r"[^\w\s]", " ", prefix.lower())
+            ).strip()
+            if normalized.startswith(clean_prefix):
+                return True
+
+        if cls.METADATA_REGEX.search(line):
+            return True
+
+        return False
+
+    @classmethod
+    def _looks_like_metadata(
+        cls,
+        name: str,
+    ) -> bool:
+
+        if cls.is_metadata_line(name):
+            return True
+
+        lower = name.lower().strip()
+
+        if lower.startswith(("female:", "male:", "females:", "males:")):
+            return True
+
+        if lower in cls.INVALID_EXACT_NAMES:
+            return True
+
+        if any(fragment in lower for fragment in cls.INVALID_NAME_FRAGMENTS):
+            return True
+
+        if any(fragment in lower for fragment in cls.NARRATIVE_FRAGMENTS):
+            return True
+
+        # URLs / email / obvious contact information
+        if "@" in lower:
+            return True
+
+        if "http://" in lower or "https://" in lower:
+            return True
+
+        return False
+
+    @classmethod
+    def _extract_numeric_candidate(
+        cls,
+        text: str,
+    ) -> Optional[re.Match]:
+
+        matches = list(
+            re.finditer(
+                r"(?<![A-Za-z])" r"-?\d+(?:\.\d+)?" r"(?![A-Za-z])",
+                text,
+            )
+        )
+
+        # Ignore "25" when part of "25-Hydroxy Vitamin D" or "25-OH Vitamin D"
+        matches = [
+            m
+            for m in matches
+            if not (
+                m.group(0) == "25"
+                and re.match(
+                    r"^\s*[-–—]?\s*(?:hydroxy|oh)\b", text[m.end() :], re.IGNORECASE
+                )
+            )
+        ]
+
+        if not matches:
+            return None
+
+        # 1. Check for two-sided reference range pattern (e.g. 4 - 10, 3.8 - 6.5, 40.0-55.0)
+        range_match = re.search(
+            r"(?<![A-Za-z])\d+(?:\.\d+)?\s*[-–—]\s*\d+(?:\.\d+)?(?![A-Za-z])",
+            text,
+        )
+        if range_match:
+            candidates_before_range = [
+                m for m in matches if m.end() <= range_match.start()
+            ]
+            if candidates_before_range:
+                return candidates_before_range[0]
+
+        # 2. Check for upper/lower limit reference range pattern (e.g. less than 0.5, < 1, > 60)
+        limit_match = re.search(
+            r"\b(?:less\s+than|greater\s+than|up\s*to|upto|below|above|[<>]=?)\s*\d+(?:\.\d+)?",
+            text,
+            re.IGNORECASE,
+        )
+        if limit_match:
+            candidates_before_limit = [
+                m for m in matches if m.end() <= limit_match.start()
+            ]
+            if candidates_before_limit:
+                return candidates_before_limit[0]
+
+        # 3. Prefer number before status word (High/Low/Abnormal/Normal)
+        status_match = re.search(r"\b(high|low|abnormal|normal)\b", text, re.IGNORECASE)
+        if status_match:
+            candidates_before_status = [
+                m for m in matches if m.end() <= status_match.start()
+            ]
+            if candidates_before_status:
+                return candidates_before_status[0]
+
+        # 4. Prefer a number close to a unit.
+        unit, unit_match = cls._find_unit(text)
+
+        if unit_match:
+
+            candidates_before_unit = [
+                m for m in matches if m.end() <= unit_match.start()
+            ]
+
+            if candidates_before_unit:
+
+                return candidates_before_unit[0]
+
+        # Otherwise use the first numeric candidate.
+        return matches[0]
+
+    @classmethod
+    def _parse_qualitative(
+        cls,
+        line: str,
+    ) -> Optional[LabTestResult]:
+
+        qualitative_pattern = re.compile(
+            r"\b("
+            r"negative|"
+            r"positive|"
+            r"nil|"
+            r"trace|"
+            r"present|"
+            r"absent|"
+            r"normal|"
+            r"clear|"
+            r"turbid|"
+            r"pale\s+yellow|"
+            r"straw|"
+            r"yellow"
+            r")\b",
+            re.IGNORECASE,
+        )
+
+        match = qualitative_pattern.search(line)
+
+        if not match:
+            return None
+
+        name = line[: match.start()].strip(" :-_\t")
+
+        if not name:
+            return None
+
+        if cls._looks_like_metadata(name):
+            return None
+
+        value = match.group(1)
+
+        normal_words = {
+            "negative",
+            "nil",
+            "absent",
+            "normal",
+            "clear",
+            "pale yellow",
+            "straw",
+        }
+
+        status = "NORMAL" if value.lower() in normal_words else "HIGH"
+
+        return LabTestResult(
+            raw_test_name=name,
+            canonical_test_name=None,
+            loinc_code=None,
+            value=None,
+            unit=None,
+            reference_range=ReferenceRange(
+                low=None,
+                high=None,
+                raw=value,
+                type="CATEGORICAL",
+            ),
+            raw_value=value,
+            status=status,
+            flag=None,
+            method=None,
         )
 
     @classmethod
     def parse_test_line(
-        cls, line: str
-    ) -> Tuple[Optional[LabTestResult], Optional[str]]:
-        """
-        Extracts test name, measurement method, raw value, numerical value, unit, and reference range from a text line.
-        Supports method separation (e.g. RBC Count (Electrical Impedence)).
-        Filter false positives (narrative text, doctor details, category labels).
-        """
-        if not line or len(line.strip()) < 2:
+        cls,
+        line: str,
+    ) -> Tuple[
+        Optional[LabTestResult],
+        Optional[str],
+    ]:
+
+        if not line:
             return None, None
 
-        clean_line = line.strip()
-        clean_lower = clean_line.lower()
+        line = cls._normalize_spaces(line)
 
-        # Reject narrative lines / doctor signatures / license numbers / standalone category labels from becoming tests
-        if any(
-            narr in clean_lower
-            for narr in [
-                "may be detected with",
-                "detected with 6 hours",
-                "dr faeeza",
-                "begum md",
-                "kmc.no",
-                "md pathology",
-                "end of the report",
-                "interpretation & clinical comments",
-            ]
-        ) or clean_lower.startswith(("non-diabetic:", "pre-diabetic:", "diabetic:", "desirable:", "near optimal:")):
-            return None, f"Skipped narrative / doctor / category label line: '{clean_line}'"
+        if len(line) < 2:
+            return None, None
 
-        # Separate method prefix before analyte line
+        lower = line.lower()
+
+        # Ignore visual table borders
+        if (
+            line.startswith("|")
+            or line.startswith("+")
+            or re.fullmatch(
+                r"[-_= ]+",
+                line,
+            )
+        ):
+            return None, None
+
+        # Ignore headers
+        if any(h in lower for h in cls.HEADER_FRAGMENTS):
+            # But don't reject genuine tests merely because
+            # "result" appears in a long row.
+            if not re.search(
+                r"\d",
+                line,
+            ):
+                return None, None
+
+        if cls._looks_like_metadata(line):
+            return None, None
+
+        # Method extraction
         extracted_method = None
-        method_prefix_match = re.match(
-            r"^(?:method|technique|procedure)\s*:\s*([A-Za-z0-9\s\-\.\&\,\(\)]+?)\s+(\*?\s*[A-Za-z].*)$",
-            clean_line,
+
+        method_match = re.match(
+            r"^(?:method|technique|procedure)" r"\s*:\s*(.*?)\s+" r"(.+)$",
+            line,
             re.IGNORECASE,
         )
-        if method_prefix_match:
-            extracted_method = method_prefix_match.group(1).strip()
-            clean_line = method_prefix_match.group(2).strip()
 
-        # Continuation method prefix (e.g. "Peroxidase) * UREA 20.0 mg/dL")
-        continuation_prefix_match = re.match(
-            r"^[A-Za-z0-9\s\,\-]+\)\s*(\*?\s*[A-Za-z].*)$",
-            clean_line,
+        if method_match:
+
+            extracted_method = method_match.group(1).strip()
+
+            line = method_match.group(2).strip()
+
+            lower = line.lower()
+
+        # Parenthesized method before test name
+        prefix_method = re.match(
+            r"^\(([^)]+)\)\s*(.+)$",
+            line,
         )
-        if continuation_prefix_match:
-            clean_line = continuation_prefix_match.group(1).strip()
 
-        # Skip standalone method lines
-        if re.match(
-            r"^(?:method|technique|procedure)\s*:", clean_line, re.IGNORECASE
-        ) or clean_line.startswith("Peroxidase)"):
-            return None, None
+        if prefix_method:
 
-        # Find unit using boundary matching
-        unit = None
-        for u in cls.COMMON_UNITS:
-            pattern = r"(?:^|\s|\b)" + re.escape(u) + r"(?:\b|\s|$)"
-            if re.search(pattern, clean_line):
-                unit = u
-                break
+            possible_method = prefix_method.group(1).strip()
 
-        # Match numbers, ignoring leading numbers in test names (e.g. 25-hydroxy, 1,25-dihydroxy, 1,25-oh)
-        num_matches = list(re.finditer(r"\b\d+(?:\.\d+)?\b", clean_line))
-        if not num_matches:
+            possible_name = prefix_method.group(2).strip()
+
+            if any(
+                word in possible_method.lower()
+                for word in (
+                    "pod",
+                    "hplc",
+                    "enzyme",
+                    "immuno",
+                    "method",
+                    "calculated",
+                    "direct",
+                )
+            ):
+
+                extracted_method = possible_method
+                line = possible_name
+
+        # Find unit first.
+        unit, unit_match = cls._find_unit(line)
+
+        # Numeric result
+        value_match = cls._extract_numeric_candidate(line)
+
+        # If no number, attempt qualitative extraction.
+        if not value_match:
+
+            qualitative = cls._parse_qualitative(line)
+
+            if qualitative:
+                return qualitative, None
+
             return None, "Line does not contain a numeric lab value."
 
-        val_match = num_matches[0]
-        for m in num_matches:
-            after_text = clean_line[m.end():m.end()+12].lower()
-            if after_text.startswith(("-hydroxy", "-oh", "-d", ",25-", "-d3")):
-                continue
-            val_match = m
-            break
-        try:
-            numeric_val = float(val_match.group(0))
-        except ValueError:
-            return None, f"Failed to parse float value from '{val_match.group(0)}'."
+        numeric_value = float(value_match.group(0))
 
-        # Guard against postal code / phone / KMC number
-        if numeric_val >= 100000 and not unit:
-            return (
-                None,
-                f"Numeric value '{numeric_val}' without unit exceeds valid un-unitized threshold.",
-            )
+        # Avoid extracting the "25" from
+        # 25-Hydroxy Vitamin D.
+        prefix = line[: value_match.start()].strip()
 
-        raw_test_name = clean_line[: val_match.start()].strip(" :-_\t")
-        clean_name_lower = raw_test_name.lower().strip()
-
-        # Method extraction from raw_test_name (e.g. "RBC Count (Electrical Impedence)" -> raw_test_name="RBC Count", method="Electrical Impedence")
-        method_in_name = re.search(
-            r"^(.*?)\s*\((electrical\s+imped[ae]nce|calculated|hplc|clia|eclia|spectrophotometry|immunoturbidimetry|ion\s+selective\s+electrode|ise|dry\s+chemistry|uricase[\-\s]peroxidase|hexokinase|enzymatic|colorimetric|direct\s+measure)\)$",
-            raw_test_name,
-            re.IGNORECASE,
-        )
-        if method_in_name:
-            raw_test_name = method_in_name.group(1).strip()
-            if not extracted_method:
-                extracted_method = method_in_name.group(2).strip()
-
-        # Check against invalid test name list
-        if clean_name_lower in cls.INVALID_TEST_NAMES or any(
-            k in clean_name_lower
-            for k in [
-                "patient",
-                "doctor",
-                "dr.",
-                "vial id",
-                "req no",
-                "collected on",
-                "reported on",
-                "interpretation",
-                "kmc.no",
-                "6 hours",
-            ]
+        if re.search(
+            r"[A-Za-z]-$",
+            prefix,
         ):
-            return None, f"Skipped invalid test name candidate: '{raw_test_name}'"
+            next_part = line[value_match.end() :]
 
-        if not raw_test_name or len(raw_test_name) < 2:
-            return None, f"Test name too short or invalid in line: '{clean_line}'"
-
-        # Check if unit-less test is valid
-        if not unit:
-            catalog_item, _ = TestMappingService.match_test(raw_test_name, unit=unit)
-            if not catalog_item and not raw_test_name.startswith("*"):
-                return (
-                    None,
-                    f"Skipped unit-less candidate not in catalog: '{raw_test_name}'",
+            if re.match(
+                r"[-–—][A-Za-z]",
+                next_part,
+            ):
+                second_match = re.search(
+                    r"(?<![A-Za-z])" r"-?\d+(?:\.\d+)?" r"(?![A-Za-z])",
+                    next_part,
                 )
 
-        remaining = clean_line[val_match.end() :].strip()
-        remaining = re.sub(
-            r"^(?:normal|high|low|abnormal|trace|negative|positive)\b\s*",
+                if second_match:
+                    value_match = second_match
+                    numeric_value = float(second_match.group(0))
+
+        # Determine test name.
+        raw_name = line[: value_match.start()]
+
+        # Remove trailing unit or relational operators before value match
+        if unit:
+            raw_name = re.sub(
+                r"\b" + re.escape(unit) + r"\b.*$", "", raw_name, flags=re.IGNORECASE
+            )
+
+        raw_name = re.sub(
+            r"(?:\b(?:less\s+than|greater\s+than|up\s*to|upto|below|above)\b|[<>=]+).*$",
             "",
-            remaining,
+            raw_name,
+            flags=re.IGNORECASE,
+        )
+
+        # Remove trailing separators
+        raw_name = raw_name.strip(" :-|\t")
+
+        raw_name = cls._remove_test_prefix(raw_name)
+
+        # Separate trailing parenthesized method (including nested parens e.g., "(Method: Enzymatic Method (sarcosine oxidase, Peroxidase))")
+        if raw_name.endswith(")"):
+            depth = 0
+            open_idx = -1
+            for idx in range(len(raw_name) - 1, -1, -1):
+                if raw_name[idx] == ")":
+                    depth += 1
+                elif raw_name[idx] == "(":
+                    depth -= 1
+                    if depth == 0:
+                        open_idx = idx
+                        break
+            if open_idx != -1:
+                cand = raw_name[open_idx + 1 : -1].strip()
+                if any(
+                    term in cand.lower()
+                    for term in (
+                        "imped",
+                        "hplc",
+                        "eia",
+                        "clia",
+                        "pod",
+                        "enzyme",
+                        "enzymatic",
+                        "immuno",
+                        "calc",
+                        "direct",
+                        "colorimetric",
+                        "method",
+                        "tech",
+                        "oxidase",
+                        "peroxidase",
+                        "urease",
+                    )
+                ):
+                    clean_method = re.sub(
+                        r"^(?:method|technique|procedure)\s*:\s*",
+                        "",
+                        cand,
+                        flags=re.IGNORECASE,
+                    ).strip()
+                    if not extracted_method:
+                        extracted_method = clean_method
+                    raw_name = raw_name[:open_idx].strip()
+
+        if not raw_name:
+            return None, None
+
+        raw_clean = raw_name.lower().strip(" :-|")
+        if raw_clean in {
+            "female",
+            "male",
+            "females",
+            "males",
+            "adults",
+            "children",
+            "infants",
+            "non-diabetic",
+            "pre-diabetic",
+            "diabetic",
+            "desirable",
+            "optimal",
+            "borderline high",
+            "very high",
+            "near optimal",
+        }:
+            return None, None
+
+        if cls._looks_like_metadata(raw_name):
+            return None, None
+
+        # Very long narrative line is unlikely to be a test.
+        if len(raw_name) > 100:
+            return None, None
+
+        # A test name should contain alphabetic characters.
+        if not re.search(
+            r"[A-Za-z]",
+            raw_name,
+        ):
+            return None, None
+
+        # Everything after the value is a possible reference range.
+        remainder_start = value_match.end()
+
+        remainder = line[remainder_start:].strip()
+
+        # Remove unit token from remainder if present
+        if unit and unit_match:
+            unit_pattern = re.compile(
+                r"(?<!\w)" + re.escape(unit) + r"(?!\w)",
+                re.IGNORECASE,
+            )
+            remainder = unit_pattern.sub(" ", remainder).strip()
+
+        # Truncate remainder at metadata keyword boundaries
+        metadata_split = re.split(
+            r"\b(?:date|visit\s*id|uhid|age|sex|gender|mobile|phone|ref(?:erred)?\s*by|sample|final\s*report)\b",
+            remainder,
+            flags=re.IGNORECASE,
+        )
+        if metadata_split:
+            remainder = metadata_split[0].strip()
+
+        # Remove status words before reference range.
+        remainder = re.sub(
+            r"^(?:normal|high|low|" r"abnormal|trace|" r"positive|negative)\b\s*",
+            "",
+            remainder,
             flags=re.IGNORECASE,
         ).strip()
 
-        raw_val_str = f"{val_match.group(0)} {unit}" if unit else val_match.group(0)
-
-        ref_range_obj = None
+        reference_range = None
         warning = None
-        if remaining:
-            ref_range_obj, ref_warning = cls.parse_reference_range(remaining)
-            if ref_warning:
-                warning = ref_warning
 
-        lab_result = LabTestResult(
-            raw_test_name=raw_test_name,
+        if remainder:
+
+            reference_range, warning = cls.parse_reference_range(remainder)
+
+        raw_value = f"{value_match.group(0)}" f"{' ' + unit if unit else ''}"
+
+        result = LabTestResult(
+            raw_test_name=raw_name,
             canonical_test_name=None,
             loinc_code=None,
-            value=numeric_val,
+            value=numeric_value,
             unit=unit,
-            reference_range=ref_range_obj,
-            raw_value=raw_val_str,
+            reference_range=reference_range,
+            raw_value=raw_value,
             status=None,
             flag=None,
             method=extracted_method,
         )
 
-        return lab_result, warning
+        return result, warning
 
     @classmethod
-    def parse_document_text(
-        cls, report_id: str, lines: List[str]
-    ) -> ExtractedReportData:
-        """
-        Parses document lines into PatientInfo, ReportMetadata, and List[LabTestResult].
-        Supports multi-panel reports, per-section interpretation isolation, and consistency-aware Vial ID resolution.
-        """
-        warnings: List[str] = []
+    def _stitch_lines(
+        cls,
+        lines: list[str],
+    ) -> list[str]:
 
-        # 1. Page-level Metadata & Discrepancy Resolution
-        patient_names: List[str] = []
-        patient_ages: List[int] = []
-        patient_genders: List[str] = []
-        patient_ids: List[str] = []
-        report_dates: List[str] = []
-        req_numbers: List[str] = []
+        result: list[str] = []
+
+        i = 0
+
+        while i < len(lines):
+
+            current = cls._normalize_spaces(lines[i])
+
+            if not current:
+                i += 1
+                continue
+
+            current_lower = current.lower()
+
+            # Metadata lines, headers, and method lines must never be stitched as a test name
+            if (
+                cls.is_metadata_line(current)
+                or current_lower
+                in (
+                    "cbc",
+                    "complete blood count",
+                    "haematology",
+                    "biochemistry",
+                    "clinical pathology",
+                    "serology",
+                    "microbiology",
+                    "urinalysis",
+                    "urine examination",
+                    "lipid profile",
+                    "renal panel",
+                    "renal profile",
+                    "liver function test",
+                    "kidney basic screen",
+                )
+                or any(
+                    term in current_lower
+                    for term in (
+                        "test name",
+                        "investigation",
+                        "reference range",
+                        "observed value",
+                        "biological reference",
+                        "panel",
+                        "screen",
+                        "profile",
+                        "header",
+                    )
+                )
+                or re.match(
+                    r"^(?:method|technique|procedure)\b", current, re.IGNORECASE
+                )
+            ):
+                result.append(current)
+                i += 1
+                continue
+
+            has_numeric_result = bool(cls._extract_numeric_candidate(current))
+
+            if not has_numeric_result:
+                stitched = False
+                for lookahead in (1, 2, 3):
+                    if i + lookahead < len(lines):
+                        next_line = cls._normalize_spaces(lines[i + lookahead])
+                        if next_line and re.search(
+                            r"(?<![A-Za-z])-?\d+(?:\.\d+)?", next_line
+                        ):
+                            # next_line must NOT be a separate test line!
+                            if next_line.startswith(("*", "•", "▪", "◦")):
+                                break
+
+                            # Intermediate lines must NOT be table headers
+                            intermediates = [
+                                cls._normalize_spaces(lines[i + k])
+                                for k in range(1, lookahead)
+                            ]
+                            header_in_middle = any(
+                                any(
+                                    term in mid.lower()
+                                    for term in (
+                                        "test name",
+                                        "observed value",
+                                        "units",
+                                        "reference",
+                                        "investigation",
+                                        "biological",
+                                    )
+                                )
+                                for mid in intermediates
+                            )
+                            if header_in_middle:
+                                break
+
+                            # Intermediate lines shouldn't have numbers
+                            if any(re.search(r"\d", mid) for mid in intermediates):
+                                break
+
+                            blocked = any(
+                                term in current_lower
+                                for term in (
+                                    "patient",
+                                    "doctor",
+                                    "report",
+                                    "result",
+                                    "investigation",
+                                    "interpretation",
+                                    "reference",
+                                    "sample",
+                                    "page",
+                                    "method:",
+                                    "technique:",
+                                )
+                            )
+                            if blocked or cls.is_metadata_line(next_line):
+                                break
+
+                            if lookahead == 1:
+                                result.append(f"{current} {next_line}")
+                                i += 2
+                                stitched = True
+                                break
+                            elif lookahead == 2:
+                                mid = intermediates[0]
+                                if not cls.is_metadata_line(mid):
+                                    result.append(f"{current} ({mid}) {next_line}")
+                                    i += 3
+                                    stitched = True
+                                    break
+                            elif lookahead == 3:
+                                mid_text = " ".join(intermediates)
+                                if not any(
+                                    cls.is_metadata_line(m) for m in intermediates
+                                ):
+                                    result.append(f"{current} ({mid_text}) {next_line}")
+                                    i += 4
+                                    stitched = True
+                                    break
+                if stitched:
+                    continue
+
+            result.append(current)
+            i += 1
+
+        return result
+
+    @classmethod
+    def _extract_metadata(
+        cls,
+        lines: List[str],
+    ) -> Tuple[
+        Optional[str],
+        Optional[int],
+        Optional[str],
+        Optional[str],
+        List[str],
+        List[str],
+        List[str],
+        List[str],
+    ]:
 
         full_text = "\n".join(lines)
 
-        # Patient Name
-        for m in re.finditer(
-            r"(?:patient\s*name|name|patient)\s*:\s*([A-Za-z\.\s]+?)(?=\s*(?:age|gender|sex|vial|uhid|visit|mrn|patient|ref|req|collected|registered|reported|date|client|\n|$))",
-            full_text,
+        patient_names: List[str] = []
+        ages: List[int] = []
+        genders: List[str] = []
+        patient_ids: List[str] = []
+        reported_dates: List[str] = []
+        req_numbers: List[str] = []
+
+        # Patient name
+        name_pattern = re.compile(
+            r"(?:patient\s*name|"
+            r"patient|name)"
+            r"\s*[:\-]\s*"
+            r"([A-Za-z][A-Za-z .'-]{1,60})"
+            r"(?=\s+(?:age|gender|sex|"
+            r"vial|uhid|visit|mrn|req|"
+            r"collected|registered|reported|"
+            r"date|client|address|lab\s*no)|"
+            r"\s*$)",
             re.IGNORECASE,
-        ):
-            name_str = m.group(1).strip()
-            name_str = re.sub(r"\b(uhid|uh|visit|id)\b.*$", "", name_str, flags=re.IGNORECASE).strip()
-            if len(name_str) >= 2 and name_str.lower() not in ["null", "none"]:
-                patient_names.append(name_str)
+        )
 
-        if not patient_names:
-            for l in lines[:10]:
-                l_clean = l.strip()
-                if l_clean and not any(c.isdigit() for c in l_clean):
-                    l_lower = l_clean.lower()
-                    if not any(
-                        k in l_lower
-                        for k in [
-                            "lab",
-                            "hospital",
-                            "pathology",
-                            "clinic",
-                            "report",
-                            "accurate",
-                            "complete",
-                            "cbc",
-                            "test name",
-                            "investigation",
-                            "observed",
-                        ]
-                    ):
-                        if len(l_clean.split()) >= 2 and len(l_clean) <= 40:
-                            patient_names.append(l_clean)
-                            break
+        for match in name_pattern.finditer(full_text):
 
-        # Patient Age & Gender
-        for m in re.finditer(
-            r"(?:age(?:/gender|/sex)?)\s*:\s*(\d{1,3})\s*(?:y|years|yrs|y/o)?(?:\s*\d+\s*m)?(?:\s*\d+\s*d)?\s*/\s*(female|male|f|m)",
-            full_text,
-            re.IGNORECASE,
-        ):
-            patient_ages.append(int(m.group(1)))
-            g_str = m.group(2).lower()
-            patient_genders.append("Female" if g_str in ["female", "f"] else "Male")
+            name = cls._normalize_spaces(match.group(1))
 
-        for m in re.finditer(
-            r"(?:age)\s*:\s*(\d{1,3})|(\d{1,3})\s*(?:years|yrs|y/o)",
-            full_text,
-            re.IGNORECASE,
-        ):
-            val_str = m.group(1) or m.group(2)
-            if val_str:
-                val = int(val_str)
-                if 0 < val <= 120:
-                    patient_ages.append(val)
-
-        # Patient Gender fallback
-        if not patient_genders:
-            for m in re.finditer(
-                r"(?:gender|sex)\s*:\s*(male|female|m|f)\b|/\s*(male|female|m|f)\b",
-                full_text,
-                re.IGNORECASE,
+            if (
+                len(name) >= 2
+                and name.lower()
+                not in {
+                    "null",
+                    "none",
+                    "patient",
+                }
+                and not cls._looks_like_metadata(name)
             ):
-                g_str = (m.group(1) or m.group(2)).lower()
-                if g_str in ["m", "male"]:
-                    patient_genders.append("Male")
-                elif g_str in ["f", "female"]:
-                    patient_genders.append("Female")
+                patient_names.append(name)
 
-        # Patient / Vial IDs
-        for m in re.finditer(
-            r"(?:vial\s*id|uhid(?:\s*no)?(?:\s*/\s*visit\s*id)?|mrn|patient\s*id|reg\s*no|sample\s*id)\s*:\s*([A-Za-z0-9\.\-/]+)",
+        # Age
+        for match in re.finditer(
+            r"\b(?:age|age\s*/\s*gender|age\s*/\s*sex)\s*[:\-]\s*(\d{1,3})\b",
             full_text,
             re.IGNORECASE,
         ):
-            raw_id = m.group(1).strip()
-            primary_id = raw_id.split("/")[0].strip()
-            if primary_id:
-                patient_ids.append(primary_id)
+            ages.append(int(match.group(1)))
 
-        # Request Numbers
-        for m in re.finditer(
-            r"(?:req\s*no\.?|request\s*no\.?|order\s*no\.?)\s*:\s*([A-Za-z0-9\-]+)",
+        # Gender
+        for match in re.finditer(
+            r"(?:gender|sex|age\s*/\s*gender|age\s*/\s*sex)\s*[:\-]\s*(?:(?:\d{1,3}\s*(?:years?|yrs?|y)?\s*/\s*)?)(male|female|m|f)\b",
             full_text,
             re.IGNORECASE,
         ):
-            req_numbers.append(m.group(1).strip())
 
-        # Report Dates
-        reported_dates = []
-        for m in re.finditer(
-            r"(?:reported(?:\s*on)?|report\s*date|result\s*date|completed\s*on)\s*:\s*([0-9A-Za-z\:\s\-\/]+?)(?=\s*(?:client|page|req|sample|vial|barcode|ref|\n|$))",
+            value = match.group(1).lower()
+
+            genders.append("Male" if value in {"male", "m"} else "Female")
+
+        # Vial / patient ID
+        for match in re.finditer(
+            r"(?:vial\s*id|uhid|patient\s*id|" r"mrn)\s*[:\-]\s*([A-Za-z0-9\-\/]+)",
             full_text,
             re.IGNORECASE,
         ):
-            iso_d = cls.parse_date_to_iso(m.group(1))
-            if iso_d:
-                reported_dates.append(iso_d)
+            patient_ids.append(match.group(1).strip())
 
-        if not reported_dates:
-            for m in re.finditer(
-                r"(?:collected\s*on|date)\s*:\s*([0-9A-Za-z\:\s\-\/]+?)(?=\s*(?:client|page|req|sample|vial|\n|$))",
-                full_text,
-                re.IGNORECASE,
-            ):
-                iso_d = cls.parse_date_to_iso(m.group(1))
-                if iso_d:
-                    reported_dates.append(iso_d)
+        # Request number
+        for match in re.finditer(
+            r"(?:req\s*no|request\s*no)\s*" r"[:\-]\s*([A-Za-z0-9\-\/]+)",
+            full_text,
+            re.IGNORECASE,
+        ):
+            req_numbers.append(match.group(1).strip())
 
-        report_dates = reported_dates
+        # Reported On / Report Date / Final Report Date / Reported
+        for match in re.finditer(
+            r"(?:reported\s*on|reported|report\s*date|final\s*report|collection\s*date|registered\s*date|date)\s*[:\-]?\s*"
+            r"([0-9A-Za-z:/\-\s]{5,40}?)"
+            r"(?=[\r\n]|\s+(?:patient|client|page|req|sample|vial|visit|uhid|age|sex|gender|a/c|$))",
+            full_text,
+            re.IGNORECASE,
+        ):
 
-        resolved_name = patient_names[0] if patient_names else None
-        resolved_age = patient_ages[0] if patient_ages else None
-        resolved_gender = patient_genders[0] if patient_genders else None
-        resolved_date = None
-        if report_dates:
-            unique_dates = list(set(report_dates))
-            if len(unique_dates) == 1:
-                resolved_date = report_dates[0]
-            else:
-                date_counts: Dict[str, int] = {}
-                for d in report_dates:
-                    date_counts[d] = date_counts.get(d, 0) + 1
-                sorted_dates = sorted(
-                    date_counts.keys(), key=lambda d: (date_counts[d], d), reverse=True
-                )
-                resolved_date = sorted_dates[0]
-                conflicting_dates = [d for d in unique_dates if d != resolved_date]
-                warnings.append(
-                    f"Discrepancy in Reported On timestamp across report pages (Conflicting: '{', '.join(conflicting_dates)}', Majority/Resolved: '{resolved_date}')."
-                )
+            date_value = cls.parse_date_to_iso(match.group(1))
 
-        resolved_patient_id = None
-        if patient_ids:
-            if len(set(patient_ids)) == 1:
-                resolved_patient_id = patient_ids[0]
-            else:
-                name_consistent = (
-                    len(set(patient_names)) <= 1 if patient_names else True
-                )
-                req_consistent = len(set(req_numbers)) <= 1 if req_numbers else True
+            if date_value:
+                reported_dates.append(date_value)
 
-                id_counts: Dict[str, int] = {}
-                for pid in patient_ids:
-                    id_counts[pid] = id_counts.get(pid, 0) + 1
-                majority_id = max(id_counts, key=lambda pid: id_counts[pid])
+        return (
+            patient_names[0] if patient_names else None,
+            ages[0] if ages else None,
+            genders[0] if genders else None,
+            patient_ids[0] if patient_ids else None,
+            reported_dates,
+            patient_ids,
+            req_numbers,
+            patient_names,
+        )
 
-                if name_consistent and req_consistent:
-                    resolved_patient_id = majority_id
-                    conflicting_ids = [
-                        pid for pid in set(patient_ids) if pid != majority_id
-                    ]
-                    req_str = req_numbers[0] if req_numbers else "N/A"
-                    name_str = resolved_name or "N/A"
-                    warnings.append(
-                        f"Discrepancy in Vial ID across report pages (Conflicting: '{', '.join(conflicting_ids)}', Majority: '{majority_id}'). Verified patient consistency via Request No '{req_str}' and Patient Name '{name_str}'; resolved Vial ID to majority '{majority_id}'."
-                    )
-                else:
-                    resolved_patient_id = None
-                    warnings.append(
-                        f"Unresolvable patient ID discrepancy across pages ({patient_ids}); set patient_id to null."
-                    )
+    @classmethod
+    def _deduplicate_tests(
+        cls,
+        tests: List[LabTestResult],
+    ) -> List[LabTestResult]:
 
-        lab_name = cls.extract_lab_name(full_text, lines)
+        result: List[LabTestResult] = []
 
-        # Pre-pass: Line stitching for multiline test rows where Line i is test name and Line i+1 is value/unit/range
-        stitched_lines = []
-        i = 0
-        while i < len(lines):
-            line = lines[i].strip()
-            if line and not any(c.isdigit() for c in line) and i + 1 < len(lines):
-                next_line = lines[i + 1].strip()
-                if next_line and re.search(r"\b\d+(?:\.\d+)?\b", next_line):
-                    line_lower = line.lower()
-                    if not any(
-                        line_lower.startswith(prefix)
-                        for prefix in ["method:", "technique:", "procedure:"]
-                    ) and not any(
-                        k in line_lower
-                        for k in [
-                            "patient",
-                            "doctor",
-                            "dr.",
-                            "sample",
-                            "investigation",
-                            "result",
-                            "results",
-                            "laboratory",
-                            "report",
-                            "test",
-                            "cbc",
-                            "interpretation",
-                            "note",
-                            "differential",
-                            "differential count",
-                            "kinetic",
-                            "modified jaffe",
-                            "urease",
-                            "ise",
-                            "bapta",
-                            "uricase",
-                        ]
-                    ):
-                        stitched_lines.append(f"{line} {next_line}")
-                        i += 2
-                        continue
-            stitched_lines.append(line)
-            i += 1
+        seen = set()
 
-        # 2. Section-Aware Test Extraction
-        test_results: List[LabTestResult] = []
-        in_lab_section = False
-        skip_current_section = False
+        for test in tests:
 
-        idx = 0
-        while idx < len(stitched_lines):
-            line = stitched_lines[idx].strip()
-            l_lower = line.lower()
+            name = cls._normalize_spaces(test.raw_test_name).lower()
 
-            # Check for Table Header / Panel Title
-            is_header_line = (
-                (
-                    (
-                        "test name" in l_lower
-                        or "investigation" in l_lower
-                        or "parameter" in l_lower
-                    )
-                    and (
-                        "observed" in l_lower
-                        or "result" in l_lower
-                        or "units" in l_lower
-                        or "reference" in l_lower
-                        or "biological" in l_lower
-                        or "value" in l_lower
-                    )
-                )
-                or l_lower.startswith("investigation result")
-                or l_lower.startswith("test name")
+            value = str(test.value) if test.value is not None else str(test.raw_value)
+
+            unit = test.unit.lower() if test.unit else ""
+
+            key = (
+                name,
+                value,
+                unit,
             )
 
-            if is_header_line:
-                in_lab_section = True
-                skip_current_section = False
-                idx += 1
+            if key in seen:
                 continue
 
-            # Check for Section Terminators (Interpretation or Doctor/Pathologist Signature Blocks)
-            is_interpretation_start = any(
-                term in l_lower
-                for term in [
-                    "interpretation:",
-                    "interpretation::",
-                    "clinical interpretation:",
-                    "comments:",
-                    "comment:",
-                    "remarks:",
-                    "notes:",
-                ]
+            seen.add(key)
+            result.append(test)
+
+        return result
+
+    @classmethod
+    def parse_document_text(
+        cls,
+        report_id: str,
+        lines: List[str],
+    ) -> ExtractedReportData:
+
+        warnings: List[str] = []
+
+        # ---------------------------------------------------------
+        # 1. Clean OCR text
+        # ---------------------------------------------------------
+
+        cleaned_lines = []
+
+        for line in lines:
+
+            line = cls._clean_pua(line or "")
+
+            line = line.replace(
+                "\x00",
+                "",
             )
 
-            is_signature_start = any(
-                term in l_lower
-                for term in [
-                    "dr.",
-                    "dr ",
-                    "doctor",
-                    "pathologist",
-                    "md pathology",
-                    "kmc.no",
-                    "authorized signatory",
-                    "electronically authenticated",
-                    "end of the report",
-                    "end of report",
-                    "****end of report****",
-                    "------end of report------",
-                ]
+            line = cls._normalize_spaces(line)
+
+            if line:
+                cleaned_lines.append(line)
+
+        # ---------------------------------------------------------
+        # 2. Metadata
+        # ---------------------------------------------------------
+
+        (
+            resolved_name,
+            resolved_age,
+            resolved_gender,
+            first_patient_id,
+            reported_dates,
+            patient_ids,
+            req_numbers,
+            patient_names,
+        ) = cls._extract_metadata(cleaned_lines)
+
+        # Resolve report date
+        resolved_date = None
+
+        if reported_dates:
+
+            counts: Dict[str, int] = {}
+
+            for date in reported_dates:
+                counts[date] = counts.get(date, 0) + 1
+
+            resolved_date = max(
+                counts,
+                key=lambda d: counts[d],
             )
 
-            if is_interpretation_start or is_signature_start:
-                in_lab_section = False
-                skip_current_section = True
+            if len(counts) > 1:
 
-            # Extract test rows if inside active lab section
-            if in_lab_section and not skip_current_section:
-                # Check for multiline gender reference range continuation (e.g. "Female:2.3 - 6.1")
-                if "female:" in l_lower and test_results:
-                    last_test = test_results[-1]
-                    if (
-                        last_test.reference_range
-                        and last_test.reference_range.raw
-                        and "male:" in last_test.reference_range.raw.lower()
-                    ):
-                        last_test.reference_range.raw += f" {line}"
-                        idx += 1
-                        continue
+                conflicts = [d for d in counts if d != resolved_date]
 
-                test_item, line_warning = cls.parse_test_line(line)
-                if test_item:
-                    test_results.append(test_item)
-                    if line_warning:
-                        warnings.append(line_warning)
+                warnings.append(
+                    "Discrepancy in Reported On "
+                    "timestamp across report pages "
+                    f"(Conflicting: "
+                    f"'{', '.join(conflicts)}', "
+                    f"Majority/Resolved: "
+                    f"'{resolved_date}')."
+                )
 
-            idx += 1
+        # Resolve patient ID
+        resolved_patient_id = first_patient_id
 
-        # Fallback for documents without explicit table headers
-        if not test_results:
-            for line in stitched_lines:
-                l_lower = line.lower()
-                if any(
-                    k in l_lower
-                    for k in [
-                        "patient name:",
-                        "name:",
-                        "age:",
-                        "gender:",
-                        "sex:",
-                        "vial id",
-                        "req no",
-                        "sample type",
-                        "collected on",
-                        "registered on",
-                        "reported on",
-                        "dr.",
-                        "doctor",
-                        "final report",
-                        "interpretation",
-                        "kmc.no",
-                    ]
-                ):
+        if patient_ids:
+
+            id_counts: Dict[str, int] = {}
+
+            for pid in patient_ids:
+                id_counts[pid] = id_counts.get(pid, 0) + 1
+
+            resolved_patient_id = max(
+                id_counts,
+                key=lambda pid: id_counts[pid],
+            )
+
+            if len(id_counts) > 1:
+
+                conflicts = [pid for pid in id_counts if pid != resolved_patient_id]
+
+                warnings.append(
+                    "Discrepancy in patient ID "
+                    "across report pages "
+                    f"(Conflicting: "
+                    f"'{', '.join(conflicts)}', "
+                    f"Resolved: "
+                    f"'{resolved_patient_id}')."
+                )
+
+        # ---------------------------------------------------------
+        # 3. Lab name
+        # ---------------------------------------------------------
+
+        full_text = "\n".join(cleaned_lines)
+
+        lab_name = cls.extract_lab_name(
+            full_text,
+            cleaned_lines,
+        )
+
+        # ---------------------------------------------------------
+        # 4. Multi-line reconstruction
+        # ---------------------------------------------------------
+
+        stitched_lines = cls._stitch_lines(cleaned_lines)
+
+        # ---------------------------------------------------------
+        # 5. Parse EVERY relevant line
+        #
+        # Important:
+        # We intentionally do NOT require:
+        #
+        #     in_lab_section == True
+        #
+        # This fixes the main extraction bug.
+        # ---------------------------------------------------------
+
+        tests: List[LabTestResult] = []
+
+        for index, line in enumerate(stitched_lines):
+
+            line = line.strip()
+
+            if not line:
+                continue
+
+            if cls.is_metadata_line(line):
+                continue
+
+            lower = line.lower()
+
+            # Ignore obvious page headers
+            if lower.startswith("page "):
+                continue
+
+            # Ignore section narrative
+            if any(term in lower for term in cls.SECTION_STOP_WORDS):
+                continue
+
+            # Check if line is a pure method line (e.g. "Method:ISE Direct" or "Method:Calculated")
+            pure_method_match = re.match(
+                r"^(?:method|technique|procedure)\s*:\s*(.*?)$", line, re.IGNORECASE
+            )
+            if pure_method_match:
+                cand_method = pure_method_match.group(1).strip()
+                # Check if this method line has a demographic range (e.g. "Uricase-Peroxidase Female:2.3 - 6.1")
+                demo_match = re.search(
+                    r"\b(female|male|females|males)\s*:\s*(\d+(?:\.\d+)?\s*[-–—]\s*\d+(?:\.\d+)?)",
+                    cand_method,
+                    re.IGNORECASE,
+                )
+                if demo_match:
+                    demo_range = demo_match.group(0)
+                    cand_method = cand_method[: demo_match.start()].strip()
+                    if tests and tests[-1].reference_range:
+                        if tests[-1].reference_range.raw:
+                            tests[-1].reference_range.raw = (
+                                f"{tests[-1].reference_range.raw} {demo_range}".strip()
+                            )
+                        else:
+                            tests[-1].reference_range.raw = demo_range
+                        tests[-1].reference_range.type = "DEMOGRAPHIC"
+
+                if cand_method and tests:
+                    clean_c = re.sub(
+                        r"^(?:method|technique|procedure)\s*:\s*",
+                        "",
+                        cand_method,
+                        flags=re.IGNORECASE,
+                    ).strip()
+                    if not tests[-1].method:
+                        tests[-1].method = clean_c
+                    elif clean_c not in tests[-1].method:
+                        tests[-1].method = f"{tests[-1].method} {clean_c}"
+                continue
+
+            # Check if line is a continuation of a multi-line method (e.g. "Peroxidase)" or closes unmatched paren)
+            if (
+                tests
+                and tests[-1].method
+                and (
+                    tests[-1].method.count("(") > tests[-1].method.count(")")
+                    or tests[-1].method.endswith(",")
+                )
+            ):
+                if not bool(
+                    cls._extract_numeric_candidate(line)
+                ) and not line.startswith(("*", "•", "▪", "◦")):
+                    tests[-1].method = f"{tests[-1].method} {line}".strip()
                     continue
-                test_item, line_warning = cls.parse_test_line(line)
-                if test_item:
-                    test_results.append(test_item)
-                    if line_warning:
-                        warnings.append(line_warning)
 
-        if not test_results:
+            # Check if line is a demographic reference range line (e.g. "Female: 2.3 - 6.1" or "Female 2.3 - 6.1")
+            demo_line_match = re.match(
+                r"^(female|male|females|males)\s*[:\-]?\s*(\d+(?:\.\d+)?(?:\s*[-–—]\s*\d+(?:\.\d+)?)?.*)$",
+                line,
+                re.IGNORECASE,
+            )
+            if demo_line_match:
+                if tests and tests[-1].reference_range:
+                    raw_demo = line.strip()
+                    if tests[-1].reference_range.raw:
+                        tests[-1].reference_range.raw = (
+                            f"{tests[-1].reference_range.raw} {raw_demo}".strip()
+                        )
+                    else:
+                        tests[-1].reference_range.raw = raw_demo
+                    tests[-1].reference_range.type = "DEMOGRAPHIC"
+                continue
+
+            test, warning = cls.parse_test_line(line)
+
+            if test is not None:
+
+                tests.append(test)
+
+                if warning:
+                    warnings.append(warning)
+
+        # ---------------------------------------------------------
+        # 6. Remove duplicates
+        # ---------------------------------------------------------
+
+        tests = cls._deduplicate_tests(tests)
+
+        # ---------------------------------------------------------
+        # 7. Diagnostics
+        # ---------------------------------------------------------
+
+        logger.info(
+            "PARSER_RESULT report_id=%s "
+            "input_lines=%d "
+            "stitched_lines=%d "
+            "extracted_tests=%d",
+            report_id,
+            len(cleaned_lines),
+            len(stitched_lines),
+            len(tests),
+        )
+
+        logger.info(
+            "PARSER_TEST_NAMES report_id=%s tests=%s",
+            report_id,
+            [test.raw_test_name for test in tests],
+        )
+
+        if not tests:
+
             warnings.append(
-                "No laboratory test rows could be confidently extracted from document lines."
+                "NO_TESTS_EXTRACTED: "
+                "No laboratory test rows "
+                "could be confidently "
+                "extracted from document."
             )
 
         return ExtractedReportData(
             schema_version="1.0",
             report=ReportMetadata(
-                report_id=report_id, report_date=resolved_date, lab_name=lab_name
+                report_id=report_id,
+                report_date=resolved_date,
+                lab_name=lab_name,
             ),
             patient=PatientInfo(
                 patient_id=resolved_patient_id,
@@ -900,6 +1866,6 @@ class ParserService:
                 age=resolved_age,
                 gender=resolved_gender,
             ),
-            tests=test_results,
+            tests=tests,
             warnings=warnings,
         )

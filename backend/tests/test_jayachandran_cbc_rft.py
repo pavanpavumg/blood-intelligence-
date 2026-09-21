@@ -1,6 +1,6 @@
 import pytest
 from pathlib import Path
-import fitz
+import pymupdf
 from app.services.ocr_service import OCRService
 from app.services.parser_service import ParserService
 from app.services.normalization_service import NormalizationService
@@ -23,7 +23,7 @@ def test_jayachandran_cbc_rft_extraction():
         pdf_path is not None and pdf_path.exists()
     ), "Mr.JAYACHANDRAN_KAD393.4.PDF fixture not found"
 
-    doc = fitz.open(pdf_path)
+    doc = pymupdf.open(pdf_path)
     extracted_lines = []
     for page in doc:
         page_lines = OCRService.extract_layout_sorted_lines(page)

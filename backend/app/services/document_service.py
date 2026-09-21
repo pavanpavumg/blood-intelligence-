@@ -1,210 +1,466 @@
+import asyncio
 import io
-import json
 import uuid
-import fitz  # PyMuPDF
+import pymupdf
+
 from pathlib import Path
-from typing import List, Dict, Any, Tuple
-from fastapi import UploadFile, HTTPException, status
+from typing import List
+
+from fastapi import (
+    UploadFile,
+    HTTPException,
+    status,
+)
+
 from fastapi.responses import StreamingResponse
 
 from app.core.config import settings
 from app.core.logging import logger
-from app.schemas.report import ExtractedReportData, ReportUploadResponse
+
+from app.schemas.report import (
+    ReportUploadResponse,
+)
+
 from app.services.ocr_service import OCRService
 from app.services.parser_service import ParserService
-from app.services.normalization_service import NormalizationService
-
-UPLOAD_DIR = Path(settings.UPLOAD_DIR)
-PROCESSED_DIR = Path("data/processed")
-
-# Ensure storage directories exist
-UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+from app.services.normalization_service import (
+    NormalizationService,
+)
 
 
 class DocumentService:
     """
-    Stateless, in-memory document processing orchestrator for file validation,
-    OCR extraction, field parsing, and streaming responses without disk storage.
+    Stateless in-memory document processing service.
+
+    Supports:
+    - PDF files
+    - JPG/JPEG files
+    - PNG files
+    - Digital PDF text extraction
+    - Scanned PDF OCR (parallelized across a worker process pool)
+    - Multi-page documents
+    - In-memory processing
+    - No permanent file storage
     """
 
-    ALLOWED_EXTENSIONS = {".pdf", ".jpg", ".jpeg", ".png"}
+    ALLOWED_EXTENSIONS = {
+        ".pdf",
+        ".jpg",
+        ".jpeg",
+        ".png",
+    }
+
+    # ---------------------------------------------------------
+    # Validate uploaded file
+    # ---------------------------------------------------------
 
     @classmethod
-    def validate_file(cls, file: UploadFile, contents: bytes = b"") -> str:
+    def validate_file(
+        cls,
+        file: UploadFile,
+        contents: bytes = b"",
+    ) -> str:
         """
-        Validates file extension, size limit, and integrity.
-        Returns lowercase file extension if valid.
+        Validate filename, extension, size, and content.
         """
+
         if not file.filename:
+
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Filename missing in file upload request.",
+                detail="Uploaded filename is missing.",
             )
 
-        raw_filename = file.filename
-        if ".." in raw_filename or "/" in raw_filename or "\\" in raw_filename:
+        filename = file.filename
+
+        # Prevent directory traversal
+        if ".." in filename or "/" in filename or "\\" in filename:
+
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Invalid filename containing directory traversal characters.",
+                detail="Invalid filename.",
             )
 
-        clean_filename = Path(raw_filename).name
-        ext = Path(clean_filename).suffix.lower()
-        if ext not in cls.ALLOWED_EXTENSIONS:
+        clean_filename = Path(filename).name
+
+        extension = Path(clean_filename).suffix.lower()
+
+        if extension not in cls.ALLOWED_EXTENSIONS:
+
             raise HTTPException(
                 status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
-                detail=f"Unsupported file format '{ext}'. Allowed formats: {', '.join(sorted(cls.ALLOWED_EXTENSIONS))}",
+                detail=(
+                    f"Unsupported file format '{extension}'. "
+                    f"Allowed formats: "
+                    f"{', '.join(sorted(cls.ALLOWED_EXTENSIONS))}"
+                ),
             )
 
-        if contents:
-            if len(contents) < 10:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Uploaded file is empty or corrupted.",
-                )
+        if not contents:
 
-            max_bytes = settings.MAX_UPLOAD_SIZE_MB * 1024 * 1024
-            if len(contents) > max_bytes:
-                raise HTTPException(
-                    status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
-                    detail=f"File size ({len(contents) / (1024*1024):.2f} MB) exceeds maximum allowed limit of {settings.MAX_UPLOAD_SIZE_MB} MB.",
-                )
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Uploaded file is empty.",
+            )
 
-        return ext
+        max_size = settings.MAX_UPLOAD_SIZE_MB * 1024 * 1024
+
+        if len(contents) > max_size:
+
+            raise HTTPException(
+                status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                detail=(
+                    f"File size "
+                    f"{len(contents) / (1024 * 1024):.2f} MB "
+                    f"exceeds maximum allowed size of "
+                    f"{settings.MAX_UPLOAD_SIZE_MB} MB."
+                ),
+            )
+
+        return extension
+
+    # ---------------------------------------------------------
+    # Process uploaded report
+    # ---------------------------------------------------------
 
     @classmethod
-    async def process_uploaded_report(cls, file: UploadFile) -> ReportUploadResponse:
+    async def process_uploaded_report(
+        cls,
+        file: UploadFile,
+    ) -> ReportUploadResponse:
         """
-        Stateless in-memory document processing pipeline using io.BytesIO.
-        Reads PDF/Image directly from RAM stream without saving files to disk.
+        Process uploaded medical report entirely in memory.
         """
+
         contents = await file.read()
-        ext = cls.validate_file(file, contents)
+
+        extension = cls.validate_file(
+            file,
+            contents,
+        )
 
         report_id = f"rep_{uuid.uuid4().hex[:12]}"
 
-        # Wrap uploaded bytes in an in-memory BytesIO stream
         input_stream = io.BytesIO(contents)
 
         extracted_lines: List[str] = []
-        doc_type = "UNKNOWN"
 
-        # 1. Detect Document Type & Extract Text from RAM Stream
-        if ext == ".pdf":
+        document_type = "UNKNOWN"
+
+        # =====================================================
+        # PDF PROCESSING
+        # =====================================================
+
+        if extension == ".pdf":
+
+            doc = None
+
             try:
-                # Read PDF directly from io.BytesIO memory stream
-                doc = fitz.open(stream=input_stream.getvalue(), filetype="pdf")
+
+                doc = pymupdf.open(
+                    stream=input_stream.getvalue(),
+                    filetype="pdf",
+                )
+
                 if len(doc) == 0:
+
                     raise HTTPException(
                         status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Corrupted PDF document containing 0 pages.",
+                        detail="PDF contains zero pages.",
                     )
 
-                # Check if Digital PDF by examining text layer
-                digital_text = ""
+                # -------------------------------------------------
+                # Detect digital PDF
+                # -------------------------------------------------
+
+                digital_text_parts = []
+
                 for page in doc:
-                    digital_text += page.get_text("text")
+
+                    text = page.get_text("text")
+
+                    if text and text.strip():
+
+                        digital_text_parts.append(text.strip())
+
+                digital_text = "\n".join(digital_text_parts)
+
+                # -------------------------------------------------
+                # Digital PDF path
+                # -------------------------------------------------
 
                 if len(digital_text.strip()) > 50:
-                    doc_type = "DIGITAL_PDF"
-                    extracted_lines = []
-                    for page in doc:
+
+                    document_type = "DIGITAL_PDF"
+
+                    logger.info(f"Report [{report_id}] identified as " f"DIGITAL_PDF.")
+
+                    for page_index in range(len(doc)):
+
+                        page = doc.load_page(page_index)
+
                         page_lines = OCRService.extract_layout_sorted_lines(page)
+
                         extracted_lines.extend(page_lines)
+
                     logger.info(
-                        f"Report [{report_id}] identified as DIGITAL_PDF. Extracted {len(extracted_lines)} layout-sorted lines in-memory."
+                        f"Report [{report_id}] extracted "
+                        f"{len(extracted_lines)} digital PDF lines."
                     )
+
+                # -------------------------------------------------
+                # Scanned PDF path — PARALLELIZED
+                # -------------------------------------------------
+                # Rendering (PyMuPDF, fast, CPU-light) still happens
+                # sequentially in this process, since pymupdf.Document
+                # objects aren't safe to share across processes.
+                # OCR (slow, CPU-heavy) is fanned out across a pool
+                # of worker processes so pages run concurrently
+                # instead of one-at-a-time. See ocr_service.py's
+                # extract_text_from_images_parallel().
+
                 else:
-                    doc_type = "SCANNED_PDF"
+
+                    document_type = "SCANNED_PDF"
+
                     logger.info(
-                        f"Report [{report_id}] identified as SCANNED_PDF. Rendering pages in-memory for OCR pipeline."
+                        f"Report [{report_id}] identified as "
+                        f"SCANNED_PDF with {len(doc)} pages. "
+                        f"Rendering all pages before dispatching to "
+                        f"OCR worker pool."
                     )
-                    for page_idx in range(len(doc)):
-                        img_bytes = OCRService.render_pdf_page_to_bytes(doc, page_idx)
-                        ocr_lines, _ = OCRService.extract_text_from_image(img_bytes)
-                        extracted_lines.extend(ocr_lines)
+
+                    # Step 1: render every page to PNG bytes up front.
+                    # This is fast (no OCR yet) and must stay in this
+                    # process since `doc` can't cross a process
+                    # boundary.
+                    rendered_pages: List[tuple] = []
+
+                    for page_index in range(len(doc)):
+
+                        page_number = page_index + 1
+
+                        image_bytes = OCRService.render_pdf_page_to_bytes(
+                            doc,
+                            page_index,
+                            dpi=settings.OCR_DEFAULT_DPI,
+                        )
+
+                        rendered_pages.append((image_bytes, page_number))
+
+                    logger.info(
+                        f"Report [{report_id}]: {len(rendered_pages)} "
+                        f"pages rendered. Dispatching to OCR pool."
+                    )
+
+                    # Step 2: run OCR for all pages concurrently across
+                    # the worker pool. This call blocks until every
+                    # page's OCR is done, so we push it to a thread via
+                    # run_in_executor to avoid blocking the FastAPI
+                    # event loop for other concurrent requests while
+                    # we wait.
+                    loop = asyncio.get_running_loop()
+
+                    ocr_results = await loop.run_in_executor(
+                        None,
+                        OCRService.extract_text_from_images_parallel,
+                        rendered_pages,
+                    )
+
+                    # Step 3: stitch results back together in page order.
+                    for (image_bytes, page_number), (page_lines, page_scores) in zip(
+                        rendered_pages, ocr_results
+                    ):
+
+                        if page_lines:
+
+                            extracted_lines.extend(page_lines)
+
+                            logger.info(
+                                f"Page {page_number}: "
+                                f"{len(page_lines)} OCR lines extracted."
+                            )
+
+                        else:
+
+                            logger.warning(
+                                f"Page {page_number}: " f"No OCR text extracted."
+                            )
+
+                    logger.info(
+                        f"Report [{report_id}] completed scanned "
+                        f"PDF OCR. Total lines: "
+                        f"{len(extracted_lines)}"
+                    )
+
             except HTTPException:
                 raise
+
             except Exception as exc:
+
                 logger.error(
-                    f"Error reading PDF document '{file.filename}': {exc}",
+                    f"Failed to process PDF " f"'{file.filename}': {exc}",
                     exc_info=True,
                 )
+
                 raise HTTPException(
                     status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                    detail=f"Corrupted or invalid PDF file: {exc}",
+                    detail=(f"Unable to process PDF document: {exc}"),
                 )
-        else:  # Image file (.jpg, .jpeg, .png)
-            doc_type = "IMAGE"
-            logger.info(
-                f"Report [{report_id}] identified as IMAGE ({ext}). Running in-memory OCR preprocessing."
-            )
+
+            finally:
+
+                if doc is not None:
+
+                    try:
+                        doc.close()
+
+                    except Exception:
+                        pass
+
+        # =====================================================
+        # IMAGE PROCESSING
+        # =====================================================
+
+        else:
+
+            document_type = "IMAGE"
+
+            logger.info(f"Report [{report_id}] identified as IMAGE " f"({extension}).")
+
             try:
-                ocr_lines, _ = OCRService.extract_text_from_image(
-                    input_stream.getvalue()
+
+                extracted_lines, _ = OCRService.extract_text_from_image(
+                    contents,
+                    page_num=1,
                 )
-                extracted_lines = ocr_lines
+
+                logger.info(
+                    f"Image OCR completed. " f"Extracted {len(extracted_lines)} lines."
+                )
+
             except Exception as exc:
+
                 logger.error(
-                    f"OCR processing failed for image '{file.filename}': {exc}",
+                    f"Image OCR failed: {exc}",
                     exc_info=True,
                 )
+
                 raise HTTPException(
                     status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                    detail=f"Failed to execute OCR on uploaded image: {exc}",
+                    detail=(f"Failed to process uploaded image: {exc}"),
                 )
+
+        # =====================================================
+        # EMPTY EXTRACTION WARNING
+        # =====================================================
 
         if not extracted_lines:
-            logger.warning(f"No text extracted from report [{report_id}].")
 
-        # 2. Parse Fields using Deterministic Parser
-        parsed_data = ParserService.parse_document_text(report_id, extracted_lines)
+            logger.warning(
+                f"Report [{report_id}] produced no extracted text. "
+                f"Document type: {document_type}"
+            )
 
-        # 3. Phase 2 Normalization & Classification
+        # =====================================================
+        # PARSING
+        # =====================================================
+
+        parsed_data = ParserService.parse_document_text(
+            report_id,
+            extracted_lines,
+        )
+
+        # =====================================================
+        # NORMALIZATION
+        # =====================================================
+
         normalized_data = NormalizationService.normalize_extracted_report(parsed_data)
 
-        # Determine response status
         response_status = (
             "VALIDATED_WITH_WARNINGS" if normalized_data.warnings else "VALIDATED"
         )
 
         return ReportUploadResponse(
-            report_id=report_id, status=response_status, data=normalized_data
+            report_id=report_id,
+            status=response_status,
+            data=normalized_data,
         )
+
+    # ---------------------------------------------------------
+    # In-memory PDF streaming
+    # ---------------------------------------------------------
 
     @classmethod
     async def process_pdf_to_streaming_response(
-        cls, file: UploadFile, output_filename: str = "processed_output.pdf"
+        cls,
+        file: UploadFile,
+        output_filename: str = "processed_output.pdf",
     ) -> StreamingResponse:
         """
-        Completely self-contained, stateless in-memory function that reads an uploaded PDF
-        directly from an io.BytesIO memory stream and streams the output directly back
-        as a StreamingResponse without storing anything to disk.
+        Read PDF from memory and return it as a stream.
         """
+
         contents = await file.read()
-        cls.validate_file(file, contents)
 
-        # Read uploaded PDF directly from memory stream
-        input_stream = io.BytesIO(contents)
+        extension = cls.validate_file(
+            file,
+            contents,
+        )
 
-        # Open PyMuPDF document directly from in-memory BytesIO buffer
-        doc = fitz.open(stream=input_stream.getvalue(), filetype="pdf")
-        if len(doc) == 0:
+        if extension != ".pdf":
+
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Corrupted PDF document containing 0 pages.",
+                status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+                detail="Only PDF files are supported.",
             )
 
-        # Perform in-memory processing on PDF document
-        output_buffer = io.BytesIO()
-        output_bytes = doc.tobytes(garbage=4, deflate=True)
-        output_buffer.write(output_bytes)
-        output_buffer.seek(0)
+        try:
 
-        # Stream generated output directly back as StreamingResponse
-        return StreamingResponse(
-            output_buffer,
-            media_type="application/pdf",
-            headers={"Content-Disposition": f"attachment; filename={output_filename}"},
-        )
+            input_stream = io.BytesIO(contents)
+
+            doc = pymupdf.open(
+                stream=input_stream.getvalue(),
+                filetype="pdf",
+            )
+
+            if len(doc) == 0:
+
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="PDF contains zero pages.",
+                )
+
+            output_bytes = doc.tobytes(
+                garbage=4,
+                deflate=True,
+            )
+
+            output_stream = io.BytesIO(output_bytes)
+
+            output_stream.seek(0)
+
+            doc.close()
+
+            return StreamingResponse(
+                output_stream,
+                media_type="application/pdf",
+                headers={
+                    "Content-Disposition": (f'attachment; filename="{output_filename}"')
+                },
+            )
+
+        except HTTPException:
+            raise
+
+        except Exception as exc:
+
+            logger.error(
+                f"PDF streaming failed: {exc}",
+                exc_info=True,
+            )
+
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail=f"Unable to stream PDF: {exc}",
+            )

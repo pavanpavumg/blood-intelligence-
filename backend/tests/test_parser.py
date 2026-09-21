@@ -96,3 +96,60 @@ def test_non_test_metadata_filtering():
     assert parsed.tests[0].raw_test_name == "Hemoglobin A1c"
     assert parsed.tests[0].value == 5.8
 
+
+def test_multiline_method_and_female_demographic_separation():
+    """
+    Verifies that multi-line methods (e.g. Enzymatic Method (sarcosine oxidase, Peroxidase))
+    do not corrupt subsequent test names (* UREA), that Serum Creatinine is preserved,
+    and that demographic reference labels (Female: 2.3 - 6.1) are attached as reference ranges
+    rather than extracted as unassigned fake tests.
+    """
+    from app.services.normalization_service import NormalizationService
+
+    lines = [
+        "Centromed Labs",
+        "Patient Name: Mrs. Kushboo",
+        "Age: 27 Years",
+        "Gender: Female",
+        "Report Date: 20-Aug-2026",
+        "Kidney Basic Screen",
+        "Test Name Observed Values Units Biological Reference Intervals",
+        "* SERUM CREATININE",
+        "Method:Enzymatic Method (sarcosine oxidase,",
+        "Peroxidase)",
+        "1.08 mg/dL 0.6 - 1.4",
+        "* UREA",
+        "Method:Urease UV",
+        "28.49 mg/dL 16.8-43.2",
+        "* URIC ACID 3.59 mg/dL Male:3.6-8.2",
+        "Method:Uricase-Peroxidase Female:2.3 - 6.1",
+    ]
+
+    parsed = ParserService.parse_document_text("rep_multiline_method", lines)
+    test_names = [t.raw_test_name for t in parsed.tests]
+
+    # Verify no corrupted test name like 'Method (sarcosine oxidase...) * UREA'
+    assert not any("sarcosine" in name.lower() for name in test_names)
+    assert not any(name.strip().lower() == "female" for name in test_names)
+
+    # Verify both tests cleanly extracted
+    creat = next(t for t in parsed.tests if "CREATININE" in t.raw_test_name.upper())
+    assert creat.value == 1.08
+    assert creat.unit == "mg/dL"
+    assert "sarcosine oxidase" in creat.method.lower()
+
+    urea = next(t for t in parsed.tests if "UREA" in t.raw_test_name.upper())
+    assert urea.value == 28.49
+    assert urea.unit == "mg/dL"
+    assert "urease" in urea.method.lower()
+
+    uric = next(t for t in parsed.tests if "URIC" in t.raw_test_name.upper())
+    assert uric.value == 3.59
+    assert "Female:2.3 - 6.1" in uric.reference_range.raw
+
+    # Verify normalization produces zero unassigned tests
+    normalized = NormalizationService.normalize_extracted_report(parsed)
+    assert "Female" not in normalized.unassigned_test_ids
+    assert len(normalized.unassigned_test_ids) == 0
+
+
