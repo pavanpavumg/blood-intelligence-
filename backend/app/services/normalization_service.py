@@ -215,10 +215,17 @@ class NormalizationService:
             # Classification
             # -----------------------------------------------------
 
-            status, flag = ClassificationService.classify_result(
-                valid_value,
-                resolved_range,
-            )
+            if test_id in ("CHOL_HDL_RATIO", "LDL_HDL_RATIO"):
+                status = "REPORTED"
+                flag = "NONE"
+            elif test.status:
+                status = test.status
+                flag = test.flag or "NONE"
+            else:
+                status, flag = ClassificationService.classify_result(
+                    valid_value,
+                    resolved_range,
+                )
 
             # -----------------------------------------------------
             # Result type

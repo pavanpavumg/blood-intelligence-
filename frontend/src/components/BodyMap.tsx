@@ -50,9 +50,9 @@ export const BodyMap: React.FC<BodyMapProps> = ({ profiles, onSelectProfile }) =
       </div>
 
       {/* Realistic Human Body SVG */}
-      <div className="relative min-h-[550px] flex items-center justify-center my-2">
+      <div className="relative min-h-[620px] flex items-center justify-center my-2">
         <svg
-          viewBox="0 0 400 700"
+          viewBox="0 0 400 780"
           className="w-full max-w-[360px] h-auto"
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -111,12 +111,15 @@ export const BodyMap: React.FC<BodyMapProps> = ({ profiles, onSelectProfile }) =
               <stop offset="100%" stopColor="#D97706" />
             </radialGradient>
 
-            {/* Shadow Filter */}
-            <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
-              <feOffset dx="2" dy="2" result="offsetblur" />
+            {/* Shadow Filter — single subtle pass, applied once to the whole
+                silhouette (not per body-part) so shadows don't stack and
+                blur the shape into a soft blob. Reduced blur + opacity vs.
+                the original. */}
+            <filter id="dropShadow" x="-15%" y="-15%" width="130%" height="130%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="1.5" />
+              <feOffset dx="1.5" dy="1.5" result="offsetblur" />
               <feComponentTransfer>
-                <feFuncA type="linear" slope="0.3" />
+                <feFuncA type="linear" slope="0.22" />
               </feComponentTransfer>
               <feMerge>
                 <feMergeNode />
@@ -124,7 +127,7 @@ export const BodyMap: React.FC<BodyMapProps> = ({ profiles, onSelectProfile }) =
               </feMerge>
             </filter>
 
-            {/* Glow Filter */}
+            {/* Glow Filter (unchanged — used only on abnormal organs) */}
             <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
               <feGaussianBlur stdDeviation="8" result="coloredBlur" />
               <feMerge>
@@ -135,59 +138,112 @@ export const BodyMap: React.FC<BodyMapProps> = ({ profiles, onSelectProfile }) =
           </defs>
 
           {/* Background */}
-          <rect width="400" height="700" fill="url(#bgGrad)" rx="20" />
+          <rect width="400" height="780" fill="url(#bgGrad)" rx="20" />
 
-          {/* === REALISTIC HUMAN BODY === */}
-
-          {/* Head with realistic proportions */}
+          {/* === REALISTIC HUMAN BODY SILHOUETTE ===
+              One consolidated group / one shadow pass, instead of four
+              separately-filtered parts. Torso+pelvis+legs are a single
+              continuous tapered outline (waist narrows, hips flare, legs
+              taper to ankle/foot) instead of a straight-sided block with
+              stroke-based sausage limbs. Fully contained within the
+              (now taller) viewBox — legs no longer clip off. */}
           <g filter="url(#dropShadow)">
-            {/* Skull base */}
-            <ellipse cx="200" cy="65" rx="38" ry="45" fill="url(#skinHead)" />
-            {/* Jaw definition */}
-            <path d="M 172 85 Q 200 105 228 85" fill="none" stroke="#D4A882" strokeWidth="1.5" opacity="0.5" />
+
+            {/* Head */}
+            <ellipse cx="200" cy="65" rx="37" ry="44" fill="url(#skinHead)" />
+            <path d="M 172 86 Q 200 106 228 86" fill="none" stroke="#D4A882" strokeWidth="1.5" opacity="0.5" />
             {/* Neck */}
-            <path d="M 182 105 Q 200 115 218 105 L 220 135 Q 200 145 180 135 Z" fill="url(#skinTorso)" />
-          </g>
+            <path d="M 183 102 Q 200 112 217 102 L 219 140 Q 200 150 181 140 Z" fill="url(#skinTorso)" />
 
-          {/* Torso - Realistic anatomy */}
-          <g filter="url(#dropShadow)">
-            {/* Main torso */}
-            <path d="M 145 140 
-                     Q 200 130 255 140
-                     L 265 180 Q 270 220 265 260
-                     L 258 340 Q 252 400 245 440
-                     L 240 520 Q 235 600 230 680
-                     L 170 680 Q 165 600 160 520
-                     L 155 440 Q 148 400 142 340
-                     L 135 260 Q 130 220 135 180 Z"
-              fill="url(#skinTorso)" stroke="#C4A882" strokeWidth="1" />
+            {/* Torso + pelvis + both legs + feet — one continuous outline */}
+            <path
+              d="M140,150
+                 Q130,170 138,200
+                 Q145,225 148,250
+                 Q152,270 158,290
+                 Q150,320 145,355
+                 Q140,390 144,415
+                 Q147,430 150,440
+                 Q145,460 144,475
+                 Q140,520 144,565
+                 Q147,610 152,650
+                 Q155,675 158,700
+                 Q152,715 150,728
+                 Q155,738 165,743
+                 Q172,745 178,736
+                 Q180,720 176,702
+                 Q182,660 186,615
+                 Q190,560 192,510
+                 Q195,485 200,472
+                 Q205,485 208,510
+                 Q210,560 214,615
+                 Q218,660 224,702
+                 Q220,720 222,736
+                 Q228,745 235,743
+                 Q245,738 250,728
+                 Q248,715 242,700
+                 Q245,675 248,650
+                 Q253,610 256,565
+                 Q260,520 256,475
+                 Q255,460 250,440
+                 Q253,430 256,415
+                 Q260,390 255,355
+                 Q250,320 242,290
+                 Q248,270 252,250
+                 Q255,225 262,200
+                 Q270,170 260,150
+                 Q235,140 218,140
+                 L182,140
+                 Q165,140 140,150 Z"
+              fill="url(#skinTorso)"
+              stroke="#C4A882"
+              strokeWidth="1"
+            />
 
-            {/* Pectoral muscles */}
-            <path d="M 165 170 Q 185 165 200 175 Q 215 165 235 170" fill="none" stroke="#D4A882" strokeWidth="1" opacity="0.4" />
-            <path d="M 170 195 Q 185 190 200 198 Q 215 190 230 195" fill="none" stroke="#D4A882" strokeWidth="1" opacity="0.3" />
+            {/* Left arm — tapered filled shape, not a thick round stroke */}
+            <path
+              d="M148,155
+                 Q120,165 112,200
+                 Q106,240 110,280
+                 Q113,320 118,355
+                 Q120,375 128,388
+                 Q136,392 140,382
+                 Q136,350 133,315
+                 Q130,275 133,235
+                 Q136,200 150,175
+                 Q155,165 148,155 Z"
+              fill="url(#skinLimb)"
+              stroke="#C4A882"
+              strokeWidth="1"
+            />
 
-            {/* Abdominal definition */}
-            <path d="M 185 280 L 185 320 M 215 280 L 215 320" stroke="#D4A882" strokeWidth="1" opacity="0.3" />
-            <path d="M 175 300 Q 200 305 225 300" fill="none" stroke="#D4A882" strokeWidth="1" opacity="0.3" />
-          </g>
-
-          {/* Arms - Realistic */}
-          <g filter="url(#dropShadow)">
-            {/* Left arm */}
-            <path d="M 138 165 Q 105 200 98 280 Q 92 360 105 430" fill="none" stroke="url(#skinLimb)" strokeWidth="28" strokeLinecap="round" />
             {/* Right arm */}
-            <path d="M 262 165 Q 295 200 302 280 Q 308 360 295 430" fill="none" stroke="url(#skinLimb)" strokeWidth="28" strokeLinecap="round" />
-          </g>
+            <path
+              d="M252,155
+                 Q280,165 288,200
+                 Q294,240 290,280
+                 Q287,320 282,355
+                 Q280,375 272,388
+                 Q264,392 260,382
+                 Q264,350 267,315
+                 Q270,275 267,235
+                 Q264,200 250,175
+                 Q245,165 252,155 Z"
+              fill="url(#skinLimb)"
+              stroke="#C4A882"
+              strokeWidth="1"
+            />
 
-          {/* Legs - Realistic */}
-          <g filter="url(#dropShadow)">
-            {/* Left leg */}
-            <path d="M 175 680 Q 170 720 165 760" fill="none" stroke="url(#skinLimb)" strokeWidth="32" strokeLinecap="round" />
-            {/* Right leg */}
-            <path d="M 225 680 Q 230 720 235 760" fill="none" stroke="url(#skinLimb)" strokeWidth="32" strokeLinecap="round" />
+            {/* Abdominal / chest definition (kept from original, positions
+                still line up with the new torso outline) */}
+            <path d="M 165 170 Q 185 165 200 175 Q 215 165 235 170" fill="none" stroke="#D4A882" strokeWidth="1" opacity="0.4" />
+            <path d="M 185 300 L 185 340 M 215 300 L 215 340" stroke="#D4A882" strokeWidth="1" opacity="0.3" />
+            <path d="M 175 320 Q 200 325 225 320" fill="none" stroke="#D4A882" strokeWidth="1" opacity="0.3" />
           </g>
 
           {/* === INTERNAL ORGANS - REALISTIC RENDERING === */}
+          {/* Unchanged below: same organ shapes, same profile-name arrays,
+              same onSelectProfile wiring, same hotspot/label logic. */}
 
           {/* Thyroid */}
           {(() => {
@@ -307,7 +363,8 @@ export const BodyMap: React.FC<BodyMapProps> = ({ profiles, onSelectProfile }) =
             );
           })()}
 
-          {/* === HOTSPOT INDICATORS === */}
+          {/* === HOTSPOT INDICATORS === (unchanged coordinates — still line
+              up correctly since organ y-positions were not moved) */}
           {[
             { x: 200, y: 132, profiles: ['Thyroid Profile'], label: 'Thyroid', icon: '🦋' },
             { x: 200, y: 210, profiles: ['Lipid Profile'], label: 'Heart', icon: '🫀' },
@@ -344,15 +401,17 @@ export const BodyMap: React.FC<BodyMapProps> = ({ profiles, onSelectProfile }) =
 
         </svg>
 
-        {/* Floating Labels */}
+        {/* Floating Labels — top percentages recalculated for the new
+            780-tall viewBox (were tuned for the old 700-tall one) so they
+            still land next to the correct organ instead of drifting down. */}
         <div className="absolute inset-0 pointer-events-none">
           {[
-            { top: '18%', left: '50%', label: 'Thyroid', profiles: ['Thyroid Profile'] },
-            { top: '30%', left: '50%', label: 'Heart', profiles: ['Lipid Profile'] },
-            { top: '42%', left: '58%', label: 'Liver', profiles: ['Liver Profile'] },
-            { top: '48%', left: '50%', label: 'Pancreas', profiles: ['Diabetes Monitoring'] },
-            { top: '56%', left: '50%', label: 'Kidneys', profiles: ['Kidney Profile'] },
-            { top: '38%', left: '22%', label: 'Blood', profiles: ['Blood Counts'] },
+            { top: '16%', left: '50%', label: 'Thyroid', profiles: ['Thyroid Profile'] },
+            { top: '27%', left: '50%', label: 'Heart', profiles: ['Lipid Profile'] },
+            { top: '38%', left: '58%', label: 'Liver', profiles: ['Liver Profile'] },
+            { top: '43%', left: '50%', label: 'Pancreas', profiles: ['Diabetes Monitoring'] },
+            { top: '50%', left: '50%', label: 'Kidneys', profiles: ['Kidney Profile'] },
+            { top: '34%', left: '22%', label: 'Blood', profiles: ['Blood Counts'] },
           ].map((item, i) => {
             const { hasTests, isAbnormal } = getOrganStatus(item.profiles);
             if (!hasTests) return null;

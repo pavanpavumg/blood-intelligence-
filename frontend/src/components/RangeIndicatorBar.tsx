@@ -2,7 +2,7 @@ import React from 'react';
 import { ReferenceRange, StatusType } from '../types';
 
 interface RangeIndicatorBarProps {
-  value: number;
+  value: number | string | null;
   unit: string | null;
   range: ReferenceRange;
   status: StatusType;
@@ -16,12 +16,28 @@ export const RangeIndicatorBar: React.FC<RangeIndicatorBarProps> = ({
 }) => {
   const low = range.low;
   const high = range.high;
+  const numValue = typeof value === 'number' ? value : parseFloat(String(value || ''));
+  const isNumeric = !isNaN(numValue) && low !== null && high !== null;
 
-  // Handle case where reference range numbers are missing (e.g. raw string only)
-  if (low === null || high === null) {
+  // Handle case where reference range numbers are missing or value is qualitative
+  if (!isNumeric || low === null || high === null) {
+    const isAbnormal = ['HIGH', 'LOW', 'CRITICAL', 'POSITIVE'].includes(status) && status !== 'UNKNOWN';
+    const isReview = status === 'UNKNOWN';
     return (
-      <div className="bg-gray-100 rounded-xl p-3 my-2 text-xs text-gray-600 font-medium">
-        <span className="font-semibold text-gray-700">Reference Limit:</span> {range.raw || 'Qualitative / Standard Clinical Target'}
+      <div className="bg-gray-100/80 rounded-2xl p-3.5 my-2 border border-gray-200/50 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+        <div className="flex items-center gap-2">
+          <span className="font-extrabold text-gray-700">Observed Value:</span>
+          <span className={`font-black px-2 py-0.5 rounded-md text-[11px] ${
+            isAbnormal ? 'bg-rose-100 text-rose-700' :
+            isReview ? 'bg-slate-100 text-slate-700' :
+            'bg-emerald-100 text-emerald-700'
+          }`}>
+            {String(value ?? '—')} {unit || ''} ({status})
+          </span>
+        </div>
+        <div className="text-gray-500 font-medium">
+          <span className="font-semibold text-gray-600">Standard Target:</span> {range.raw || 'Clinical Reference Standard'}
+        </div>
       </div>
     );
   }
@@ -34,7 +50,7 @@ export const RangeIndicatorBar: React.FC<RangeIndicatorBarProps> = ({
   const maxBound = high + span * 0.5;
   const totalSpan = maxBound - minBound || 1;
 
-  let percentage = ((value - minBound) / totalSpan) * 100;
+  let percentage = ((numValue - minBound) / totalSpan) * 100;
   if (isNaN(percentage)) percentage = 50;
   percentage = Math.max(5, Math.min(95, percentage)); // Clamp between 5% and 95%
 

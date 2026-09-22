@@ -62,7 +62,9 @@ export const SmartViewTab: React.FC<SmartViewTabProps> = ({ profiles, selectedPr
 
       // Filter abnormal only
       if (abnormalOnly) {
-        matchingTests = matchingTests.filter(t => t.status !== 'NORMAL');
+        matchingTests = matchingTests.filter(t =>
+          ['HIGH', 'LOW', 'CRITICAL', 'POSITIVE'].includes(t.status) && t.flag !== 'REVIEW_REQUIRED'
+        );
       }
 
       // Filter search query
@@ -195,11 +197,17 @@ export const SmartViewTab: React.FC<SmartViewTabProps> = ({ profiles, selectedPr
                   const testKey = `${profileName}-${idx}`;
                   const isExpanded = expandedTests.has(testKey);
 
+                  const isAbnormal = ['HIGH', 'LOW', 'CRITICAL', 'POSITIVE'].includes(test.status) && test.flag !== 'REVIEW_REQUIRED';
+                  const isBorderline = test.status === 'BORDERLINE';
+                  const isReview = test.flag === 'REVIEW_REQUIRED' || test.status === 'UNKNOWN';
+                  const isNormal = ['NORMAL', 'REPORTED', 'OPTIMAL', 'DESIRABLE'].includes(test.status);
+
                   return (
                     <div
                       key={testKey}
-                      className={`border-b border-gray-50 last:border-b-0 ${test.status !== 'NORMAL' ? 'bg-rose-50/30' : ''
-                        }`}
+                      className={`border-b border-gray-50 last:border-b-0 ${
+                        isAbnormal ? 'bg-rose-50/30' : isBorderline ? 'bg-amber-50/30' : ''
+                      }`}
                     >
                       {/* Test Row */}
                       <button
@@ -207,21 +215,49 @@ export const SmartViewTab: React.FC<SmartViewTabProps> = ({ profiles, selectedPr
                         className="w-full px-5 py-3 flex items-center justify-between hover:bg-gray-50/50 transition-colors"
                       >
                         <div className="flex items-center gap-3 flex-1 min-w-0">
-                          <div className={`w-2 h-2 rounded-full shrink-0 ${test.status === 'NORMAL' ? 'bg-emerald-500' : 'bg-rose-500'
-                            }`} />
+                          <div className={`w-2 h-2 rounded-full shrink-0 ${
+                            isAbnormal ? 'bg-rose-500' :
+                            isBorderline ? 'bg-amber-500' :
+                            isReview ? 'bg-slate-400' :
+                            'bg-emerald-500'
+                          }`} />
                           <div className="text-left min-w-0 flex-1">
-                            <p className="text-xs font-bold text-gray-900 truncate">{test.test_name}</p>
-                            <p className="text-[10px] text-gray-500 truncate">{test.raw_test_name}</p>
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <p className="text-xs font-bold text-gray-900 truncate">{test.test_name}</p>
+                              {test.specimen_type && (
+                                <span className="text-[9px] font-extrabold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100">
+                                  {test.specimen_type}
+                                </span>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <p className="text-[10px] text-gray-500 truncate">{test.raw_test_name}</p>
+                              {test.method && (
+                                <span className="text-[9px] text-slate-500 font-medium italic">
+                                  • {test.method}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
 
                         <div className="flex items-center gap-3 shrink-0">
                           <div className="text-right">
-                            <p className={`text-sm font-black ${test.status === 'NORMAL' ? 'text-gray-900' : 'text-rose-600'
-                              }`}>
-                              {test.value} {test.raw_unit}
+                            <p className={`text-sm font-black ${
+                              isAbnormal ? 'text-rose-600' :
+                              isBorderline ? 'text-amber-600' :
+                              isReview ? 'text-slate-700' :
+                              'text-gray-900'
+                            }`}>
+                              {test.raw_value ? (
+                                test.raw_value.includes(test.raw_unit || '___') 
+                                  ? test.raw_value 
+                                  : `${test.raw_value} ${test.raw_unit || ''}`
+                              ) : (
+                                `${test.value ?? '—'} ${test.raw_unit || ''}`
+                              )}
                             </p>
-                            <p className="text-[10px] text-gray-500">
+                            <p className="text-[10px] text-gray-500 max-w-[140px] truncate sm:max-w-none">
                               {test.reference_range.raw || 'Standard Range'}
                             </p>
                           </div>

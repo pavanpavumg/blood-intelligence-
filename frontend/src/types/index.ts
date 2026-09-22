@@ -1,9 +1,10 @@
-export type StatusType = 'NORMAL' | 'HIGH' | 'LOW' | 'UNKNOWN';
+export type StatusType = 'NORMAL' | 'HIGH' | 'LOW' | 'UNKNOWN' | 'BORDERLINE' | 'CRITICAL' | 'POSITIVE' | 'NEGATIVE';
 export type FlagType = 'NONE' | 'RED_FLAG' | 'REVIEW_REQUIRED';
 
 export interface ReferenceRange {
   low: number | null;
   high: number | null;
+  operator?: string | null;
   raw: string;
 }
 
@@ -16,11 +17,17 @@ export interface TestItem {
   test_name: string;
   raw_test_name: string;
   loinc_code: string | null;
-  value: number;
+  value: number | string | null;
+  raw_value?: string | null;
+  value_type?: 'quantitative' | 'qualitative' | 'pending';
+  method?: string | null;
   raw_unit: string | null;
   reference_range: ReferenceRange;
   status: StatusType;
   flag: FlagType;
+  specimen_id?: string | null;
+  specimen_type?: string | null;
+  panel_name?: string | null;
   source_trace?: SourceTrace;
 }
 

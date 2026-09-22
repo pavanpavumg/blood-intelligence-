@@ -143,16 +143,27 @@ class ReferenceRangeService:
                         low = float(f_match.group(1))
                         high = float(f_match.group(2))
                         sel_group = "FEMALE"
+                    elif catalog_item and catalog_item.default_reference_range and catalog_item.default_reference_range.low is not None:
+                        low = catalog_item.default_reference_range.low
+                        high = catalog_item.default_reference_range.high
+                        sel_group = "FEMALE"
                 elif "male" in gender_str or gender_str == "m":
                     m_match = re.search(r"males?\s*:\s*(\d+(?:\.\d+)?)\s*[\-\–\—]\s*(\d+(?:\.\d+)?)", raw, re.I)
                     if m_match:
                         low = float(m_match.group(1))
                         high = float(m_match.group(2))
                         sel_group = "MALE"
-                else:
-                    # Unresolved demographic range
-                    low = None
-                    high = None
+                    elif catalog_item and catalog_item.default_reference_range and catalog_item.default_reference_range.low is not None:
+                        low = catalog_item.default_reference_range.low
+                        high = catalog_item.default_reference_range.high
+                        sel_group = "MALE"
+
+                # If low/high still None, extract any printed range from raw
+                if low is None and high is None:
+                    any_m = re.search(r"(\d+(?:\.\d+)?)\s*[\-\–\—]\s*(\d+(?:\.\d+)?)", raw)
+                    if any_m:
+                        low = float(any_m.group(1))
+                        high = float(any_m.group(2))
 
                 return ReferenceRange(low=low, high=high, raw=raw, type="DEMOGRAPHIC", selected_group=sel_group), "REPORT_PRINTED"
 

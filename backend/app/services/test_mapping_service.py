@@ -33,7 +33,7 @@ class TestMappingService:
         TestCatalogItem(
             test_id="HBA1C",
             canonical_name="Hemoglobin A1c",
-            aliases=["hemoglobin a1c", "hba1c", "glycated hemoglobin", "a1c", "hb a1c", "glycated hemoglobin (hba1c)"],
+            aliases=["hemoglobin a1c", "hba1c", "glycated hemoglobin", "a1c", "hb a1c", "glycated hemoglobin (hba1c)", "glycosylated haemoglobin", "glycosylated hemoglobin", "glycosylated hb", "glycosylated haemoglobin (hba1c)", "glycosylated hemoglobin (hba1c)"],
             loinc_code="4548-4",
             category="Glycemic Control",
             default_unit="%",
@@ -240,7 +240,7 @@ class TestMappingService:
         TestCatalogItem(
             test_id="TSH",
             canonical_name="Thyroid Stimulating Hormone",
-            aliases=["thyroid stimulating hormone", "tsh", "thyrotropin"],
+            aliases=["thyroid stimulating hormone", "tsh", "thyrotropin", "thyroid stimulating hormone.(tsh)", "thyroid stimulating hormone (tsh)"],
             loinc_code="11580-8",
             category="Endocrine",
             default_unit="uIU/mL",
@@ -249,7 +249,7 @@ class TestMappingService:
         TestCatalogItem(
             test_id="HDL",
             canonical_name="HDL Cholesterol",
-            aliases=["hdl cholesterol", "hdl", "hdl-c"],
+            aliases=["hdl cholesterol", "hdl", "hdl-c", "hdl-cholesterol", "hdl - cholesterol", "hdl_cholesterol"],
             loinc_code="2085-9",
             category="Lipids",
             default_unit="mg/dL",
@@ -258,7 +258,7 @@ class TestMappingService:
         TestCatalogItem(
             test_id="LDL",
             canonical_name="LDL Cholesterol",
-            aliases=["ldl cholesterol", "ldl", "ldl-c"],
+            aliases=["ldl cholesterol", "ldl", "ldl-c", "ldl-cholesterol", "ldl - cholesterol", "ldl_cholesterol"],
             loinc_code="2089-1",
             category="Lipids",
             default_unit="mg/dL",
@@ -272,6 +272,42 @@ class TestMappingService:
             category="Lipids",
             default_unit="mg/dL",
             default_reference_range=ReferenceRange(low=None, high=150.0, raw="< 150 mg/dL")
+        ),
+        TestCatalogItem(
+            test_id="VLDL",
+            canonical_name="VLDL Cholesterol",
+            aliases=["vldl cholesterol", "vldl", "vldl-c"],
+            loinc_code="13457-7",
+            category="Lipids",
+            default_unit="mg/dL",
+            default_reference_range=ReferenceRange(low=None, high=30.0, raw="< 30 mg/dL")
+        ),
+        TestCatalogItem(
+            test_id="CHOL_HDL_RATIO",
+            canonical_name="CHOL/HDL Ratio",
+            aliases=["chol/hdl ratio", "chol / hdl ratio", "cholesterol/hdl ratio", "cholesterol / hdl ratio", "tc/hdl ratio", "tc / hdl ratio", "total cholesterol / hdl ratio", "chol/hdl", "chol / hdl", "chol/ hdl ratio.", "chol/ hdl ratio", "chol / hdl ratio.", "chol/hdl ratio."],
+            loinc_code="9830-1",
+            category="Lipids",
+            default_unit="",
+            default_reference_range=None
+        ),
+        TestCatalogItem(
+            test_id="LDL_HDL_RATIO",
+            canonical_name="LDL/HDL Ratio",
+            aliases=["ldl/hdl ratio", "ldl / hdl ratio", "ldl/hdl", "ldl / hdl"],
+            loinc_code="11054-4",
+            category="Lipids",
+            default_unit="",
+            default_reference_range=None
+        ),
+        TestCatalogItem(
+            test_id="HDL_LDL_RATIO",
+            canonical_name="HDL/LDL Ratio",
+            aliases=["hdl/ldl cholesterol ratio", "hdl / ldl cholesterol ratio", "hdl/ldl ratio", "hdl / ldl ratio", "hdl/ldl", "hdl / ldl"],
+            loinc_code="11055-1",
+            category="Lipids",
+            default_unit="",
+            default_reference_range=None
         ),
         TestCatalogItem(
             test_id="CRP",
@@ -307,7 +343,7 @@ class TestMappingService:
             loinc_code="3097-3",
             category="Renal",
             default_unit="",
-            default_reference_range=None
+            default_reference_range=ReferenceRange(low=10.0, high=20.0, raw="10.0 - 20.0")
         ),
         TestCatalogItem(
             test_id="URIC_ACID",
@@ -375,7 +411,7 @@ class TestMappingService:
         TestCatalogItem(
             test_id="AST",
             canonical_name="AST (SGOT)",
-            aliases=["ast (sgot)", "ast / sgot", "ast", "sgot", "aspartate aminotransferase"],
+            aliases=["ast (sgot)", "ast / sgot", "ast", "sgot", "aspartate aminotransferase", "sgot / ast", "sgot/ast", "sgot (ast)", "ast/sgot"],
             loinc_code="1920-8",
             category="Liver",
             default_unit="U/L",
@@ -384,7 +420,7 @@ class TestMappingService:
         TestCatalogItem(
             test_id="ALT",
             canonical_name="ALT (SGPT)",
-            aliases=["alt (sgpt)", "alt / sgpt", "alt", "sgpt", "alanine aminotransferase"],
+            aliases=["alt (sgpt)", "alt / sgpt", "alt", "sgpt", "alanine aminotransferase", "sgpt / alt", "sgpt/alt", "sgpt (alt)", "alt/sgpt"],
             loinc_code="1742-6",
             category="Liver",
             default_unit="U/L",
@@ -402,7 +438,7 @@ class TestMappingService:
         TestCatalogItem(
             test_id="TOTAL_PROTEIN",
             canonical_name="Total Protein",
-            aliases=["total protein", "protein, total", "protein (total)"],
+            aliases=["total protein", "protein, total", "protein (total)", "protein-total", "protein - total", "protein total", "protein-total"],
             loinc_code="2885-2",
             category="Liver",
             default_unit="g/dL",
@@ -465,7 +501,7 @@ class TestMappingService:
         TestCatalogItem(
             test_id="TIBC",
             canonical_name="Total Iron Binding Capacity",
-            aliases=["total iron binding capacity", "tibc"],
+            aliases=["total iron binding capacity", "tibc", "total iron binding capacity (tibc)", "total iron binding capacity(tibc)"],
             loinc_code="2500-7",
             category="Iron Profile",
             default_unit="ug/dL",
@@ -501,7 +537,7 @@ class TestMappingService:
         TestCatalogItem(
             test_id="T3",
             canonical_name="Triiodothyronine (T3)",
-            aliases=["triiodothyronine (t3)", "triiodothyronine", "total t3", "t3"],
+            aliases=["triiodothyronine (t3)", "triiodothyronine", "total t3", "t3", "total triiodothyronine (t3)", "total triiodothyronine ( t3)"],
             loinc_code="3053-1",
             category="Endocrine",
             default_unit="ng/mL",
@@ -510,7 +546,7 @@ class TestMappingService:
         TestCatalogItem(
             test_id="T4",
             canonical_name="Thyroxine (T4)",
-            aliases=["thyroxine (t4)", "thyroxine", "total t4", "t4"],
+            aliases=["thyroxine (t4)", "thyroxine", "total t4", "t4", "total thyroxine (t4)", "total thyroxine ( t4)"],
             loinc_code="3026-7",
             category="Endocrine",
             default_unit="ug/dL",
@@ -519,7 +555,7 @@ class TestMappingService:
         TestCatalogItem(
             test_id="GLUCOSE_RANDOM",
             canonical_name="Random Blood Sugar",
-            aliases=["random blood sugar", "rbs", "random glucose", "blood sugar random"],
+            aliases=["random blood sugar", "rbs", "random glucose", "blood sugar random", "random blood glucose", "random blood glucose (rbs)"],
             loinc_code="2345-7",
             category="Metabolic",
             default_unit="mg/dL",
@@ -528,7 +564,7 @@ class TestMappingService:
         TestCatalogItem(
             test_id="VITAMIN_D",
             canonical_name="25-Hydroxy Vitamin D",
-            aliases=["25-hydroxy vitamin d", "25-oh vitamin d", "vitamin d (25-oh)", "vitamin d", "25 hydroxyvitamin d", "vitamin d3"],
+            aliases=["25-hydroxy vitamin d", "25-oh vitamin d", "vitamin d (25-oh)", "vitamin d", "25 hydroxyvitamin d", "vitamin d3", "25-oh vitamin ( vit d3 )", "25-oh vitamin (vit d3)", "25 - oh vitamin ( vit d3 )"],
             loinc_code="62292-8",
             category="Vitamins",
             default_unit="ng/mL",
@@ -569,6 +605,178 @@ class TestMappingService:
             category="Metabolic",
             default_unit="mg/dL",
             default_reference_range=ReferenceRange(low=8.6, high=10.3, raw="8.6 - 10.3 mg/dL")
+        ),
+        # Urinalysis panel items
+        TestCatalogItem(
+            test_id="URINE_COLOUR",
+            canonical_name="Urine Colour",
+            aliases=["colour", "color", "urine colour", "urine color"],
+            loinc_code="5778-6",
+            category="Urinalysis",
+            default_unit="",
+            default_reference_range=ReferenceRange(low=None, high=None, raw="Pale Yellow")
+        ),
+        TestCatalogItem(
+            test_id="URINE_APPEARANCE",
+            canonical_name="Urine Appearance",
+            aliases=["appearance", "urine appearance", "clarity"],
+            loinc_code="5767-9",
+            category="Urinalysis",
+            default_unit="",
+            default_reference_range=ReferenceRange(low=None, high=None, raw="Clear")
+        ),
+        TestCatalogItem(
+            test_id="URINE_PH",
+            canonical_name="Urine pH",
+            aliases=["ph", "urine ph", "reaction (ph)", "reaction"],
+            loinc_code="5803-2",
+            category="Urinalysis",
+            default_unit="",
+            default_reference_range=ReferenceRange(low=4.5, high=8.0, raw="4.5 - 8.0")
+        ),
+        TestCatalogItem(
+            test_id="URINE_SPECIFIC_GRAVITY",
+            canonical_name="Specific Gravity",
+            aliases=["specific gravity", "sp. gravity", "sp gravity", "urine specific gravity"],
+            loinc_code="5811-5",
+            category="Urinalysis",
+            default_unit="",
+            default_reference_range=ReferenceRange(low=1.005, high=1.030, raw="1.005 - 1.030")
+        ),
+        TestCatalogItem(
+            test_id="URINE_PROTEIN",
+            canonical_name="Urine Protein",
+            aliases=["protein urine", "urine protein", "protein (urine)", "albumin (urine)"],
+            loinc_code="5804-0",
+            category="Urinalysis",
+            default_unit="",
+            default_reference_range=ReferenceRange(low=None, high=None, raw="Nil")
+        ),
+        TestCatalogItem(
+            test_id="URINE_UROBILINOGEN",
+            canonical_name="Urobilinogen",
+            aliases=["urobilinogen", "urine urobilinogen"],
+            loinc_code="5809-9",
+            category="Urinalysis",
+            default_unit="",
+            default_reference_range=ReferenceRange(low=None, high=None, raw="Normal")
+        ),
+        TestCatalogItem(
+            test_id="URINE_KETONES",
+            canonical_name="Ketone Bodies",
+            aliases=["ketone bodies", "urine ketones", "ketones", "acetone (urine)"],
+            loinc_code="5797-6",
+            category="Urinalysis",
+            default_unit="",
+            default_reference_range=ReferenceRange(low=None, high=None, raw="Nil")
+        ),
+        TestCatalogItem(
+            test_id="URINE_BILE_SALTS",
+            canonical_name="Bile Salts",
+            aliases=["bile salts", "urine bile salts"],
+            loinc_code="20448-7",
+            category="Urinalysis",
+            default_unit="",
+            default_reference_range=ReferenceRange(low=None, high=None, raw="Negative")
+        ),
+        TestCatalogItem(
+            test_id="URINE_BILE_PIGMENTS",
+            canonical_name="Bile Pigments",
+            aliases=["bile pigments", "urine bile pigments"],
+            loinc_code="5770-3",
+            category="Urinalysis",
+            default_unit="",
+            default_reference_range=ReferenceRange(low=None, high=None, raw="Negative")
+        ),
+        TestCatalogItem(
+            test_id="URINE_BLOOD",
+            canonical_name="Urine Blood",
+            aliases=["blood", "urine blood", "occult blood (urine)"],
+            loinc_code="5794-3",
+            category="Urinalysis",
+            default_unit="",
+            default_reference_range=ReferenceRange(low=None, high=None, raw="Nil")
+        ),
+        TestCatalogItem(
+            test_id="URINE_NITRITE",
+            canonical_name="Nitrite",
+            aliases=["nitrite", "urine nitrite"],
+            loinc_code="5802-4",
+            category="Urinalysis",
+            default_unit="",
+            default_reference_range=ReferenceRange(low=None, high=None, raw="Negative")
+        ),
+        TestCatalogItem(
+            test_id="URINE_GLUCOSE",
+            canonical_name="Urine Glucose",
+            aliases=["glucose urine", "urine glucose", "sugar (urine)"],
+            loinc_code="5792-7",
+            category="Urinalysis",
+            default_unit="",
+            default_reference_range=ReferenceRange(low=None, high=None, raw="Nil")
+        ),
+        TestCatalogItem(
+            test_id="URINE_PUS_CELLS",
+            canonical_name="Pus Cells",
+            aliases=["pus cells.", "pus cells", "urine pus cells", "leukocytes (urine)", "wbc (urine)"],
+            loinc_code="5821-4",
+            category="Urinalysis",
+            default_unit="/HPF",
+            default_reference_range=ReferenceRange(low=0.0, high=5.0, raw="0 - 5 /HPF")
+        ),
+        TestCatalogItem(
+            test_id="URINE_EPITHELIAL_CELLS",
+            canonical_name="Epithelial Cells",
+            aliases=["epithelial cells", "urine epithelial cells"],
+            loinc_code="5788-5",
+            category="Urinalysis",
+            default_unit="/HPF",
+            default_reference_range=ReferenceRange(low=0.0, high=5.0, raw="0 - 5 /HPF")
+        ),
+        TestCatalogItem(
+            test_id="URINE_RBC",
+            canonical_name="Urine RBCs",
+            aliases=["rbcs", "rbc (urine)", "red blood cells (urine)", "urine rbc"],
+            loinc_code="5822-2",
+            category="Urinalysis",
+            default_unit="/HPF",
+            default_reference_range=ReferenceRange(low=0.0, high=2.0, raw="Nil /HPF")
+        ),
+        TestCatalogItem(
+            test_id="URINE_CASTS",
+            canonical_name="Casts",
+            aliases=["casts", "urine casts"],
+            loinc_code="5773-7",
+            category="Urinalysis",
+            default_unit="/LPF",
+            default_reference_range=ReferenceRange(low=None, high=None, raw="Nil")
+        ),
+        TestCatalogItem(
+            test_id="URINE_CRYSTALS",
+            canonical_name="Crystals",
+            aliases=["crystals", "urine crystals"],
+            loinc_code="5777-8",
+            category="Urinalysis",
+            default_unit="/HPF",
+            default_reference_range=ReferenceRange(low=None, high=None, raw="Nil")
+        ),
+        TestCatalogItem(
+            test_id="URINE_OTHERS",
+            canonical_name="Other Microscopic Elements",
+            aliases=["others", "other elements"],
+            loinc_code=None,
+            category="Urinalysis",
+            default_unit="",
+            default_reference_range=ReferenceRange(low=None, high=None, raw="Nil")
+        ),
+        TestCatalogItem(
+            test_id="URINE_BACTERIA",
+            canonical_name="Bacteria",
+            aliases=["bacteria", "urine bacteria"],
+            loinc_code="5769-5",
+            category="Urinalysis",
+            default_unit="",
+            default_reference_range=ReferenceRange(low=None, high=None, raw="Nil")
         ),
     ]
 
@@ -619,8 +827,12 @@ class TestMappingService:
 
         # 2. Second Pass: Word Boundary Match
         matched_items: List[TestCatalogItem] = []
+        is_query_ratio = "ratio" in clean or ":" in clean
         for item in cls.CATALOG:
             if not item.active:
+                continue
+            is_item_ratio = "ratio" in item.test_id.lower() or any("ratio" in a for a in item.aliases)
+            if is_query_ratio and not is_item_ratio:
                 continue
             for alias in item.aliases:
                 pattern = r"\b" + re.escape(alias) + r"\b"
@@ -633,5 +845,18 @@ class TestMappingService:
 
         if len(matched_items) == 1:
             return matched_items[0], "MAPPED"
+        elif len(matched_items) > 1:
+            # If multiple items matched, pick the one with the longest matching alias
+            # (e.g. "Total Iron Binding Capacity (TIBC)" matches both TIBC and IRON; TIBC alias is much longer)
+            scored = []
+            for item in matched_items:
+                best_len = max(
+                    (len(a) for a in item.aliases if re.search(r"\b" + re.escape(a) + r"\b", clean_norm) or re.search(r"\b" + re.escape(a) + r"\b", clean)),
+                    default=0
+                )
+                scored.append((best_len, item))
+            scored.sort(key=lambda s: s[0], reverse=True)
+            if len(scored) >= 2 and scored[0][0] > scored[1][0] * 1.5:
+                return scored[0][1], "MAPPED"
         
         return None, "REVIEW_REQUIRED"

@@ -30,24 +30,33 @@ export function groupTestsIntoProfiles(tests: TestItem[]): Record<string, Proces
   // Map tests to matching profiles
   for (const test of tests) {
     let matched = false;
+    const testClean = test.test_name.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const rawClean = test.raw_test_name.toLowerCase().replace(/[^a-z0-9]/g, '');
 
     for (const [profileName, config] of Object.entries(PROFILE_MAPPING)) {
-      const isMatch = config.tests.some(
-        t => t.toLowerCase() === test.test_name.toLowerCase() ||
-             test.raw_test_name.toLowerCase().includes(t.toLowerCase())
-      );
+      const isMatch = config.tests.some(t => {
+        const tLower = t.toLowerCase();
+        const tClean = tLower.replace(/[^a-z0-9]/g, '');
+        return tLower === test.test_name.toLowerCase() ||
+               tClean === testClean ||
+               tClean === rawClean ||
+               test.raw_test_name.toLowerCase().includes(tLower) ||
+               (tClean.length >= 4 && (testClean.includes(tClean) || rawClean.includes(tClean)));
+      });
 
       if (isMatch) {
         profiles[profileName].tests.push(test);
         assignedTests.add(test.test_name);
         matched = true;
 
-        if (test.status === 'NORMAL') {
-          profiles[profileName].normal_count++;
-        } else {
+        const isAbnormal = ['HIGH', 'LOW', 'CRITICAL', 'POSITIVE'].includes(test.status) && test.flag !== 'REVIEW_REQUIRED';
+        if (isAbnormal) {
           profiles[profileName].abnormal_count++;
           profiles[profileName].is_abnormal = true;
+        } else {
+          profiles[profileName].normal_count++;
         }
+        break; // Match to primary profile
       }
     }
 
@@ -66,11 +75,12 @@ export function groupTestsIntoProfiles(tests: TestItem[]): Record<string, Proces
         };
       }
       profiles["Other Parameters"].tests.push(test);
-      if (test.status === 'NORMAL') {
-        profiles["Other Parameters"].normal_count++;
-      } else {
+      const isAbnormal = ['HIGH', 'LOW', 'CRITICAL', 'POSITIVE'].includes(test.status) && test.flag !== 'REVIEW_REQUIRED';
+      if (isAbnormal) {
         profiles["Other Parameters"].abnormal_count++;
         profiles["Other Parameters"].is_abnormal = true;
+      } else {
+        profiles["Other Parameters"].normal_count++;
       }
     }
   }
@@ -95,8 +105,8 @@ export function calculateWellnessScore(tests: TestItem[]): WellnessScoreResult {
     };
   }
 
-  const normal = tests.filter(t => t.status === 'NORMAL').length;
-  const abnormal = total - normal;
+  const abnormal = tests.filter(t => ['HIGH', 'LOW', 'CRITICAL', 'POSITIVE'].includes(t.status) && t.flag !== 'REVIEW_REQUIRED').length;
+  const normal = total - abnormal;
   const redFlags = tests.filter(t => t.flag === 'RED_FLAG').length;
 
   let baseScore = (normal / total) * 100;
@@ -134,11 +144,12 @@ export function calculateWellnessScore(tests: TestItem[]): WellnessScoreResult {
 
 export function calculateRisks(tests: TestItem[], profiles: Record<string, ProcessedProfile>): RiskFactor[] {
   const risks: RiskFactor[] = [];
+  const isAbnormalTest = (t: TestItem) => ['HIGH', 'LOW', 'CRITICAL', 'POSITIVE'].includes(t.status) && t.flag !== 'REVIEW_REQUIRED';
 
   // 1. Kidney Risk
   const kidneyProfile = profiles["Kidney Profile"];
   if (kidneyProfile) {
-    const abnormalKidney = kidneyProfile.tests.filter(t => t.status !== 'NORMAL');
+    const abnormalKidney = kidneyProfile.tests.filter(isAbnormalTest);
     const redFlagKidney = kidneyProfile.tests.filter(t => t.flag === 'RED_FLAG');
 
     if (redFlagKidney.length >= 2 || abnormalKidney.length >= 3) {
@@ -163,7 +174,7 @@ export function calculateRisks(tests: TestItem[], profiles: Record<string, Proce
   // 2. Electrolyte Imbalance Risk
   const electrolyteProfile = profiles["Electrolyte Profile"];
   if (electrolyteProfile) {
-    const abnormalElec = electrolyteProfile.tests.filter(t => t.status !== 'NORMAL');
+    const abnormalElec = electrolyteProfile.tests.filter(isAbnormalTest);
     if (abnormalElec.some(t => t.test_name.toLowerCase().includes('potassium') && t.status === 'HIGH')) {
       risks.push({
         id: "hyperkalemia",
@@ -199,11 +210,12 @@ export function calculateRisks(tests: TestItem[], profiles: Record<string, Proce
   // 4. Diabetes Risk
   const hba1c = tests.find(t => t.test_name.toLowerCase().includes('hba1c'));
   const fastingSugar = tests.find(t => t.test_name.toLowerCase().includes('fasting blood sugar') || t.test_name.toLowerCase().includes('fasting sugar'));
-  if ((hba1c && hba1c.status === 'HIGH') || (fastingSugar && fastingSugar.status === 'HIGH')) {
+  if ((hba1c && (hba1c.status === 'HIGH' || hba1c.status === 'BORDERLINE')) || (fastingSugar && fastingSugar.status === 'HIGH')) {
+    const numVal = typeof hba1c?.value === 'number' ? hba1c.value : parseFloat(String(hba1c?.value || '0'));
     risks.push({
       id: "diabetes_risk",
       name: "Glycemic Dysregulation / Diabetes Risk",
-      severity: (hba1c && hba1c.value >= 6.5) ? "HIGH" : "MODERATE",
+      severity: numVal >= 6.5 ? "HIGH" : "MODERATE",
       advice: "Consult an Endocrinologist for dietary modification and blood glucose monitoring.",
       tests: [hba1c?.test_name, fastingSugar?.test_name].filter(Boolean) as string[]
     });
@@ -212,25 +224,39 @@ export function calculateRisks(tests: TestItem[], profiles: Record<string, Proce
   // 5. Lipid / Cardiovascular Risk
   const ldl = tests.find(t => t.test_name.toLowerCase().includes('ldl'));
   const totalChol = tests.find(t => t.test_name.toLowerCase().includes('total cholesterol') || t.test_name === 'Cholesterol');
-  if ((ldl && ldl.status === 'HIGH') || (totalChol && totalChol.status === 'HIGH')) {
+  const cholHdlRatio = tests.find(t => t.test_name.toLowerCase().includes('chol') && t.test_name.toLowerCase().includes('ratio'));
+  if ((ldl && ldl.status === 'HIGH') || (totalChol && totalChol.status === 'HIGH') || (cholHdlRatio && cholHdlRatio.status !== 'NORMAL')) {
     risks.push({
       id: "cardio_risk",
       name: "Atherosclerotic Heart Disease Risk",
-      severity: "MODERATE",
+      severity: (cholHdlRatio?.status === 'HIGH' || ldl?.status === 'HIGH') ? "MODERATE" : "LOW",
       advice: "Adopt heart-healthy low-saturated-fat diet, regular exercise, and lipid monitoring.",
-      tests: [ldl?.test_name, totalChol?.test_name].filter(Boolean) as string[]
+      tests: [ldl?.test_name, totalChol?.test_name, cholHdlRatio?.test_name].filter(Boolean) as string[]
     });
   }
 
-  // 6. Vitamin Deficiency
-  const vitD = tests.find(t => t.test_name.toLowerCase().includes('vitamin d'));
-  if (vitD && vitD.status === 'LOW') {
+  // 6. Vitamin Insufficiency / Deficiency
+  const vitD = tests.find(t => t.test_name.toLowerCase().includes('vitamin d') || t.test_name.toLowerCase().includes('25-hydroxy'));
+  if (vitD && (vitD.status === 'LOW' || vitD.status === 'BORDERLINE')) {
     risks.push({
       id: "vitamin_d_deficiency",
-      name: "Vitamin D Deficiency / Bone Density Risk",
-      severity: "MODERATE",
+      name: "Vitamin D Insufficiency / Bone Density Risk",
+      severity: vitD.status === 'LOW' ? "MODERATE" : "LOW",
       advice: "Consider oral Vitamin D3 supplementation under doctor guidance and safe sunlight exposure.",
-      tests: ["Vitamin D"]
+      tests: [vitD.test_name]
+    });
+  }
+
+  // 7. Urinary Tract / Sediment Irritation Risk
+  const pusCells = tests.find(t => t.test_name.toLowerCase().includes('pus cells'));
+  const urineProtein = tests.find(t => t.test_name.toLowerCase() === 'protein' || t.test_name.toLowerCase().includes('urine protein'));
+  if ((pusCells && pusCells.status === 'HIGH') || (urineProtein && urineProtein.status !== 'NORMAL')) {
+    risks.push({
+      id: "uti_risk",
+      name: "Urinary Tract Irritation / Micro-Sediment Risk",
+      severity: pusCells?.status === 'HIGH' ? "MODERATE" : "LOW",
+      advice: "Increase plain water intake (2.5L+ daily) and consult a physician if dysuria or urinary symptoms occur.",
+      tests: [pusCells?.test_name, urineProtein?.test_name].filter(Boolean) as string[]
     });
   }
 

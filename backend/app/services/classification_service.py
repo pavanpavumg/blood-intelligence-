@@ -35,13 +35,21 @@ class ClassificationService:
             elif cat in ["DEFICIENCY", "UNDESIRABLE"]:
                 return "LOW", "RED_FLAG"
 
-        # If reference range is missing or empty -> UNKNOWN / REVIEW_REQUIRED
-        if not ref_range or (ref_range.low is None and ref_range.high is None):
-            return "UNKNOWN", "REVIEW_REQUIRED"
+        low = ref_range.low if ref_range else None
+        high = ref_range.high if ref_range else None
+        op = (ref_range.operator if ref_range else "") or ""
 
-        low = ref_range.low
-        high = ref_range.high
-        op = ref_range.operator or ""
+        # If low/high are missing, check if ref_range.raw contains numeric bounds (e.g. "Male: 3.4 - 7.0")
+        if (low is None and high is None) and ref_range and ref_range.raw:
+            import re
+            m = re.search(r"(\d+(?:\.\d+)?)\s*[-–—]\s*(\d+(?:\.\d+)?)", ref_range.raw)
+            if m:
+                low = float(m.group(1))
+                high = float(m.group(2))
+
+        # If reference range is missing or empty -> UNKNOWN / REVIEW_REQUIRED
+        if not ref_range or (low is None and high is None):
+            return "UNKNOWN", "REVIEW_REQUIRED"
 
         # 1. Two-sided Range (both low and high present)
         if low is not None and high is not None:
