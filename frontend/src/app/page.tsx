@@ -450,6 +450,7 @@ export default function SmartHealthReportApp() {
                 <BodyMap
                   profiles={profiles}
                   onSelectProfile={handleSelectProfileFromOrgan}
+                  gender={patient.gender?.toLowerCase() === 'female' ? 'female' : 'male'}
                 />
               </div>
 
