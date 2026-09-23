@@ -1,0 +1,38 @@
+[
+  {
+    "file": "Mr.JAYACHANDRAN_KAD393.4 (3).PDF",
+    "status": "ERROR: HTTPConnectionPool(host='127.0.0.1', port=8000): Read timed out. (read timeout=90)",
+    "tests": 0,
+    "elapsed": "N/A"
+  },
+  {
+    "file": "CBC-with-ESR-test-report-format-example-sample-template-Drlogy-lab-report.pdf",
+    "status": "ERROR: HTTPConnectionPool(host='127.0.0.1', port=8000): Read timed out. (read timeout=90)",
+    "tests": 0,
+    "elapsed": "N/A"
+  },
+  {
+    "file": "Mrs.LILLY RICHARD_KAD393.2 (1).PDF",
+    "status": "ERROR: HTTPConnectionPool(host='127.0.0.1', port=8000): Read timed out. (read timeout=90)",
+    "tests": 0,
+    "elapsed": "N/A"
+  },
+  {
+    "file": "Sample-Lab-Report-DBTICBM.pdf",
+    "status": "ERROR: HTTPConnectionPool(host='127.0.0.1', port=8000): Read timed out. (read timeout=90)",
+    "tests": 0,
+    "elapsed": "N/A"
+  },
+  {
+    "file": "Wellwise Platinum Profile - 5048.pdf",
+    "status": "ERROR: HTTPConnectionPool(host='127.0.0.1', port=8000): Read timed out. (read timeout=90)",
+    "tests": 0,
+    "elapsed": "N/A"
+  },
+  {
+    "file": "RCY.pdf",
+    "status": "ERROR: HTTPConnectionPool(host='127.0.0.1', port=8000): Read timed out. (read timeout=180)",
+    "tests": 0,
+    "elapsed": "N/A"
+  }
+]

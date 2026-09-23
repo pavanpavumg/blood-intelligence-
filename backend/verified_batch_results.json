@@ -1,0 +1,191 @@
+[
+  {
+    "index": 1,
+    "filename": "Mr.JAYACHANDRAN_KAD393.4 (3).PDF",
+    "doc_type": "DIGITAL_PDF",
+    "pages": 2,
+    "elapsed_seconds": 0.24,
+    "patient_name": "Mr.JAYACHANDRAN",
+    "patient_age": 69,
+    "patient_gender": "N/A",
+    "total_tests": 24,
+    "normal": 10,
+    "abnormal": 14,
+    "unknown": 0,
+    "red_flags": 14,
+    "review_required": 0,
+    "profiles_count": 4,
+    "profiles": [
+      "Complete Blood Count",
+      "Kidney Profile",
+      "Electrolyte Profile",
+      "Calcium / Bone Profile"
+    ],
+    "sample_tests": [
+      "COMPLETE BLOOD COUNT (CBC) , WHOLE BLOOD EDTA Haemoglobin: 10.5 g/dL [LOW]",
+      "Free) RBC Count: 3.31 millions/cumm [LOW]",
+      "Total WBC Count: 7950.0 cells/cumm [NORMAL]",
+      "Platelet Count: 101.0 10^3/uL [LOW]"
+    ],
+    "status": "PASSED"
+  },
+  {
+    "index": 2,
+    "filename": "CBC-with-ESR-test-report-format-example-sample-template-Drlogy-lab-report.pdf",
+    "doc_type": "DIGITAL_PDF",
+    "pages": 1,
+    "elapsed_seconds": 0.15,
+    "patient_name": "Not Specified",
+    "patient_age": 21,
+    "patient_gender": "Male",
+    "total_tests": 15,
+    "normal": 12,
+    "abnormal": 2,
+    "unknown": 1,
+    "red_flags": 0,
+    "review_required": 1,
+    "profiles_count": 1,
+    "profiles": [
+      "Complete Blood Count"
+    ],
+    "sample_tests": [
+      "HEMOGLOBIN Hemoglobin (Hb): 12.5 g/dL [LOW]",
+      "RBC COUNT Total RBC count: 5.2 millions/cumm [NORMAL]",
+      "BLOOD INDICES Packed Cell Volume (PCV): 57.5 % [HIGH]",
+      "Mean Corpuscular Volume (MCV): 87.75 fL [NORMAL]"
+    ],
+    "status": "PASSED"
+  },
+  {
+    "index": 3,
+    "filename": "Mrs.LILLY RICHARD_KAD393.2 (1).PDF",
+    "doc_type": "DIGITAL_PDF",
+    "pages": 5,
+    "elapsed_seconds": 0.38,
+    "patient_name": "Mrs.LILLY RICHARD",
+    "patient_age": 60,
+    "patient_gender": "N/A",
+    "total_tests": 41,
+    "normal": 29,
+    "abnormal": 11,
+    "unknown": 1,
+    "red_flags": 11,
+    "review_required": 1,
+    "profiles_count": 6,
+    "profiles": [
+      "Complete Blood Count",
+      "Kidney Profile",
+      "Electrolyte Profile",
+      "Liver Profile",
+      "Diabetes / Glycemic Profile",
+      "Inflammatory Markers"
+    ],
+    "sample_tests": [
+      "Haemoglobin: 14.0 g/dL [NORMAL]",
+      "Free) Total WBC Count: 4280.0 cells/cumm [NORMAL]",
+      "RBC Count: 4.86 millions/cumm [HIGH]",
+      "Platelet Count: 217.0 10^3/uL [NORMAL]"
+    ],
+    "status": "PASSED"
+  },
+  {
+    "index": 4,
+    "filename": "1724_fid.pdf",
+    "doc_type": "DIGITAL_PDF",
+    "pages": 2,
+    "elapsed_seconds": 0.25,
+    "patient_name": "demographic data to",
+    "patient_age": 55,
+    "patient_gender": "Female",
+    "total_tests": 23,
+    "normal": 8,
+    "abnormal": 4,
+    "unknown": 11,
+    "red_flags": 4,
+    "review_required": 11,
+    "profiles_count": 1,
+    "profiles": [
+      "Complete Blood Count"
+    ],
+    "sample_tests": [
+      "CD4/CD: 8.0 Ratio [UNKNOWN]",
+      "% CD 4 Pos. Lymph. 01: 42.9 % [NORMAL]",
+      "% CD 8 Pos. Lymph. 01 44.5 High % 12.0: -35.5  [UNKNOWN]",
+      "WBC 02 5.4 x10E3/uL 3.4: -10.8  [LOW]"
+    ],
+    "status": "PASSED"
+  },
+  {
+    "index": 5,
+    "filename": "Sample-Lab-Report-DBTICBM.pdf",
+    "doc_type": "DIGITAL_PDF",
+    "pages": 3,
+    "elapsed_seconds": 0.52,
+    "patient_name": "Details Doctor Details",
+    "patient_age": 72,
+    "patient_gender": "Female",
+    "total_tests": 22,
+    "normal": 11,
+    "abnormal": 1,
+    "unknown": 10,
+    "red_flags": 1,
+    "review_required": 10,
+    "profiles_count": 5,
+    "profiles": [
+      "Kidney Profile",
+      "Electrolyte Profile",
+      "Liver Profile",
+      "Lipid Profile",
+      "Diabetes / Glycemic Profile"
+    ],
+    "sample_tests": [
+      "GENERAL SCREENING DBTICBM PROFILE (BIOCHEMISTRY) Sodium \u94a0: 141.0 mmol/L [NORMAL]",
+      "Potassium \u94be: 4.1 mmol/L [NORMAL]",
+      "Chloride \u6c2f\u5316\u7269: 99.0 mmol/L [NORMAL]",
+      "Urea \u5c3f\u7d20: 7.1 mmol/L [NORMAL]"
+    ],
+    "status": "PASSED"
+  },
+  {
+    "index": 6,
+    "filename": "Wellwise Platinum Profile - 5048.pdf",
+    "doc_type": "DIGITAL_PDF",
+    "pages": 21,
+    "elapsed_seconds": 1.53,
+    "patient_name": "Result Unit Bio Ref Interval",
+    "patient_age": 53,
+    "patient_gender": "N/A",
+    "total_tests": 98,
+    "normal": 51,
+    "abnormal": 25,
+    "unknown": 21,
+    "red_flags": 24,
+    "review_required": 21,
+    "profiles_count": 16,
+    "profiles": [
+      "Complete Blood Count",
+      "Kidney Profile",
+      "Electrolyte Profile",
+      "Liver Profile",
+      "Lipid Profile",
+      "Iron Profile",
+      "Thyroid Profile",
+      "Diabetes / Glycemic Profile",
+      "Vitamin Profile",
+      "Calcium / Bone Profile",
+      "Inflammatory Markers",
+      "Muscle Enzymes",
+      "Autoimmune Markers",
+      "Infectious Disease Markers",
+      "Urine Routine / Microscopy",
+      "Allergy Profile"
+    ],
+    "sample_tests": [
+      "SIN No:B2B: 5138603.0  [UNKNOWN]",
+      "Haemoglobin: 8.3 g/dL [LOW]",
+      "Modified cyanmethemoglobin Packed Cell, Volume: 28.5 % [LOW]",
+      "Calculated Total Leucocyte Count (TLC) 10.0 10~9/L 4.0: -10.0  [UNKNOWN]"
+    ],
+    "status": "PASSED"
+  }
+]

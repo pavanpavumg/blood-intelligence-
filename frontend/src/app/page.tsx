@@ -15,7 +15,7 @@ import {
   calculateRisks,
   generateDietRecommendations
 } from '../utils/healthCalculators';
-import { Upload, FileText, CheckCircle2, AlertCircle, RefreshCw, FileUp, ShieldCheck, Cpu, Activity, Utensils, HeartPulse, Layers } from 'lucide-react';
+import { Upload, FileText, CheckCircle2, AlertCircle, RefreshCw, FileUp, ShieldCheck, Cpu, Activity, Utensils, HeartPulse, Layers, Check, ArrowRight, Sparkles } from 'lucide-react';
 
 // Normalize backend API payload safely into frontend LabReportResponse
 function normalizeBackendResponse(rawJson: any): LabReportResponse {
@@ -294,9 +294,10 @@ export default function SmartHealthReportApp() {
         </header>
 
         {/* Upload Hero Section */}
-        <main className="flex-1 flex flex-col items-center justify-center px-4 md:px-6 py-12 max-w-4xl mx-auto w-full">
+        <main className="flex-1 flex flex-col items-center justify-center px-4 md:px-6 py-10 max-w-6xl mx-auto w-full gap-8">
 
-          <div className="bg-white rounded-3xl p-6 md:p-10 border border-gray-200 shadow-xl w-full text-center relative overflow-hidden">
+          {/* Main Upload Box */}
+          <div className="bg-white rounded-3xl p-6 md:p-10 border border-gray-200 shadow-xl w-full max-w-3xl text-center relative overflow-hidden">
 
             {/* Background Aura */}
             <div className="absolute -top-20 -right-20 w-48 h-48 bg-bg-light-blue rounded-full blur-3xl pointer-events-none" />
@@ -347,28 +348,178 @@ export default function SmartHealthReportApp() {
                 </div>
               )}
 
-              {/* Desktop Features Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-gray-100 w-full text-left">
-                <div className="flex items-center gap-2 text-xs font-bold text-gray-600">
-                  <Cpu size={16} className="text-primary-blue shrink-0" />
-                  <span>Deterministic Parsing</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs font-bold text-gray-600">
-                  <Activity size={16} className="text-success-green shrink-0" />
-                  <span>Interactive Organ Map</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs font-bold text-gray-600">
-                  <HeartPulse size={16} className="text-danger-red shrink-0" />
-                  <span>Clinical Risk Meters</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs font-bold text-gray-600">
-                  <Utensils size={16} className="text-warning-amber shrink-0" />
-                  <span>Diet & Lifestyle Advice</span>
-                </div>
+              {/* Security & Confidentiality Tag */}
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
+                <ShieldCheck size={16} className="text-emerald-600 shrink-0" />
+                <span>Confidential, HIPAA-friendly on-premise OCR & deterministic parsing</span>
               </div>
 
             </div>
 
+          </div>
+
+          {/* Enhanced Information Section: 4 Core Intelligence Pillars */}
+          <div className="w-full flex flex-col gap-5 mt-2">
+            <div className="text-center max-w-2xl mx-auto">
+              <span className="text-[11px] font-black uppercase tracking-widest text-primary-blue bg-blue-50 px-3.5 py-1 rounded-full border border-blue-100">
+                Clinical Intelligence Architecture
+              </span>
+              <h2 className="text-xl md:text-2xl font-black text-slate-900 mt-2 tracking-tight">
+                How Our Medical Intelligence Engine Works
+              </h2>
+              <p className="text-xs md:text-sm text-slate-500 font-medium mt-1 leading-relaxed">
+                Engineered with mathematical coordinate OCR, verified biomarker catalogs, and evidence-based clinical algorithms.
+              </p>
+            </div>
+
+            {/* 4 Feature Cards Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+
+              {/* Card 1: Deterministic Parsing */}
+              <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 flex flex-col justify-between group">
+                <div>
+                  <div className="flex items-center justify-between mb-3.5">
+                    <div className="w-11 h-11 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-primary-blue shadow-2xs group-hover:bg-primary-blue group-hover:text-white transition-colors">
+                      <Cpu size={22} />
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-wider text-blue-700 bg-blue-50/80 px-2 py-0.5 rounded-full border border-blue-100">
+                      Zero Hallucination
+                    </span>
+                  </div>
+
+                  <h3 className="text-sm font-black text-slate-900 tracking-tight group-hover:text-primary-blue transition-colors">
+                    Deterministic Parsing
+                  </h3>
+                  <p className="text-xs text-slate-500 font-medium mt-1.5 leading-relaxed">
+                    Coordinate-based OCR and mathematical rules extract exact numbers, units, and ranges without LLM guessing.
+                  </p>
+                </div>
+
+                <div className="mt-4 pt-3.5 border-t border-slate-100 flex flex-col gap-2 text-[11px] font-bold text-slate-600">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary-blue shrink-0" />
+                    <span>Spatial row coordinate reconstruction</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary-blue shrink-0" />
+                    <span>70+ LOINC standard catalog mapping</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary-blue shrink-0" />
+                    <span>Gender-specific demographic bounds</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 2: Interactive Organ Map */}
+              <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 flex flex-col justify-between group">
+                <div>
+                  <div className="flex items-center justify-between mb-3.5">
+                    <div className="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shadow-2xs group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                      <Activity size={22} />
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-50/80 px-2 py-0.5 rounded-full border border-emerald-100">
+                      Visual Anatomy
+                    </span>
+                  </div>
+
+                  <h3 className="text-sm font-black text-slate-900 tracking-tight group-hover:text-emerald-700 transition-colors">
+                    Interactive Organ Map
+                  </h3>
+                  <p className="text-xs text-slate-500 font-medium mt-1.5 leading-relaxed">
+                    Realistic anatomical model mapping clinical biomarkers directly to major organ systems in real time.
+                  </p>
+                </div>
+
+                <div className="mt-4 pt-3.5 border-t border-slate-100 flex flex-col gap-2 text-[11px] font-bold text-slate-600">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                    <span>Thyroid, Heart, Liver, Kidneys & Pancreas</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                    <span>Live green/red organ health pulsing</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                    <span>One-click organ to lab profile drilldown</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 3: Clinical Risk Meters */}
+              <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 flex flex-col justify-between group">
+                <div>
+                  <div className="flex items-center justify-between mb-3.5">
+                    <div className="w-11 h-11 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-600 shadow-2xs group-hover:bg-rose-600 group-hover:text-white transition-colors">
+                      <HeartPulse size={22} />
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-wider text-rose-700 bg-rose-50/80 px-2 py-0.5 rounded-full border border-rose-100">
+                      Early Prevention
+                    </span>
+                  </div>
+
+                  <h3 className="text-sm font-black text-slate-900 tracking-tight group-hover:text-rose-700 transition-colors">
+                    Clinical Risk Meters
+                  </h3>
+                  <p className="text-xs text-slate-500 font-medium mt-1.5 leading-relaxed">
+                    Automated multi-marker calculators that detect early indicators of chronic metabolic and renal strain.
+                  </p>
+                </div>
+
+                <div className="mt-4 pt-3.5 border-t border-slate-100 flex flex-col gap-2 text-[11px] font-bold text-slate-600">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
+                    <span>Renal strain & electrolyte imbalance</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
+                    <span>Glycemic dysregulation & diabetes risk</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
+                    <span>Atherosclerotic cardiovascular assessment</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 4: Diet & Lifestyle Advice */}
+              <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 flex flex-col justify-between group">
+                <div>
+                  <div className="flex items-center justify-between mb-3.5">
+                    <div className="w-11 h-11 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shadow-2xs group-hover:bg-amber-600 group-hover:text-white transition-colors">
+                      <Utensils size={22} />
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-wider text-amber-700 bg-amber-50/80 px-2 py-0.5 rounded-full border border-amber-100">
+                      Tailored Wellness
+                    </span>
+                  </div>
+
+                  <h3 className="text-sm font-black text-slate-900 tracking-tight group-hover:text-amber-700 transition-colors">
+                    Diet & Lifestyle Advice
+                  </h3>
+                  <p className="text-xs text-slate-500 font-medium mt-1.5 leading-relaxed">
+                    Evidence-based nutritional therapy and daily habit recommendations customized to individual lab findings.
+                  </p>
+                </div>
+
+                <div className="mt-4 pt-3.5 border-t border-slate-100 flex flex-col gap-2 text-[11px] font-bold text-slate-600">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                    <span>Foods to prioritize & foods to limit</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                    <span>Personalized daily hydration targets</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                    <span>Physician follow-up conversation guide</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
           </div>
 
         </main>
@@ -450,7 +601,6 @@ export default function SmartHealthReportApp() {
                 <BodyMap
                   profiles={profiles}
                   onSelectProfile={handleSelectProfileFromOrgan}
-                  gender={patient.gender?.toLowerCase() === 'female' ? 'female' : 'male'}
                 />
               </div>
 
